@@ -1,0 +1,248 @@
+hash-format = "sha256"
+
+[[files]]
+file = "config/Geyser-Fabric/config.yml"
+hash = "97d01a131c52690b3052f6b542b2a57cdc48ecb02e1de0e7adf7e791c70d1ba2"
+
+[[files]]
+file = "config/chunky/config.json"
+hash = "c7384a22595488f79f3125b22cc175eb729267267807a084479419349797abc8"
+
+[[files]]
+file = "config/cristellib/auto_config_settings.json5"
+hash = "de7b2c20171712fb50a7cce9481430d68a847bf669566ac8ac8957d32010e003"
+
+[[files]]
+file = "config/cristellib/built_in_packs.json5"
+hash = "76120cb769b1303ffdbd30a197e01e69692a9c111eb818a3b5a5272925343364"
+
+[[files]]
+file = "config/cristellib/explorify/structure_placement_config.json5"
+hash = "b62bc9f5047bc1c1b8b62e7d71b2314ad4349af5cef35c63144bad6fb0591ad2"
+
+[[files]]
+file = "config/cristellib/explorify/structure_toggle_config.json5"
+hash = "1923a4597e7ee5291a74ba8a97510340ef72f2202108c3895bf074031275e135"
+
+[[files]]
+file = "config/cristellib/hopobettermineshaft/structure_placement_config.json5"
+hash = "b464aa3fb5f38ac0c7d378acd13fea33624e51c9f9e5c3427bdb1d117b322714"
+
+[[files]]
+file = "config/cristellib/hopobettermineshaft/structure_toggle_config.json5"
+hash = "6cff4f886a82776d93d38f88fda541ebd11319f1208c259bd39fbfacebb0b416"
+
+[[files]]
+file = "config/cristellib/mr_dnt_strongholdoverhaulliteedition/structure_toggle_config.json5"
+hash = "96939569fa5c4f868d16601afa3d63e8f8c69004e217c9a0c3be1b3c789f8fbf"
+
+[[files]]
+file = "config/cristellib/mss/structure_placement_config.json5"
+hash = "77d365f4d9567c319ddddba67b160d83f0876326cd9c50ff5cd2957b17561025"
+
+[[files]]
+file = "config/cristellib/mss/structure_toggle_config.json5"
+hash = "568a6777a52db183feaf9354db55eb0690688d9919e34e23c04ef22bfc90f74b"
+
+[[files]]
+file = "config/ferritecore.mixin.properties"
+hash = "fc4d7a195210fb6d32cdfc5a255b6d555ab0225da1a929b61d17dd6b5648c2ba"
+
+[[files]]
+file = "config/floodgate/config.yml"
+hash = "5eb5aa82473cec5aa1dd6e0cf1a7ef088e9d929defa51ac0a9ad211eb9e16e87"
+
+[[files]]
+file = "config/lithium.properties"
+hash = "6cf6f83720071fd1657c8e79b357caf68d40f410ae123e5f922483eb1d1d25be"
+
+[[files]]
+file = "config/moogs_structures.json"
+hash = "1676c65b94ec2df5ddb0c092fb8b9f85e423a3398356a83d85da5566d8ab3b2e"
+
+[[files]]
+file = "config/polymer/common.json"
+hash = "310dee45deffb1f13169492bf25cee00503e91403daa8cffa653939feb76cc03"
+
+[[files]]
+file = "config/polymer/resource-pack.json"
+hash = "1478d80c908f2d17eccf2f6c042f75ccc4ca6c50d2ab8b67c54019852baf4758"
+
+[[files]]
+file = "config/polymer/server.json"
+hash = "90f105009d575923c2103523490b81c3647d210cf2f81fca8bafb8ce8c57809e"
+
+[[files]]
+file = "config/scalablelux.properties"
+hash = "ba3574b674d8f0e70b173e69fe60a84ba3596594cc1383e2f90e58d005e7f1c7"
+
+[[files]]
+file = "config/servercore/config.yml"
+hash = "93ff1ecc49180c11f90660f8f9bb1eb413b633291ce3ddbbd142ad7d26811744"
+
+[[files]]
+file = "config/servercore/optimizations.yml"
+hash = "636e170bdfcebaaa4ba49394b8bb29fb07e19cf1333f031f7c2cd4de66ff2479"
+
+[[files]]
+file = "config/spark/config.json"
+hash = "992ba9f3a4a7ce3de112eb95575328956fdc3ce6781c455ebce7b23db7e7da42"
+
+[[files]]
+file = "config/sswaystones.json"
+hash = "9641fab829705df284a1ae79f5abfc46010a8a8fa712989809897e1fbfc18d08"
+
+[[files]]
+file = "config/towns_and_towers/structure_enable_or_disable_new.json5"
+hash = "7c70e7df82d014a87dcb2defcf45d9654a22362283c7efe1f81f3b3c04290709"
+
+[[files]]
+file = "config/towns_and_towers/structure_rarity_new.json5"
+hash = "fe4ca0974aca38b27c94e3f1dc092f1688b54f27d9eaa728d61c6ccae4ca1313"
+
+[[files]]
+file = "config/universal-graves/config.json"
+hash = "d198351202640a24a8d15b1f38a0c60d43f6bb10f58340028c2500ed631ba681"
+
+[[files]]
+file = "config/zfastnoise.mixin.toml"
+hash = "a7a78e871453b57b918f4362384da932b11e02e7eabd5fe804915137bb12aa33"
+
+[[files]]
+file = "mods/alternate-current.pw.toml"
+hash = "5b0893fdba5b227d36a4cd0c2deb6cd2b5c1620210b16d0363105b299f62d8cd"
+metafile = true
+
+[[files]]
+file = "mods/chunky.pw.toml"
+hash = "7f10502751db064cc56f710f5248da5481dea54166ed2ca37a2d18a6b05fa6b0"
+metafile = true
+
+[[files]]
+file = "mods/cloth-config.pw.toml"
+hash = "ebb5edb3af62967147f1b4fcf78510bd99cf2f97cfa62eae286eeb5b9bb7e8f6"
+metafile = true
+
+[[files]]
+file = "mods/creeper-no-break-blocks.pw.toml"
+hash = "332af6ba9cf36e0d61eaf460cd445d68457b98aa66ddaa98363685fe78d2ed89"
+metafile = true
+
+[[files]]
+file = "mods/cristel-lib.pw.toml"
+hash = "f5e003c79747656afdd71f4344c0aef5cd804ad370f2f97194e6a434d28a2835"
+metafile = true
+
+[[files]]
+file = "mods/dnt-stronghold-overhaul-lite-edition.pw.toml"
+hash = "6806d8d11a1504e4c6a6ed8fee36dd485580e438d89f3750bea033c494be5cd2"
+metafile = true
+
+[[files]]
+file = "mods/explorify.pw.toml"
+hash = "eb53686e058fe3ac3f646c0eab370d279af62f9fb79ae9cd391eb18395a610f5"
+metafile = true
+
+[[files]]
+file = "mods/fabric-api.pw.toml"
+hash = "efd1cf636afe382021ceb236ff813466e0d40158289000af6d4ac6730198f3dc"
+metafile = true
+
+[[files]]
+file = "mods/ferrite-core.pw.toml"
+hash = "d062e6231f1561df8d03afe731788d85e1a35a542b23f43d87fd515cbb17963d"
+metafile = true
+
+[[files]]
+file = "mods/floodgate.pw.toml"
+hash = "e9520e6bb14b70a4d7c60b25f0c93e2303d0535f64213262f037aa381d56d5b2"
+metafile = true
+
+[[files]]
+file = "mods/geyser.pw.toml"
+hash = "a3c0592d2ba6bfdf3017d5013f8135750b52bd8e87fce73a3220200289b78ab6"
+metafile = true
+
+[[files]]
+file = "mods/hopo-better-mineshaft.pw.toml"
+hash = "ec47048bfe5e844ae019fe19bb47522ed72e7f5d47dd48ad4f634bd9a839a4f0"
+metafile = true
+
+[[files]]
+file = "mods/krypton.pw.toml"
+hash = "4b3d2621f68b4db4b2a4382943a407b58893613f1b6b6b51926f4627a0d68e01"
+metafile = true
+
+[[files]]
+file = "mods/lithium.pw.toml"
+hash = "676405a8c29aeda313604db76783595824ae5ec228e0d596e46785e7492c4abc"
+metafile = true
+
+[[files]]
+file = "mods/luckperms.pw.toml"
+hash = "9057bf155ff127a587f21cbad5cac9361bb7f8b5600cbd4a79a81b1e009c9fae"
+metafile = true
+
+[[files]]
+file = "mods/moogs-structure-lib.pw.toml"
+hash = "f986dffaf8dcca7fc0e63f748087d0faac8e9cb7fd08ebf9a5f3d2f1294b45c5"
+metafile = true
+
+[[files]]
+file = "mods/mss-moogs-soaring-structures.pw.toml"
+hash = "4a2ff2c654ac7828b13af858c3bd9751982db5945cdff5068f932c543676b129"
+metafile = true
+
+[[files]]
+file = "mods/polymer.pw.toml"
+hash = "97bb50a681a1728633da6cd02009f4ae80fe2eb6c052e5cf5601035628c85dba"
+metafile = true
+
+[[files]]
+file = "mods/scalablelux.pw.toml"
+hash = "cfe2a4514c91bf91a6ebdeffddabed018c59a4075c77438a85d363a9f8703e13"
+metafile = true
+
+[[files]]
+file = "mods/servercore.pw.toml"
+hash = "9e792c866b7b70cba00aa53a27dab2a28b24c0d8c20960571c084c48cdd230d2"
+metafile = true
+
+[[files]]
+file = "mods/spark.pw.toml"
+hash = "bbecd4d64ac545d8ed01ef36be25e2206667c197d93baba605f604a5daeefbb8"
+metafile = true
+
+[[files]]
+file = "mods/squaremap.pw.toml"
+hash = "caa0cc2eae0165123914e560b07ae068efbae68ab12ec0140ca81d16c58ddd10"
+metafile = true
+
+[[files]]
+file = "mods/sswaystones.pw.toml"
+hash = "d978587406a870c82cafdc9bb27779f1f107700ac5906a5e9adc454ebe4428e9"
+metafile = true
+
+[[files]]
+file = "mods/towns-and-towers.pw.toml"
+hash = "1847208530042f9d761fa1ff86dfaafe88523a661d863bdeedc7c4f80e3d2a4c"
+metafile = true
+
+[[files]]
+file = "mods/universal-graves.pw.toml"
+hash = "259b6e987a2e9b5b36b42574efef96ad08e6830c6b1c82dad0271a9015bf6979"
+metafile = true
+
+[[files]]
+file = "mods/zconfig.pw.toml"
+hash = "4e8e25b80205433a4d3e84960fb9839b11b7f4d5535a6b41f7fd090953b72e6e"
+metafile = true
+
+[[files]]
+file = "mods/zfastnoise.pw.toml"
+hash = "336d6cdcc913749264d2a6b39effcd28f3f8e60cc851b071f78d3f45df9fedea"
+metafile = true
+
+[[files]]
+file = "squaremap/config.yml"
+hash = "83454b16030d474c8b31ca4b3b7439cb521222c6064928957d2d88a374bc6c9f"

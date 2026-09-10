@@ -1,0 +1,22 @@
+# Build output
+/build/
+/dist/
+/run/
+/*.mrpack
+
+# Local tools and editors
+/.idea/
+/.vscode/
+__pycache__/
+*.py[cod]
+
+# Runtime state and secrets
+/config/floodgate/key.pem
+/config/Geyser-Fabric/key.pem
+/config/Geyser-Fabric/saved-refresh-tokens.json
+/config/luckperms/*.db
+/config/luckperms/*.db-*
+/world/
+/logs/
+/backups/
+/crash-reports/

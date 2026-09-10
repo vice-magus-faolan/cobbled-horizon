@@ -1,0 +1,14 @@
+name = "Server-Side Waystones"
+filename = "sswaystones-1.3.2.jar"
+side = "server"
+pin = true
+
+[download]
+url = "https://cdn.modrinth.com/data/BzV6ulv0/versions/vvOv5HeB/sswaystones-1.3.2.jar"
+hash-format = "sha512"
+hash = "525eaab33db1b03bc46e96343eda991bcc4d60a0cec7d5fe0cdc57a378bf871feeca8ebfc277f869ecf1ea0d4f413fd71623d7e4f159c9934f90a7fe453800db"
+
+[update]
+[update.modrinth]
+mod-id = "BzV6ulv0"
+version = "vvOv5HeB"

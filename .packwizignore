@@ -1,0 +1,27 @@
+# Packwiz source/build files
+.git/
+.github/
+build/
+dist/
+run/
+docs/
+scripts/
+tests/
+README.md
+CONTRIBUTORS.md
+LICENSE
+Makefile
+server.properties.example
+.gitattributes
+.gitignore
+.packwizignore
+
+# Never distribute runtime state or secrets
+config/floodgate/key.pem
+config/Geyser-Fabric/key.pem
+config/Geyser-Fabric/saved-refresh-tokens.json
+config/luckperms/
+world/
+logs/
+backups/
+crash-reports/

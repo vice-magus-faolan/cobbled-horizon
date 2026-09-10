@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.mrpack binary
+*.jar binary
+*.png binary

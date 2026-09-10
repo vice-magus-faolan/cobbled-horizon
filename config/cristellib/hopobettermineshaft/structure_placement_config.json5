@@ -1,0 +1,12 @@
+{
+	"mineshafts": {
+		"salt": 10110111,
+		"separation": 7,
+		"spacing": 26
+	},
+	"mineshafts_biomes": {
+		"salt": 86589344,
+		"separation": 1,
+		"spacing": 17
+	}
+}

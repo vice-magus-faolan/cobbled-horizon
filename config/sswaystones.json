@@ -1,0 +1,13 @@
+{
+  "xp_cost": 0,
+  "cross_dimension_xp_cost": 1,
+  "combat_cooldown": 0,
+  "pve_combat": false,
+  "waystone_limit": 0,
+  "paranoid_teleport": true,
+  "paranoid_teleport_unremovable_blocks": [],
+  "remove_invalid_waystones": true,
+  "physical_icon_display": false,
+  "random_name_language": "en_us",
+  "village_structures": true
+}

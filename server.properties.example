@@ -1,0 +1,22 @@
+# Cobbled Horizon server properties template
+# Copy desired values into DatHost's server.properties editor. DatHost owns
+# server-port and any management secrets; do not commit generated secrets.
+
+motd=Cobbled Horizon
+online-mode=true
+enforce-secure-profile=true
+white-list=true
+enforce-whitelist=true
+gamemode=survival
+difficulty=normal
+hardcore=false
+pvp=true
+allow-flight=true
+spawn-protection=0
+max-players=20
+view-distance=10
+simulation-distance=8
+max-tick-time=180000
+generate-structures=true
+enable-rcon=false
+management-server-enabled=false

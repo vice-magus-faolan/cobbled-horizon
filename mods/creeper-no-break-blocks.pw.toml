@@ -1,0 +1,14 @@
+name = "Creeper no Break Blocks"
+filename = "nocreeperexplosion-26.1-26.2-1.0.0+fabric.jar"
+side = "server"
+pin = true
+
+[download]
+url = "https://cdn.modrinth.com/data/ptis34fZ/versions/HY2jTtzV/nocreeperexplosion-26.1-26.2-1.0.0%2Bfabric.jar"
+hash-format = "sha512"
+hash = "ab06c9f0b6af06b04c7ebefe7b7b701b9b0b640c7e32bf28d5dfed03b376e616acbf65d7f4d9a184af879e392463d87e56d597a3e782db48fc60f40a7cc9c0e2"
+
+[update]
+[update.modrinth]
+mod-id = "ptis34fZ"
+version = "HY2jTtzV"

@@ -1,0 +1,14 @@
+name = "Dungeons and Taverns Stronghold Overhaul LITE edition"
+filename = "dnt-stronghold-overhaul-lite-edition-v1.3.jar"
+side = "server"
+pin = true
+
+[download]
+url = "https://cdn.modrinth.com/data/LbGT0kSV/versions/YW7Gy3sh/dnt-stronghold-overhaul-lite-edition-v1.3.jar"
+hash-format = "sha512"
+hash = "79bacc71a999d39712ca2c94288ad6a488fdec987fc315138a294d57892852344380dd45b3eba9ae8bf49644ccc919d9b1f13d8a7db965aa8ac411a1421ead48"
+
+[update]
+[update.modrinth]
+mod-id = "LbGT0kSV"
+version = "YW7Gy3sh"
