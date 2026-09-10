@@ -9,11 +9,14 @@ The final checked-in configuration was exported with packwiz, materialized with 
 Observed server result:
 
 ```text
+Minecraft server: Done (30.553s)! For help, type "help"
 Registered 199 custom block overrides.
 Registered 7 custom blocks.
 Started Geyser on UDP port 19132
-Done (5.346s)! Run /geyser help for help!
+Geyser: Done (5.346s)! Run /geyser help for help!
 ```
+
+The two `Done` lines are separate readiness events: `30.553s` is the Minecraft server startup, while `5.346s` is Geyser's own initialization message.
 
 The server then accepted `stop`, shut down Geyser and squaremap's Undertow web server, saved the Overworld, Nether, and End, and exited with status 0.
 
