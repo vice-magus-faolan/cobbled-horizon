@@ -22,9 +22,10 @@ jobs:
           python-version: '3.11'
 
       - name: Set up Go
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@v7
         with:
           go-version: '1.25.x'
+          cache: false
 
       - name: Test repository tooling
         run: python3 -m unittest discover -s tests -v
@@ -46,7 +47,7 @@ jobs:
             --minecraft 26.2
 
       - name: Upload validated mrpack
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cobbled-horizon-mc26.2
           path: dist/cobbled-horizon-0.1.0+mc26.2.mrpack
