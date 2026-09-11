@@ -273,6 +273,34 @@ def validate_configs(errors: list[str]) -> None:
         errors.append("Universal Graves must retain 75% of XP")
     if graves["protection"].get("self_destruction_time") != 86400:
         errors.append("Universal Graves expiry must remain 24 real-time hours")
+    validate_jeb_config(errors)
+
+
+def validate_jeb_config(errors: list[str]) -> None:
+    jeb = json.loads((ROOT / "config/justenoughbackups.json").read_text(encoding="utf-8"))
+    expected_schedule = {
+        "full": {"enabled": True, "intervalMinutes": 1440},
+        "differential": {"enabled": True, "intervalMinutes": 180},
+        "partial": {"enabled": False, "intervalMinutes": 60},
+    }
+    expected_retention = {
+        "full": 2,
+        "incremental": 0,
+        "differential": 16,
+        "maxTotalSizeMb": 6144,
+    }
+    if jeb.get("automaticSchedule") != expected_schedule:
+        errors.append("JEB automatic schedule must remain daily full plus three-hour differential")
+    if jeb.get("retention") != expected_retention:
+        errors.append("JEB retention must remain two full chains within 6144 MB")
+    if jeb.get("minimumFreeSpaceReserveMb") != 8192:
+        errors.append("JEB must preserve an 8192 MB free-space reserve")
+    if not jeb.get("pauseAutomaticBackupsWithoutPlayers"):
+        errors.append("JEB must pause automatic backups without player activity")
+    if jeb.get("backupOnServerStart") or jeb.get("backupOnServerStop"):
+        errors.append("JEB start/stop backups must remain disabled initially")
+    if jeb.get("integrityMode") != "STRICT":
+        errors.append("JEB integrity mode must remain STRICT")
 
 
 def validate_no_secrets(errors: list[str]) -> None:

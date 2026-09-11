@@ -1,0 +1,14 @@
+name = "Just Enough Backups (JEB)"
+filename = "justenoughbackups-1.2.0.6+26.2.jar"
+side = "server"
+pin = true
+
+[download]
+url = "https://cdn.modrinth.com/data/ctV8T1ZK/versions/n1Jc09sK/justenoughbackups-1.2.0.6%2B26.2.jar"
+hash-format = "sha512"
+hash = "92935e860dc5bb5f47229fcfb96b808f22f2e2e7be330e22b7a5802284cca82bdebdafc645a17fa50bd8d70c059f276cc1b75faccfb285ecae5714e607eae70f"
+
+[update]
+[update.modrinth]
+mod-id = "ctV8T1ZK"
+version = "n1Jc09sK"

@@ -54,4 +54,13 @@ Do not run final Chunky pre-generation until this section passes and the seed is
 - [ ] spark profile captures idle and active baselines.
 - [ ] squaremap renders only the Overworld and uses the assigned HTTP endpoint.
 - [ ] LuckPerms contains only the intended default/admin model.
-- [ ] A backup is restored into a separate test instance successfully.
+- [ ] `/jeb next` reports the configured daily full and three-hour differential schedules.
+- [ ] JEB creates a named full backup and a later differential backup without save errors.
+- [ ] JEB skips inactive intervals when no player has been online.
+- [ ] Retention never exceeds 6,144 MB and a low-space preflight fails without filling the filesystem.
+- [ ] The named full backup is cold-restored into a separate disposable instance using the exact pack commit.
+- [ ] Java login, representative chunks, inventory, and a clean shutdown pass after restoration.
+- [ ] The restore result is recorded in `docs/verification.md`; archive creation alone is not a pass.
+- [ ] DatHost's daily-backup retention, quota accounting, and restore scope are confirmed.
+
+Ledger is not a launch test because it is not active. If it is later promoted, add tests for database loss/latency, bounded queue shutdown, purge, inspect, rollback, permissions, and database-aware restoration before deployment.

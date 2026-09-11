@@ -85,6 +85,13 @@ category = "administration"
 role = "feature"
 
 [[selected]]
+project-id = "ctV8T1ZK"
+slug = "justenoughbackups-jeb"
+name = "Just Enough Backups (JEB)"
+category = "administration"
+role = "feature"
+
+[[selected]]
 project-id = "BzV6ulv0"
 slug = "sswaystones"
 name = "Server-Side Waystones"

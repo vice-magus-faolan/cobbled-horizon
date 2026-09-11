@@ -30,7 +30,7 @@ class PackSourceTests(unittest.TestCase):
     def test_repository_passes_source_validation(self) -> None:
         errors, summary = check_pack.validate()
         self.assertEqual([], errors)
-        self.assertEqual(19, summary.baseline_selected)
+        self.assertEqual(20, summary.baseline_selected)
         self.assertEqual(4, summary.baseline_dependencies)
         self.assertEqual(3, summary.staged_selected)
         self.assertEqual(1, summary.staged_dependencies)

@@ -24,6 +24,28 @@ The server then accepted `stop`, shut down Geyser and squaremap's Undertow web s
 
 This historical result verifies the superseded full-stack candidate only. It does not prove the current conservative baseline.
 
-## Current conservative baseline
+## Current 26.2 baseline
 
-The 23-project baseline passes source validation and exports a valid `.mrpack` with all staged files excluded. A runtime smoke test has not yet been performed on the designated Minecraft test host; complete it before treating this baseline as production-ready.
+Date: 2026-09-11 UTC
+
+The active pack now contains 24 projects, including JEB 1.2.0.6+26.2. Local static verification completed with:
+
+```text
+make test
+-> 5 tests passed
+
+make validate
+-> PASS: baseline 20 selected + 4 dependencies; staged 3 selected + 1 dependency; 5 future candidates; 51 indexed pack files
+
+make export
+python3 scripts/validate_mrpack.py dist/cobbled-horizon-0.1.0+mc26.2.mrpack --minecraft 26.2
+-> PASS: 24 required server file(s); metadata and hashes are valid
+```
+
+Export SHA-256:
+
+```text
+4314cf40aa0a545392688a61e4e0f92689b94bc526321db9ab00b5511304cc94  dist/cobbled-horizon-0.1.0+mc26.2.mrpack
+```
+
+The exported JEB entry is server-required and pinned to Modrinth version `n1Jc09sK`; the checked-in JEB config is present in overrides, and the staged tree is absent. A runtime smoke test and JEB cold restore have not yet been performed on the designated Minecraft test host; complete both before treating this baseline as production-ready.

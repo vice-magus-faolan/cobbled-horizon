@@ -53,6 +53,10 @@ file = "config/floodgate/config.yml"
 hash = "5eb5aa82473cec5aa1dd6e0cf1a7ef088e9d929defa51ac0a9ad211eb9e16e87"
 
 [[files]]
+file = "config/justenoughbackups.json"
+hash = "6a5aca0a9c0201aa5dd0e280430011be1da1810cf9d2cca22c9f8dc0f40530d7"
+
+[[files]]
 file = "config/lithium.properties"
 hash = "6cf6f83720071fd1657c8e79b357caf68d40f410ae123e5f922483eb1d1d25be"
 
@@ -158,6 +162,11 @@ metafile = true
 [[files]]
 file = "mods/hopo-better-mineshaft.pw.toml"
 hash = "ec47048bfe5e844ae019fe19bb47522ed72e7f5d47dd48ad4f634bd9a839a4f0"
+metafile = true
+
+[[files]]
+file = "mods/justenoughbackups-jeb.pw.toml"
+hash = "dacc71f2a73035af849b2eca9bfe2bdf1b1674075bce21c255ddd5ce10ebde57"
 metafile = true
 
 [[files]]

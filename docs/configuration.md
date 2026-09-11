@@ -39,6 +39,16 @@ Gameplay-affecting features in `config.yml` remain disabled. All entries in `opt
 
 Krypton, Fast Noise with ZConfig, and ScalableLux are not part of the baseline export. Their pinned metadata lives under `staged/mods/`; Fast Noise and ScalableLux configuration lives under `staged/config/`. Promote them only after the activation gates in `candidates.toml` pass.
 
+## Just Enough Backups
+
+`config/justenoughbackups.json` enables a daily full backup and a differential backup every three hours after player activity. Partial, startup, and shutdown backups are disabled. Retention is bounded to two full backups, sixteen differential backups, 6,144 MB total per world, and an 8,192 MB minimum free-space reserve. Strict integrity checking and two worker threads favor predictable load over maximum compression speed.
+
+These are safety limits, not proof that recovery works. Complete the separate-instance cold-restore drill in [`storage-and-recovery.md`](storage-and-recovery.md) before production.
+
+## Ledger (future only)
+
+Ledger is not present in `mods/` or the standard export. Its proposed deployment uses a finite 30-day retention window and DatHost's included MySQL service, with credentials injected only on the live host. Promotion also requires least-privilege permissions, database-aware backups, growth monitoring, and database-outage tests. See [`storage-and-recovery.md`](storage-and-recovery.md) for the proposed configuration and gates.
+
 ## Structure generation
 
 - Towns and Towers, Explorify, Hopo Better Mineshaft, and DnT Stronghold Lite retain generated defaults.

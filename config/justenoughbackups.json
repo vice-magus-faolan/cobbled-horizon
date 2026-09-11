@@ -1,0 +1,60 @@
+{
+  "backupMode": "FULL",
+  "pauseAutomaticBackupsWithoutPlayers": true,
+  "backupOnServerStart": false,
+  "backupOnServerStop": false,
+  "automaticBackupsEnabled": false,
+  "automaticIntervalMinutes": 1440,
+  "automaticSchedule": {
+    "full": {
+      "enabled": true,
+      "intervalMinutes": 1440
+    },
+    "differential": {
+      "enabled": true,
+      "intervalMinutes": 180
+    },
+    "partial": {
+      "enabled": false,
+      "intervalMinutes": 60
+    }
+  },
+  "automaticBackupWarningEnabled": true,
+  "automaticBackupWarningMinutes": 5,
+  "commandPermissionLevel": 2,
+  "messageChannel": "ACTION_BAR",
+  "integrityMode": "STRICT",
+  "includeSummaryFile": true,
+  "minimumFreeSpaceReserveMb": 8192,
+  "threadCount": 2,
+  "retention": {
+    "full": 2,
+    "incremental": 0,
+    "differential": 16,
+    "maxTotalSizeMb": 6144
+  },
+  "popup": {
+    "enabled": true,
+    "showTitle": true,
+    "centerText": true,
+    "showBorder": true,
+    "x": 8,
+    "y": 8,
+    "xRatio": -1.0,
+    "yRatio": -1.0,
+    "backgroundColor": "0xAA101010",
+    "runningColor": "0xFF55FFFF",
+    "completedColor": "0xFF55FF55",
+    "failedColor": "0xFFFF5555",
+    "textColor": "0xFFE0E0E0",
+    "title": "Just Enough Backups",
+    "runningText": "Running {reason} {type}",
+    "scanningText": "Scanning {reason} {type}",
+    "completedText": "Completed {reason} {type}",
+    "failedText": "Unable to Backup"
+  },
+  "backupDirectory": "backups/",
+  "tempBackupDirectory": "",
+  "excludedPaths": [],
+  "excludeSafetyBackupsFromIncremental": true
+}

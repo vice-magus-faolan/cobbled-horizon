@@ -70,7 +70,7 @@ project-id = "LVN9ygNV"
 slug = "ledger"
 name = "Ledger"
 category = "administration"
-activation-gate = "Approve event logging, retention, permissions, and rollback policy."
+activation-gate = "Demonstrated moderation need plus approved MySQL capacity, finite retention, least-privilege permissions, database backup, and outage/rollback tests."
 
 [[future]]
 project-id = "qwvI41y9"
