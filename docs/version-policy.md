@@ -2,6 +2,8 @@
 
 ## Production pins
 
+`collection.toml` records why each project exists. Add deliberately chosen projects under `[[selected]]`; add only packwiz-resolved libraries under `[[resolved-dependency]]` with their `required-by` parent. The validation gate requires the union of those sections to match `mods/*.pw.toml` exactly.
+
 Every `mods/*.pw.toml` entry must contain:
 
 - `side = "server"`
@@ -16,13 +18,14 @@ The Minecraft and Fabric Loader versions are pinned in `pack.toml`. Do not broad
 ## Update procedure
 
 1. Create a short-lived update branch.
-2. Select exact new version IDs; do not use an unreviewed floating update on `main`.
-3. Review changelogs, dependencies, environment metadata, and licenses.
-4. Run `packwiz refresh --build`.
-5. Run all automated and manual acceptance tests against a disposable copied world.
-6. Export an immutable `.mrpack` and record its checksum in release notes.
-7. Back up production before deployment.
-8. Deploy, verify, and retain the previous known-good pack for rollback.
+2. Update `collection.toml` when selection intent or dependency relationships change.
+3. Select exact new version IDs; do not use an unreviewed floating update on `main`.
+4. Review changelogs, dependencies, environment metadata, and licenses.
+5. Run `packwiz refresh --build`.
+6. Run all automated and manual acceptance tests against a disposable copied world.
+7. Export an immutable `.mrpack` and record its checksum in release notes.
+8. Back up production before deployment.
+9. Deploy, verify, and retain the previous known-good pack for rollback.
 
 ## Moving to 26.3
 

@@ -1,0 +1,195 @@
+schema = 1
+minecraft = "26.2"
+loader = "fabric"
+
+# Human intent lives here. Packwiz's mods/*.pw.toml files are generated/resolved
+# package records and intentionally do not encode why a project is present.
+
+[[selected]]
+project-id = "P7dR8mSH"
+slug = "fabric-api"
+name = "Fabric API"
+category = "platform"
+role = "selected-library"
+also-required-by = ["Chunky", "Cristel Lib", "Geyser", "Polymer", "squaremap", "Server-Side Waystones"]
+
+[[selected]]
+project-id = "xGdtZczs"
+slug = "polymer"
+name = "Polymer"
+category = "platform"
+role = "selected-library"
+also-required-by = ["Universal Graves"]
+
+[[selected]]
+project-id = "cl223EMc"
+slug = "cristel-lib"
+name = "Cristel Lib"
+category = "platform"
+role = "selected-library"
+also-required-by = ["Towns and Towers"]
+
+[[selected]]
+project-id = "Vebnzrzj"
+slug = "luckperms"
+name = "LuckPerms"
+category = "administration"
+role = "feature"
+
+[[selected]]
+project-id = "wKkoqHrH"
+slug = "geyser"
+name = "Geyser"
+category = "cross-play"
+role = "feature"
+
+[[selected]]
+project-id = "bWrNNfkb"
+slug = "floodgate"
+name = "Floodgate"
+category = "cross-play"
+role = "feature"
+
+[[selected]]
+project-id = "gvQqBUqZ"
+slug = "lithium"
+name = "Lithium"
+category = "performance"
+role = "feature"
+
+[[selected]]
+project-id = "uXXizFIs"
+slug = "ferrite-core"
+name = "FerriteCore"
+category = "performance"
+role = "feature"
+
+[[selected]]
+project-id = "fQEb0iXm"
+slug = "krypton"
+name = "Krypton"
+category = "performance"
+role = "feature"
+
+[[selected]]
+project-id = "r0v8vy1s"
+slug = "alternate-current"
+name = "Alternate Current"
+category = "performance"
+role = "feature"
+
+[[selected]]
+project-id = "OnlVIpq5"
+slug = "zfastnoise"
+name = "Fast Noise"
+category = "performance"
+role = "feature"
+
+[[selected]]
+project-id = "Ps1zyz6x"
+slug = "scalablelux"
+name = "ScalableLux"
+category = "performance"
+role = "feature"
+
+[[selected]]
+project-id = "4WWQxlQP"
+slug = "servercore"
+name = "ServerCore"
+category = "performance"
+role = "feature"
+
+[[selected]]
+project-id = "l6YH9Als"
+slug = "spark"
+name = "spark"
+category = "administration"
+role = "feature"
+
+[[selected]]
+project-id = "fALzjamp"
+slug = "chunky"
+name = "Chunky"
+category = "administration"
+role = "feature"
+
+[[selected]]
+project-id = "PFb7ZqK6"
+slug = "squaremap"
+name = "squaremap"
+category = "administration"
+role = "feature"
+
+[[selected]]
+project-id = "BzV6ulv0"
+slug = "sswaystones"
+name = "Server-Side Waystones"
+category = "quality-of-life"
+role = "feature"
+
+[[selected]]
+project-id = "yn9u3ypm"
+slug = "universal-graves"
+name = "Universal Graves"
+category = "quality-of-life"
+role = "feature"
+
+[[selected]]
+project-id = "ptis34fZ"
+slug = "creeper-no-break-blocks"
+name = "Creeper no Break Blocks"
+category = "quality-of-life"
+role = "feature"
+
+[[selected]]
+project-id = "DjLobEOy"
+slug = "towns-and-towers"
+name = "Towns and Towers"
+category = "exploration"
+role = "feature"
+
+[[selected]]
+project-id = "HSfsxuTo"
+slug = "explorify"
+name = "Explorify"
+category = "exploration"
+role = "feature"
+
+[[selected]]
+project-id = "9IxCUYAP"
+slug = "hopo-better-mineshaft"
+name = "Hopo Better Mineshaft"
+category = "exploration"
+role = "feature"
+
+[[selected]]
+project-id = "LbGT0kSV"
+slug = "dnt-stronghold-overhaul-lite-edition"
+name = "Dungeons and Taverns Stronghold Overhaul LITE edition"
+category = "exploration"
+role = "feature"
+
+[[selected]]
+project-id = "RJCLIx7k"
+slug = "mss-moogs-soaring-structures"
+name = "MSS - Moog's Soaring Structures"
+category = "exploration"
+role = "feature"
+
+[[resolved-dependency]]
+project-id = "9s6osm5g"
+slug = "cloth-config"
+name = "Cloth Config API"
+required-by = ["Cristel Lib"]
+
+[[resolved-dependency]]
+project-id = "4qmvXRB9"
+slug = "zconfig"
+name = "ZConfig"
+required-by = ["Fast Noise"]
+
+[[resolved-dependency]]
+project-id = "1oUDhxuy"
+slug = "moogs-structure-lib"
+name = "Moog's Structure Lib (moogs_structures)"
+required-by = ["MSS - Moog's Soaring Structures"]

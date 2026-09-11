@@ -12,35 +12,7 @@ import tomllib
 from collections.abc import Iterable
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-EXPECTED_PROJECTS = {
-    "1oUDhxuy": "Moog's Structure Lib",
-    "4WWQxlQP": "ServerCore",
-    "4qmvXRB9": "ZConfig",
-    "9IxCUYAP": "Hopo Better Mineshaft",
-    "9s6osm5g": "Cloth Config API",
-    "BzV6ulv0": "Server-Side Waystones",
-    "DjLobEOy": "Towns and Towers",
-    "HSfsxuTo": "Explorify",
-    "LbGT0kSV": "DnT Stronghold Overhaul Lite",
-    "OnlVIpq5": "Fast Noise",
-    "P7dR8mSH": "Fabric API",
-    "PFb7ZqK6": "squaremap",
-    "Ps1zyz6x": "ScalableLux",
-    "RJCLIx7k": "Moog's Soaring Structures",
-    "Vebnzrzj": "LuckPerms",
-    "bWrNNfkb": "Floodgate",
-    "cl223EMc": "Cristel Lib",
-    "fALzjamp": "Chunky",
-    "fQEb0iXm": "Krypton",
-    "gvQqBUqZ": "Lithium",
-    "l6YH9Als": "spark",
-    "ptis34fZ": "Creeper No Break Blocks",
-    "r0v8vy1s": "Alternate Current",
-    "uXXizFIs": "FerriteCore",
-    "wKkoqHrH": "Geyser",
-    "xGdtZczs": "Polymer",
-    "yn9u3ypm": "Universal Graves",
-}
+COLLECTION_PATH = ROOT / "collection.toml"
 HEX_LENGTHS = {"sha512": 128}
 
 
@@ -62,6 +34,81 @@ def safe_relative(path: str) -> bool:
     return bool(path) and not candidate.is_absolute() and ".." not in candidate.parts and "\\" not in path
 
 
+def collection_identity(entry: object, kind: str, errors: list[str]) -> tuple[dict, str, str] | None:
+    if not isinstance(entry, dict):
+        errors.append(f"collection.toml {kind} entry is not a table")
+        return None
+    values: dict[str, str] = {}
+    for field in ("project-id", "name", "slug"):
+        value = entry.get(field)
+        if not isinstance(value, str) or not value:
+            errors.append(f"collection.toml {kind} entry has an invalid {field}")
+            return None
+        values[field] = value
+    return entry, values["project-id"], values["name"]
+
+
+def validate_selected_entry(entry: dict, name: str, selected_names: set[str], errors: list[str]) -> None:
+    if entry.get("role") not in {"feature", "selected-library"}:
+        errors.append(f"selected project {name} has an invalid role")
+    if not isinstance(entry.get("category"), str):
+        errors.append(f"selected project {name} must declare a category")
+    dependants = entry.get("also-required-by", [])
+    if not isinstance(dependants, list) or any(parent not in selected_names for parent in dependants):
+        errors.append(f"selected project {name} has an invalid also-required-by list")
+
+
+def validate_resolved_entry(entry: dict, name: str, selected_names: set[str], errors: list[str]) -> None:
+    parents = entry.get("required-by")
+    if not isinstance(parents, list) or not parents:
+        errors.append(f"resolved dependency {name} must declare required-by")
+    elif any(parent not in selected_names for parent in parents):
+        errors.append(f"resolved dependency {name} names an unknown selected parent")
+
+
+def collect_projects(
+    kind: str,
+    entries: list,
+    selected_names: set[str],
+    expected: dict[str, str],
+    errors: list[str],
+) -> None:
+    for raw_entry in entries:
+        identity = collection_identity(raw_entry, kind, errors)
+        if identity is None:
+            continue
+        entry, project_id, name = identity
+        if project_id in expected:
+            errors.append(f"collection.toml repeats project ID {project_id}")
+        expected[project_id] = name
+        if kind == "selected":
+            validate_selected_entry(entry, name, selected_names, errors)
+        else:
+            validate_resolved_entry(entry, name, selected_names, errors)
+
+
+def load_collection(errors: list[str]) -> tuple[dict[str, str], int, int]:
+    collection = load_toml(COLLECTION_PATH)
+    if collection.get("schema") != 1:
+        errors.append("collection.toml schema must be 1")
+    if collection.get("minecraft") != "26.2" or collection.get("loader") != "fabric":
+        errors.append("collection.toml target must be Fabric / Minecraft 26.2")
+    selected = collection.get("selected", [])
+    resolved = collection.get("resolved-dependency", [])
+    if not isinstance(selected, list) or not isinstance(resolved, list):
+        errors.append("collection.toml project sections must be arrays of tables")
+        return {}, 0, 0
+    selected_names: set[str] = {
+        str(entry["name"])
+        for entry in selected
+        if isinstance(entry, dict) and isinstance(entry.get("name"), str)
+    }
+    expected: dict[str, str] = {}
+    collect_projects("selected", selected, selected_names, expected, errors)
+    collect_projects("resolved-dependency", resolved, selected_names, expected, errors)
+    return expected, len(selected), len(resolved)
+
+
 def validate_pack(errors: list[str]) -> dict:
     pack = load_toml(ROOT / "pack.toml")
     if pack.get("versions", {}).get("minecraft") != "26.2":
@@ -77,7 +124,7 @@ def validate_pack(errors: list[str]) -> dict:
     return pack
 
 
-def validate_metadata(errors: list[str]) -> None:
+def validate_metadata(errors: list[str], expected_projects: dict[str, str]) -> None:
     metadata_files = sorted((ROOT / "mods").glob("*.pw.toml"))
     found: dict[str, pathlib.Path] = {}
     for path in metadata_files:
@@ -103,10 +150,10 @@ def validate_metadata(errors: list[str]) -> None:
             errors.append(f"{path.relative_to(ROOT)}: expected a lowercase SHA-512 hash")
         if not data.get("update", {}).get("modrinth", {}).get("version"):
             errors.append(f"{path.relative_to(ROOT)}: missing pinned Modrinth version ID")
-    missing = EXPECTED_PROJECTS.keys() - found.keys()
-    extra = found.keys() - EXPECTED_PROJECTS.keys()
+    missing = expected_projects.keys() - found.keys()
+    extra = found.keys() - expected_projects.keys()
     for project_id in sorted(missing):
-        errors.append(f"missing expected project {project_id} ({EXPECTED_PROJECTS[project_id]})")
+        errors.append(f"missing expected project {project_id} ({expected_projects[project_id]})")
     for project_id in sorted(extra):
         errors.append(f"unexpected project {project_id} in {found[project_id].relative_to(ROOT)}")
 
@@ -172,23 +219,27 @@ def validate_no_secrets(errors: list[str]) -> None:
             errors.append(f"private key material found in {path.relative_to(ROOT)}")
 
 
-def validate() -> tuple[list[str], int]:
+def validate() -> tuple[list[str], int, int, int]:
     errors: list[str] = []
+    expected_projects, selected_count, dependency_count = load_collection(errors)
     validate_pack(errors)
-    validate_metadata(errors)
+    validate_metadata(errors, expected_projects)
     indexed = validate_index(errors)
     validate_configs(errors)
     validate_no_secrets(errors)
-    return errors, indexed
+    return errors, indexed, selected_count, dependency_count
 
 
 def main() -> int:
-    errors, indexed = validate()
+    errors, indexed, selected_count, dependency_count = validate()
     if errors:
         for error in errors:
             print(f"ERROR: {error}")
         return 1
-    print(f"PASS: {len(EXPECTED_PROJECTS)} pinned server-side projects; {indexed} indexed pack files")
+    print(
+        f"PASS: {selected_count} selected + {dependency_count} resolved dependencies; "
+        f"{indexed} indexed pack files"
+    )
     return 0
 
 

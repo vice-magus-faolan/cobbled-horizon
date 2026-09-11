@@ -11,6 +11,7 @@ README.md
 CONTRIBUTORS.md
 LICENSE
 Makefile
+collection.toml
 server.properties.example
 .gitattributes
 .gitignore

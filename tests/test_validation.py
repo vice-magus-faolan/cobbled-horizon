@@ -26,9 +26,11 @@ validate_mrpack = load_script("validate_mrpack")
 
 class PackSourceTests(unittest.TestCase):
     def test_repository_passes_source_validation(self) -> None:
-        errors, indexed = check_pack.validate()
+        errors, indexed, selected, resolved = check_pack.validate()
         self.assertEqual([], errors)
-        self.assertGreater(indexed, len(check_pack.EXPECTED_PROJECTS))
+        self.assertEqual(24, selected)
+        self.assertEqual(3, resolved)
+        self.assertGreater(indexed, selected + resolved)
 
     def test_safe_relative_paths(self) -> None:
         self.assertTrue(check_pack.safe_relative("mods/lithium.pw.toml"))

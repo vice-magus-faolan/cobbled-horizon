@@ -2,7 +2,7 @@
 
 A reproducible, server-side Fabric collection for a Vanilla+ Minecraft world focused on performance, exploration, and restrained quality-of-life improvements.
 
-The current baseline targets **Minecraft Java 26.2** with **Fabric Loader 0.19.5**. It contains the 24 requested mods plus three resolved dependencies. Textile Backup is intentionally excluded.
+The current baseline targets **Minecraft Java 26.2** with **Fabric Loader 0.19.5**. It contains 24 deliberately selected projects plus three dependencies resolved by packwiz. Textile Backup is intentionally excluded.
 
 Java players should not need this pack on their clients: every packwiz entry is marked `side = "server"`. Bedrock access is provided by Geyser and Floodgate and still requires a reachable UDP port on the host.
 
@@ -46,6 +46,19 @@ Java players should not need this pack on their clients: every packwiz entry is 
 
 Exact project IDs, version IDs, download URLs, and SHA-512 hashes live in `mods/*.pw.toml`. All entries are pinned.
 
+## Intent versus dependency closure
+
+Packwiz writes the same `.pw.toml` shape for a project whether it was selected directly or pulled in as a dependency. Removing a resolved dependency's metadata would make the exported pack incomplete, so the distinction should not be encoded by deleting or relocating those files.
+
+This repository keeps the two concerns separate:
+
+- [`collection.toml`](collection.toml) is the human-maintained intent manifest. Its `[[selected]]` entries are the 24 projects deliberately requested. Its `[[resolved-dependency]]` entries are the three projects packwiz added to close dependency requirements.
+- `mods/*.pw.toml` is the machine-maintained lock layer. It contains all 27 projects needed to build the pack, each with its exact version, download URL, side, and hash.
+
+Fabric API, Polymer, and Cristel Lib remain in `[[selected]]` because they were deliberately named in the original collection, even though other selected mods also require them. Cloth Config API, ZConfig, and Moog's Structure Lib are purely transitive in the current baseline.
+
+`scripts/check_pack.py` verifies that both layers agree, so a dependency cannot silently disappear or become an undeclared top-level choice.
+
 ## Initial policy choices
 
 - Geyser uses Floodgate authentication; generated Floodgate keys are never committed.
@@ -88,7 +101,7 @@ On the designated Minecraft test host, materialize a clean server tree with:
 make materialize
 ```
 
-Do not upload the `.mrpack` to an undocumented DatHost field. Build and test locally, then upload the materialized `mods/`, `config/`, and `squaremap/` directories as described in [`docs/deployment.md`](docs/deployment.md).
+Do not upload the `.mrpack` to an undocumented DatHost field. Build and test on the designated Minecraft host, then upload the materialized `mods/`, `config/`, and `squaremap/` directories as described in [`docs/deployment.md`](docs/deployment.md).
 
 ## Updating
 
