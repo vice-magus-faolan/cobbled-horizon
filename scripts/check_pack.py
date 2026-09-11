@@ -48,28 +48,28 @@ def collection_identity(entry: object, kind: str, errors: list[str]) -> tuple[di
     return entry, values["project-id"], values["name"]
 
 
-def validate_selected_entry(entry: dict, name: str, selected_names: set[str], errors: list[str]) -> None:
+def validate_selected_entry(entry: dict, name: str, known_names: set[str], errors: list[str]) -> None:
     if entry.get("role") not in {"feature", "selected-library"}:
         errors.append(f"selected project {name} has an invalid role")
     if not isinstance(entry.get("category"), str):
         errors.append(f"selected project {name} must declare a category")
     dependants = entry.get("also-required-by", [])
-    if not isinstance(dependants, list) or any(parent not in selected_names for parent in dependants):
+    if not isinstance(dependants, list) or any(parent not in known_names for parent in dependants):
         errors.append(f"selected project {name} has an invalid also-required-by list")
 
 
-def validate_resolved_entry(entry: dict, name: str, selected_names: set[str], errors: list[str]) -> None:
+def validate_resolved_entry(entry: dict, name: str, known_names: set[str], errors: list[str]) -> None:
     parents = entry.get("required-by")
     if not isinstance(parents, list) or not parents:
         errors.append(f"resolved dependency {name} must declare required-by")
-    elif any(parent not in selected_names for parent in parents):
-        errors.append(f"resolved dependency {name} names an unknown selected parent")
+    elif any(parent not in known_names for parent in parents):
+        errors.append(f"resolved dependency {name} names an unknown parent")
 
 
 def collect_projects(
     kind: str,
     entries: list,
-    selected_names: set[str],
+    known_names: set[str],
     expected: dict[str, str],
     errors: list[str],
 ) -> None:
@@ -82,9 +82,9 @@ def collect_projects(
             errors.append(f"collection.toml repeats project ID {project_id}")
         expected[project_id] = name
         if kind == "selected":
-            validate_selected_entry(entry, name, selected_names, errors)
+            validate_selected_entry(entry, name, known_names, errors)
         else:
-            validate_resolved_entry(entry, name, selected_names, errors)
+            validate_resolved_entry(entry, name, known_names, errors)
 
 
 def load_collection(errors: list[str]) -> tuple[dict[str, str], int, int]:
@@ -98,14 +98,15 @@ def load_collection(errors: list[str]) -> tuple[dict[str, str], int, int]:
     if not isinstance(selected, list) or not isinstance(resolved, list):
         errors.append("collection.toml project sections must be arrays of tables")
         return {}, 0, 0
-    selected_names: set[str] = {
+    all_entries = selected + resolved
+    known_names: set[str] = {
         str(entry["name"])
-        for entry in selected
+        for entry in all_entries
         if isinstance(entry, dict) and isinstance(entry.get("name"), str)
     }
     expected: dict[str, str] = {}
-    collect_projects("selected", selected, selected_names, expected, errors)
-    collect_projects("resolved-dependency", resolved, selected_names, expected, errors)
+    collect_projects("selected", selected, known_names, expected, errors)
+    collect_projects("resolved-dependency", resolved, known_names, expected, errors)
     return expected, len(selected), len(resolved)
 
 

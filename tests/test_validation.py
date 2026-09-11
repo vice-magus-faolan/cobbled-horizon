@@ -28,8 +28,8 @@ class PackSourceTests(unittest.TestCase):
     def test_repository_passes_source_validation(self) -> None:
         errors, indexed, selected, resolved = check_pack.validate()
         self.assertEqual([], errors)
-        self.assertEqual(24, selected)
-        self.assertEqual(3, resolved)
+        self.assertEqual(22, selected)
+        self.assertEqual(5, resolved)
         self.assertGreater(indexed, selected + resolved)
 
     def test_safe_relative_paths(self) -> None:

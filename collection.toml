@@ -14,22 +14,6 @@ role = "selected-library"
 also-required-by = ["Chunky", "Cristel Lib", "Geyser", "Polymer", "squaremap", "Server-Side Waystones"]
 
 [[selected]]
-project-id = "xGdtZczs"
-slug = "polymer"
-name = "Polymer"
-category = "platform"
-role = "selected-library"
-also-required-by = ["Universal Graves"]
-
-[[selected]]
-project-id = "cl223EMc"
-slug = "cristel-lib"
-name = "Cristel Lib"
-category = "platform"
-role = "selected-library"
-also-required-by = ["Towns and Towers"]
-
-[[selected]]
 project-id = "Vebnzrzj"
 slug = "luckperms"
 name = "LuckPerms"
@@ -175,6 +159,18 @@ slug = "mss-moogs-soaring-structures"
 name = "MSS - Moog's Soaring Structures"
 category = "exploration"
 role = "feature"
+
+[[resolved-dependency]]
+project-id = "xGdtZczs"
+slug = "polymer"
+name = "Polymer"
+required-by = ["Universal Graves"]
+
+[[resolved-dependency]]
+project-id = "cl223EMc"
+slug = "cristel-lib"
+name = "Cristel Lib"
+required-by = ["Towns and Towers"]
 
 [[resolved-dependency]]
 project-id = "9s6osm5g"

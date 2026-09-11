@@ -2,7 +2,7 @@
 
 A reproducible, server-side Fabric collection for a Vanilla+ Minecraft world focused on performance, exploration, and restrained quality-of-life improvements.
 
-The current baseline targets **Minecraft Java 26.2** with **Fabric Loader 0.19.5**. It contains 24 deliberately selected projects plus three dependencies resolved by packwiz. Textile Backup is intentionally excluded.
+The current baseline targets **Minecraft Java 26.2** with **Fabric Loader 0.19.5**. It contains 22 deliberately selected projects plus five dependencies resolved by packwiz. Textile Backup is intentionally excluded.
 
 Java players should not need this pack on their clients: every packwiz entry is marked `side = "server"`. Bedrock access is provided by Geyser and Floodgate and still requires a reachable UDP port on the host.
 
@@ -11,9 +11,9 @@ Java players should not need this pack on their clients: every packwiz entry is 
 ### Platform and cross-play
 
 - Fabric API
-- Polymer
-- Cristel Lib
-- Cloth Config API *(dependency)*
+- Polymer *(dependency)*
+- Cristel Lib *(dependency)*
+- Cloth Config API *(dependency of Cristel Lib)*
 - LuckPerms
 - Geyser
 - Floodgate
@@ -52,10 +52,10 @@ Packwiz writes the same `.pw.toml` shape for a project whether it was selected d
 
 This repository keeps the two concerns separate:
 
-- [`collection.toml`](collection.toml) is the human-maintained intent manifest. Its `[[selected]]` entries are the 24 projects deliberately requested. Its `[[resolved-dependency]]` entries are the three projects packwiz added to close dependency requirements.
+- [`collection.toml`](collection.toml) is the human-maintained intent manifest. Its `[[selected]]` entries are the 22 projects deliberately requested. Its `[[resolved-dependency]]` entries are the five projects packwiz added to close dependency requirements.
 - `mods/*.pw.toml` is the machine-maintained lock layer. It contains all 27 projects needed to build the pack, each with its exact version, download URL, side, and hash.
 
-Fabric API, Polymer, and Cristel Lib remain in `[[selected]]` because they were deliberately named in the original collection, even though other selected mods also require them. Cloth Config API, ZConfig, and Moog's Structure Lib are purely transitive in the current baseline.
+Fabric API is the only explicitly selected platform library. Polymer, Cristel Lib, Cloth Config API, ZConfig, and Moog's Structure Lib are dependency closure. Cristel Lib demonstrates why the resolved section permits dependency chains: Towns and Towers requires Cristel Lib, which in turn requires Cloth Config API and Fabric API.
 
 `scripts/check_pack.py` verifies that both layers agree, so a dependency cannot silently disappear or become an undeclared top-level choice.
 
