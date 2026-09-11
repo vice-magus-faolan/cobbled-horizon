@@ -12,6 +12,8 @@ CONTRIBUTORS.md
 LICENSE
 Makefile
 collection.toml
+candidates.toml
+staged/
 server.properties.example
 .gitattributes
 .gitignore

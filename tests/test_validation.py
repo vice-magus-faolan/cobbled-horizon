@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib.util
 import pathlib
+import sys
 import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -15,6 +16,7 @@ def load_script(name: str):
     if spec is None or spec.loader is None:
         raise RuntimeError(f"cannot load {path}")
     module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
     spec.loader.exec_module(module)
     return module
 
@@ -26,11 +28,17 @@ validate_mrpack = load_script("validate_mrpack")
 
 class PackSourceTests(unittest.TestCase):
     def test_repository_passes_source_validation(self) -> None:
-        errors, indexed, selected, resolved = check_pack.validate()
+        errors, summary = check_pack.validate()
         self.assertEqual([], errors)
-        self.assertEqual(22, selected)
-        self.assertEqual(5, resolved)
-        self.assertGreater(indexed, selected + resolved)
+        self.assertEqual(19, summary.baseline_selected)
+        self.assertEqual(4, summary.baseline_dependencies)
+        self.assertEqual(3, summary.staged_selected)
+        self.assertEqual(1, summary.staged_dependencies)
+        self.assertEqual(5, summary.future_candidates)
+        self.assertGreater(
+            summary.indexed_files,
+            summary.baseline_selected + summary.baseline_dependencies,
+        )
 
     def test_safe_relative_paths(self) -> None:
         self.assertTrue(check_pack.safe_relative("mods/lithium.pw.toml"))

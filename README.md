@@ -2,7 +2,7 @@
 
 A reproducible, server-side Fabric collection for a Vanilla+ Minecraft world focused on performance, exploration, and restrained quality-of-life improvements.
 
-The current baseline targets **Minecraft Java 26.2** with **Fabric Loader 0.19.5**. It contains 22 deliberately selected projects plus five dependencies resolved by packwiz. Textile Backup is intentionally excluded.
+The current baseline targets **Minecraft Java 26.2** with **Fabric Loader 0.19.5**. It contains 19 deliberately selected projects plus four dependencies resolved by packwiz. Textile Backup is intentionally excluded.
 
 Java players should not need this pack on their clients: every packwiz entry is marked `side = "server"`. Bedrock access is provided by Geyser and Floodgate and still requires a reachable UDP port on the host.
 
@@ -22,11 +22,7 @@ Java players should not need this pack on their clients: every packwiz entry is 
 
 - Lithium
 - FerriteCore
-- Krypton
 - Alternate Current
-- Fast Noise
-- ZConfig *(dependency)*
-- ScalableLux
 - ServerCore
 - spark
 - Chunky
@@ -44,7 +40,11 @@ Java players should not need this pack on their clients: every packwiz entry is 
 - Moog's Soaring Structures
 - Moog's Structure Lib *(dependency)*
 
-Exact project IDs, version IDs, download URLs, and SHA-512 hashes live in `mods/*.pw.toml`. All entries are pinned.
+Exact baseline project IDs, version IDs, download URLs, and SHA-512 hashes live in `mods/*.pw.toml`. All entries are pinned.
+
+### Staged and future candidates
+
+Krypton, Fast Noise with ZConfig, and ScalableLux retain pinned metadata under `staged/`, but they are excluded from the baseline export. C2ME, VMP, Clumps, Ledger, and Sparse Structures are future candidates with explicit activation gates in [`candidates.toml`](candidates.toml).
 
 ## Intent versus dependency closure
 
@@ -52,10 +52,12 @@ Packwiz writes the same `.pw.toml` shape for a project whether it was selected d
 
 This repository keeps the two concerns separate:
 
-- [`collection.toml`](collection.toml) is the human-maintained intent manifest. Its `[[selected]]` entries are the 22 projects deliberately requested. Its `[[resolved-dependency]]` entries are the five projects packwiz added to close dependency requirements.
-- `mods/*.pw.toml` is the machine-maintained lock layer. It contains all 27 projects needed to build the pack, each with its exact version, download URL, side, and hash.
+- [`collection.toml`](collection.toml) defines the active baseline: 19 selected projects and four resolved dependencies.
+- [`candidates.toml`](candidates.toml) defines staged and future projects, why they are inactive, and the evidence required to promote them.
+- `mods/*.pw.toml` is the machine-maintained baseline lock layer. It contains the 23 projects exported by the standard pack.
+- `staged/mods/*.pw.toml` retains four pinned candidate records outside packwiz's active index.
 
-Fabric API is the only explicitly selected platform library. Polymer, Cristel Lib, Cloth Config API, ZConfig, and Moog's Structure Lib are dependency closure. Cristel Lib demonstrates why the resolved section permits dependency chains: Towns and Towers requires Cristel Lib, which in turn requires Cloth Config API and Fabric API.
+Fabric API is the only explicitly selected platform library. Polymer, Cristel Lib, Cloth Config API, and Moog's Structure Lib close baseline dependencies. ZConfig is staged beside Fast Noise. Cristel Lib demonstrates why dependency chains matter: Towns and Towers requires Cristel Lib, which in turn requires Cloth Config API and Fabric API.
 
 `scripts/check_pack.py` verifies that both layers agree, so a dependency cannot silently disappear or become an undeclared top-level choice.
 
@@ -63,7 +65,6 @@ Fabric API is the only explicitly selected platform library. Polymer, Cristel Li
 
 - Geyser uses Floodgate authentication; generated Floodgate keys are never committed.
 - ServerCore's non-vanilla-parity optimizations remain disabled.
-- Fast Noise's explicitly risky biome options are disabled.
 - Moog's structures use a `2.0` spacing multiplier so they remain uncommon.
 - Universal Graves retains 75% of XP, protects graves for one hour, and expires them after 24 real-time hours.
 - squaremap enables only the Overworld, limits zoom, and reduces background rendering pressure.
@@ -113,7 +114,7 @@ To see which projects have begun publishing for 26.3:
 python3 scripts/check_target_readiness.py --minecraft 26.3
 ```
 
-A nonzero exit means at least one project remains unavailable. `--release-only` also rejects alpha/beta files.
+A nonzero exit means at least one baseline project remains unavailable. Staged candidates are reported separately and do not block the baseline. `--release-only` also rejects alpha/beta files; `--baseline-only` suppresses staged reporting.
 
 ## Documentation
 

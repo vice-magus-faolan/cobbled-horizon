@@ -1,0 +1,80 @@
+schema = 1
+minecraft = "26.2"
+loader = "fabric"
+
+# Staged projects retain pinned packwiz metadata outside the active mods/ tree.
+# They are not exported by the baseline pack. Future projects are research
+# candidates only and have no packwiz metadata until deliberately promoted.
+
+
+[[staged]]
+project-id = "fQEb0iXm"
+slug = "krypton"
+name = "Krypton"
+category = "performance"
+metadata = "staged/mods/krypton.pw.toml"
+configs = []
+reason = "Networking optimization shares a sensitive compatibility boundary with Geyser."
+activation-gate = "Demonstrated network bottleneck plus passing Java and Bedrock soak tests."
+
+[[staged]]
+project-id = "OnlVIpq5"
+slug = "zfastnoise"
+name = "Fast Noise"
+category = "performance"
+metadata = "staged/mods/zfastnoise.pw.toml"
+configs = ["staged/config/zfastnoise.mixin.toml"]
+reason = "Pre-release world-generation optimization increases compatibility surface."
+activation-gate = "Chunk-generation bottleneck plus deterministic worldgen and structure tests."
+
+[[staged]]
+project-id = "Ps1zyz6x"
+slug = "scalablelux"
+name = "ScalableLux"
+category = "performance"
+metadata = "staged/mods/scalablelux.pw.toml"
+configs = ["staged/config/scalablelux.properties"]
+reason = "The selected 26.2 build is alpha and replaces lighting internals."
+activation-gate = "Measured lighting bottleneck plus clean generation and relighting tests."
+
+[[staged-dependency]]
+project-id = "4qmvXRB9"
+slug = "zconfig"
+name = "ZConfig"
+metadata = "staged/mods/zconfig.pw.toml"
+required-by = ["Fast Noise"]
+
+[[future]]
+project-id = "VSNURh3q"
+slug = "c2me-fabric"
+name = "Concurrent Chunk Management Engine (Fabric)"
+category = "performance"
+activation-gate = "Sustained chunk-generation or I/O bottleneck after baseline profiling."
+
+[[future]]
+project-id = "wnEe9KBa"
+slug = "vmp-fabric"
+name = "Very Many Players (Fabric)"
+category = "performance"
+activation-gate = "Concurrent-player scaling bottleneck demonstrated by profiling."
+
+[[future]]
+project-id = "Wnxd13zP"
+slug = "clumps"
+name = "Clumps"
+category = "performance"
+activation-gate = "XP-orb entity load is a demonstrated contributor to tick time."
+
+[[future]]
+project-id = "LVN9ygNV"
+slug = "ledger"
+name = "Ledger"
+category = "administration"
+activation-gate = "Approve event logging, retention, permissions, and rollback policy."
+
+[[future]]
+project-id = "qwvI41y9"
+slug = "sparsestructures"
+name = "Sparse Structures"
+category = "exploration"
+activation-gate = "Structure-density test shows the active worldgen set is too crowded."

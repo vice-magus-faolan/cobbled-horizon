@@ -35,9 +35,9 @@ The generous expiry limits loss from outages or cross-play UI trouble while pres
 
 Gameplay-affecting features in `config.yml` remain disabled. All entries in `optimizations.yml` that declare imperfect vanilla parity are also disabled initially. Enable them only after a spark profile and targeted regression test justify the change.
 
-## Fast Noise and ScalableLux
+## Staged performance candidates
 
-Fast Noise retains its primary world-generation optimizations, but the biome options explicitly marked as possible compatibility risks are disabled. ScalableLux retains automatic parallelism. Both should be removed first when diagnosing world-generation or lighting regressions because their selected versions are prerelease-channel files.
+Krypton, Fast Noise with ZConfig, and ScalableLux are not part of the baseline export. Their pinned metadata lives under `staged/mods/`; Fast Noise and ScalableLux configuration lives under `staged/config/`. Promote them only after the activation gates in `candidates.toml` pass.
 
 ## Structure generation
 

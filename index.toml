@@ -73,10 +73,6 @@ file = "config/polymer/server.json"
 hash = "90f105009d575923c2103523490b81c3647d210cf2f81fca8bafb8ce8c57809e"
 
 [[files]]
-file = "config/scalablelux.properties"
-hash = "ba3574b674d8f0e70b173e69fe60a84ba3596594cc1383e2f90e58d005e7f1c7"
-
-[[files]]
 file = "config/servercore/config.yml"
 hash = "93ff1ecc49180c11f90660f8f9bb1eb413b633291ce3ddbbd142ad7d26811744"
 
@@ -103,10 +99,6 @@ hash = "fe4ca0974aca38b27c94e3f1dc092f1688b54f27d9eaa728d61c6ccae4ca1313"
 [[files]]
 file = "config/universal-graves/config.json"
 hash = "d198351202640a24a8d15b1f38a0c60d43f6bb10f58340028c2500ed631ba681"
-
-[[files]]
-file = "config/zfastnoise.mixin.toml"
-hash = "a7a78e871453b57b918f4362384da932b11e02e7eabd5fe804915137bb12aa33"
 
 [[files]]
 file = "mods/alternate-current.pw.toml"
@@ -169,11 +161,6 @@ hash = "ec47048bfe5e844ae019fe19bb47522ed72e7f5d47dd48ad4f634bd9a839a4f0"
 metafile = true
 
 [[files]]
-file = "mods/krypton.pw.toml"
-hash = "4b3d2621f68b4db4b2a4382943a407b58893613f1b6b6b51926f4627a0d68e01"
-metafile = true
-
-[[files]]
 file = "mods/lithium.pw.toml"
 hash = "676405a8c29aeda313604db76783595824ae5ec228e0d596e46785e7492c4abc"
 metafile = true
@@ -196,11 +183,6 @@ metafile = true
 [[files]]
 file = "mods/polymer.pw.toml"
 hash = "97bb50a681a1728633da6cd02009f4ae80fe2eb6c052e5cf5601035628c85dba"
-metafile = true
-
-[[files]]
-file = "mods/scalablelux.pw.toml"
-hash = "cfe2a4514c91bf91a6ebdeffddabed018c59a4075c77438a85d363a9f8703e13"
 metafile = true
 
 [[files]]
@@ -231,16 +213,6 @@ metafile = true
 [[files]]
 file = "mods/universal-graves.pw.toml"
 hash = "259b6e987a2e9b5b36b42574efef96ad08e6830c6b1c82dad0271a9015bf6979"
-metafile = true
-
-[[files]]
-file = "mods/zconfig.pw.toml"
-hash = "4e8e25b80205433a4d3e84960fb9839b11b7f4d5535a6b41f7fd090953b72e6e"
-metafile = true
-
-[[files]]
-file = "mods/zfastnoise.pw.toml"
-hash = "336d6cdcc913749264d2a6b39effcd28f3f8e60cc851b071f78d3f45df9fedea"
 metafile = true
 
 [[files]]

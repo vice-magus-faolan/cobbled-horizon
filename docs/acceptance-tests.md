@@ -45,7 +45,7 @@ Use disposable seeds and `/locate structure` where available.
 - [ ] Inspect Hopo mineshafts at different depths.
 - [ ] Locate and enter a DnT Lite stronghold; verify portal and loot progression.
 - [ ] Inspect several Moog floating structures and confirm rarity feels intentional.
-- [ ] Generate chunks under load and inspect lighting for ScalableLux artifacts.
+- [ ] If ScalableLux is promoted, generate chunks under load and inspect lighting and relighting behavior.
 
 Do not run final Chunky pre-generation until this section passes and the seed is accepted.
 

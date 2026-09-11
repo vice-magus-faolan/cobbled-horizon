@@ -2,7 +2,9 @@
 
 ## Production pins
 
-`collection.toml` records why each project exists. Add deliberately chosen projects under `[[selected]]`; add only packwiz-resolved libraries under `[[resolved-dependency]]` with their `required-by` parent. The validation gate requires the union of those sections to match `mods/*.pw.toml` exactly.
+`collection.toml` records why each active baseline project exists. Add deliberately chosen projects under `[[selected]]`; add only packwiz-resolved libraries under `[[resolved-dependency]]` with their `required-by` parent. The validation gate requires the union of those sections to match `mods/*.pw.toml` exactly.
+
+`candidates.toml` records staged and future projects. Staged projects retain pinned metadata under `staged/mods/`, which packwiz excludes from normal exports. Promotion requires moving both intent and metadata into the baseline in one reviewed change.
 
 Every `mods/*.pw.toml` entry must contain:
 
@@ -37,4 +39,4 @@ python3 scripts/check_target_readiness.py --minecraft 26.3
 
 A successful lookup is necessary but not sufficient. Stable Minecraft 26.3, Fabric Loader/API support, DatHost availability, a successful clean boot, Java/Bedrock testing, and world-generation inspection must all pass.
 
-Geyser/Floodgate are hard gates if Bedrock support is required. Fast Noise and ScalableLux remain explicit risk items while their selected files are alpha/beta channel releases.
+Geyser/Floodgate are hard gates if Bedrock support is required. Krypton, Fast Noise, and ScalableLux remain staged risk items until their activation gates pass.

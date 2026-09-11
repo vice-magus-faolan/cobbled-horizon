@@ -7,13 +7,24 @@ import hashlib
 import json
 import pathlib
 import re
-import sys
 import tomllib
 from collections.abc import Iterable
+from dataclasses import dataclass
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 COLLECTION_PATH = ROOT / "collection.toml"
+CANDIDATES_PATH = ROOT / "candidates.toml"
 HEX_LENGTHS = {"sha512": 128}
+
+
+@dataclass(frozen=True)
+class ValidationSummary:
+    indexed_files: int
+    baseline_selected: int
+    baseline_dependencies: int
+    staged_selected: int
+    staged_dependencies: int
+    future_candidates: int
 
 
 def load_toml(path: pathlib.Path) -> dict:
@@ -66,6 +77,15 @@ def validate_resolved_entry(entry: dict, name: str, known_names: set[str], error
         errors.append(f"resolved dependency {name} names an unknown parent")
 
 
+def validate_candidate_entry(entry: dict, name: str, kind: str, errors: list[str]) -> None:
+    if not isinstance(entry.get("category"), str):
+        errors.append(f"{kind} project {name} must declare a category")
+    if not isinstance(entry.get("activation-gate"), str):
+        errors.append(f"{kind} project {name} must declare an activation-gate")
+    if kind == "staged" and not isinstance(entry.get("reason"), str):
+        errors.append(f"staged project {name} must declare a reason")
+
+
 def collect_projects(
     kind: str,
     entries: list,
@@ -83,8 +103,10 @@ def collect_projects(
         expected[project_id] = name
         if kind == "selected":
             validate_selected_entry(entry, name, known_names, errors)
-        else:
+        elif kind in {"resolved-dependency", "staged-dependency"}:
             validate_resolved_entry(entry, name, known_names, errors)
+        else:
+            validate_candidate_entry(entry, name, kind, errors)
 
 
 def load_collection(errors: list[str]) -> tuple[dict[str, str], int, int]:
@@ -110,6 +132,58 @@ def load_collection(errors: list[str]) -> tuple[dict[str, str], int, int]:
     return expected, len(selected), len(resolved)
 
 
+def candidate_entries(data: dict, key: str, errors: list[str]) -> list:
+    entries = data.get(key, [])
+    if not isinstance(entries, list):
+        errors.append(f"candidates.toml {key} section must be an array of tables")
+        return []
+    return entries
+
+
+def load_candidates(
+    errors: list[str], active_projects: dict[str, str]
+) -> tuple[dict[str, str], int, int, int]:
+    data = load_toml(CANDIDATES_PATH)
+    if data.get("schema") != 1:
+        errors.append("candidates.toml schema must be 1")
+    staged = candidate_entries(data, "staged", errors)
+    dependencies = candidate_entries(data, "staged-dependency", errors)
+    future = candidate_entries(data, "future", errors)
+    known_names = {
+        str(entry["name"])
+        for entry in staged + dependencies + future
+        if isinstance(entry, dict) and isinstance(entry.get("name"), str)
+    }
+    expected: dict[str, str] = {}
+    collect_projects("staged", staged, known_names, expected, errors)
+    collect_projects("staged-dependency", dependencies, known_names, expected, errors)
+    future_projects: dict[str, str] = {}
+    collect_projects("future", future, known_names, future_projects, errors)
+    for project_id in sorted(expected.keys() & future_projects.keys()):
+        errors.append(f"project {project_id} appears in both staged and future candidates")
+    overlap = active_projects.keys() & (expected.keys() | future_projects.keys())
+    for project_id in sorted(overlap):
+        errors.append(f"project {project_id} appears in both baseline and candidates")
+    for entry in staged + dependencies:
+        if not isinstance(entry, dict):
+            continue
+        metadata = entry.get("metadata")
+        if not isinstance(metadata, str) or not metadata.startswith("staged/mods/"):
+            errors.append(f"staged project {entry.get('name')} has an invalid metadata path")
+        elif not (ROOT / metadata).is_file():
+            errors.append(f"staged metadata file is missing: {metadata}")
+        configs = entry.get("configs", [])
+        if not isinstance(configs, list):
+            errors.append(f"staged project {entry.get('name')} has an invalid configs list")
+            continue
+        for config in configs:
+            if not isinstance(config, str) or not config.startswith("staged/config/"):
+                errors.append(f"staged project {entry.get('name')} has an invalid config path")
+            elif not (ROOT / config).is_file():
+                errors.append(f"staged config file is missing: {config}")
+    return expected, len(staged), len(dependencies), len(future)
+
+
 def validate_pack(errors: list[str]) -> dict:
     pack = load_toml(ROOT / "pack.toml")
     if pack.get("versions", {}).get("minecraft") != "26.2":
@@ -125,8 +199,10 @@ def validate_pack(errors: list[str]) -> dict:
     return pack
 
 
-def validate_metadata(errors: list[str], expected_projects: dict[str, str]) -> None:
-    metadata_files = sorted((ROOT / "mods").glob("*.pw.toml"))
+def validate_metadata(
+    errors: list[str], expected_projects: dict[str, str], metadata_directory: pathlib.Path
+) -> None:
+    metadata_files = sorted(metadata_directory.glob("*.pw.toml"))
     found: dict[str, pathlib.Path] = {}
     for path in metadata_files:
         data = load_toml(path)
@@ -220,26 +296,38 @@ def validate_no_secrets(errors: list[str]) -> None:
             errors.append(f"private key material found in {path.relative_to(ROOT)}")
 
 
-def validate() -> tuple[list[str], int, int, int]:
+def validate() -> tuple[list[str], ValidationSummary]:
     errors: list[str] = []
-    expected_projects, selected_count, dependency_count = load_collection(errors)
+    active, selected_count, dependency_count = load_collection(errors)
+    staged, staged_count, staged_dependency_count, future_count = load_candidates(errors, active)
     validate_pack(errors)
-    validate_metadata(errors, expected_projects)
+    validate_metadata(errors, active, ROOT / "mods")
+    validate_metadata(errors, staged, ROOT / "staged/mods")
     indexed = validate_index(errors)
     validate_configs(errors)
     validate_no_secrets(errors)
-    return errors, indexed, selected_count, dependency_count
+    summary = ValidationSummary(
+        indexed_files=indexed,
+        baseline_selected=selected_count,
+        baseline_dependencies=dependency_count,
+        staged_selected=staged_count,
+        staged_dependencies=staged_dependency_count,
+        future_candidates=future_count,
+    )
+    return errors, summary
 
 
 def main() -> int:
-    errors, indexed, selected_count, dependency_count = validate()
+    errors, summary = validate()
     if errors:
         for error in errors:
             print(f"ERROR: {error}")
         return 1
     print(
-        f"PASS: {selected_count} selected + {dependency_count} resolved dependencies; "
-        f"{indexed} indexed pack files"
+        f"PASS: baseline {summary.baseline_selected} selected + "
+        f"{summary.baseline_dependencies} dependencies; staged "
+        f"{summary.staged_selected} selected + {summary.staged_dependencies} dependency; "
+        f"{summary.future_candidates} future candidates; {summary.indexed_files} indexed pack files"
     )
     return 0
 

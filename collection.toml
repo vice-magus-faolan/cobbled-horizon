@@ -2,8 +2,9 @@ schema = 1
 minecraft = "26.2"
 loader = "fabric"
 
-# Human intent lives here. Packwiz's mods/*.pw.toml files are generated/resolved
-# package records and intentionally do not encode why a project is present.
+# Active baseline intent lives here. Packwiz's mods/*.pw.toml files are
+# generated/resolved package records and do not encode why a project is present.
+# Staged and future projects live in candidates.toml instead.
 
 [[selected]]
 project-id = "P7dR8mSH"
@@ -49,30 +50,9 @@ category = "performance"
 role = "feature"
 
 [[selected]]
-project-id = "fQEb0iXm"
-slug = "krypton"
-name = "Krypton"
-category = "performance"
-role = "feature"
-
-[[selected]]
 project-id = "r0v8vy1s"
 slug = "alternate-current"
 name = "Alternate Current"
-category = "performance"
-role = "feature"
-
-[[selected]]
-project-id = "OnlVIpq5"
-slug = "zfastnoise"
-name = "Fast Noise"
-category = "performance"
-role = "feature"
-
-[[selected]]
-project-id = "Ps1zyz6x"
-slug = "scalablelux"
-name = "ScalableLux"
 category = "performance"
 role = "feature"
 
@@ -177,12 +157,6 @@ project-id = "9s6osm5g"
 slug = "cloth-config"
 name = "Cloth Config API"
 required-by = ["Cristel Lib"]
-
-[[resolved-dependency]]
-project-id = "4qmvXRB9"
-slug = "zconfig"
-name = "ZConfig"
-required-by = ["Fast Noise"]
 
 [[resolved-dependency]]
 project-id = "1oUDhxuy"
