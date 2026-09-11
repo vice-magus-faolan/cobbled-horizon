@@ -12,6 +12,8 @@ DatHost documents Fabric support and manual uploads of mods and configuration fi
 
 ## Build
 
+Run server materialization on the designated Minecraft test host, not on a lightweight control machine:
+
 ```bash
 make test
 make validate

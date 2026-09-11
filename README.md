@@ -64,7 +64,9 @@ See [`docs/configuration.md`](docs/configuration.md) for the rationale and unres
 - Python 3.11+
 - [packwiz](https://packwiz.infra.link/)
 - [mrpack-install](https://github.com/nothub/mrpack-install) for local server materialization
-- Java 25 for running Minecraft 26.2
+- Java 25 on the designated Minecraft test/deployment host
+
+Do not start Minecraft server processes on lightweight control machines. Exporting and static validation are safe there; server materialization and boot tests belong on the designated, adequately resourced Minecraft test host.
 
 ## Validate and build
 
@@ -80,7 +82,7 @@ The export lands at:
 dist/cobbled-horizon-0.1.0+mc26.2.mrpack
 ```
 
-Materialize a clean server tree with:
+On the designated Minecraft test host, materialize a clean server tree with:
 
 ```bash
 make materialize

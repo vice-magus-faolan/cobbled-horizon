@@ -6,6 +6,8 @@ Date: 2026-09-10 UTC
 
 The final checked-in configuration was exported with packwiz, materialized with `mrpack-install v0.16.10`, and run using Temurin Java `25.0.4.1`.
 
+This initial smoke test was run on the control host before the test-host boundary was established. That was an operational mistake. Future Minecraft server execution belongs exclusively on the designated Minecraft test host; the control host is limited to static pack validation and export.
+
 Observed server result:
 
 ```text

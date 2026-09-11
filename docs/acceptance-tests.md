@@ -2,6 +2,8 @@
 
 Run these against a disposable world before production and again after every mod or loader update.
 
+All Minecraft server startup, world-generation, and gameplay tests must run on the designated, adequately resourced Minecraft test host. A control/orchestration machine may perform static validation and export only.
+
 ## Automated gates
 
 ```bash
