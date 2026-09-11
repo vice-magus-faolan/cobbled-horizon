@@ -4,7 +4,8 @@
 
 motd=Cobbled Horizon
 online-mode=true
-enforce-secure-profile=true
+# Bedrock players cannot sign Java chat messages.
+enforce-secure-profile=false
 white-list=true
 enforce-whitelist=true
 gamemode=survival

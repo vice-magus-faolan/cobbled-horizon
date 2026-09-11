@@ -69,7 +69,7 @@ Fabric API is the only explicitly selected platform library. Polymer, Cristel Li
 - Moog's structures use a `2.0` spacing multiplier so they remain uncommon.
 - Universal Graves retains 75% of XP, protects graves for one hour, and expires them after 24 real-time hours.
 - squaremap enables only the Overworld, limits zoom, and reduces background rendering pressure.
-- JEB keeps two daily full-backup chains with three-hour differential recovery points, a 6 GB retention cap, and an 8 GB free-space reserve. Production launch still requires a successful cold restore.
+- JEB uses 24-hour full and three-hour differential intervals, a 6 GB retention cap, and an 8 GB free-space reserve. Startup resets the timers, so deployment requires an initial full backup and explicit daily full backups coordinated with host restarts. Production launch requires full and differential restore drills.
 - Ledger remains future-only. If promoted, it will use bounded retention and preferably DatHost's included MySQL service rather than the 30 GB game filesystem.
 - Global waystone creation is denied through LuckPerms bootstrap commands.
 - Server-Side Waystones 1.3.2 does not expose a true cross-dimensional disable switch; this remains an acceptance-test item rather than a falsely claimed setting.
@@ -92,6 +92,8 @@ make test
 make validate
 make export
 ```
+
+Export validation compares the exact mod pins, server/client flags, and configuration contents with this source tree. It rejects missing mods, missing or changed configs, and unexpected files, including staged candidates. Validation requires the complete `.mrpack` archive; a standalone manifest cannot prove that configs are included.
 
 The export lands at:
 

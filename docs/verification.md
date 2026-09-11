@@ -24,7 +24,7 @@ The server then accepted `stop`, shut down Geyser and squaremap's Undertow web s
 
 This historical result verifies the superseded full-stack candidate only. It does not prove the current conservative baseline.
 
-## Current 26.2 baseline
+## Initial 26.2 baseline export
 
 Date: 2026-09-11 UTC
 
@@ -49,3 +49,21 @@ Export SHA-256:
 ```
 
 The exported JEB entry is server-required and pinned to Modrinth version `n1Jc09sK`; the checked-in JEB config is present in overrides, and the staged tree is absent. A runtime smoke test and JEB cold restore have not yet been performed on the designated Minecraft test host; complete both before treating this baseline as production-ready.
+
+## Configuration and export validation changes
+
+Date: 2026-09-11 UTC
+
+The server-properties template now disables secure-profile enforcement for Bedrock chat while retaining online authentication. The backup procedure requires an initial full backup, daily full backups coordinated with host restarts, and full and differential restore drills. JEB's configured intervals remain unchanged.
+
+`make test validate` passed with 14 tests and 51 indexed pack files. Archive regression tests cover missing and changed configs, missing and extra mods, changed pins, invalid client/server flags, duplicate archive paths, and manifest-only validation attempts.
+
+A fresh export passed using packwiz revision `ef87d964f8cbd52b3b13ea42453ef322290e2b9e`, the revision pinned in CI. The local build used a temporary packwiz binary and download cache through the Makefile's `PACKWIZ` override. Refresh left the committed pack and index hashes unchanged.
+
+```text
+PASS: 24 required server file(s); pins and configuration overrides match source
+```
+
+All 27 configuration overrides matched the source files. Two consecutive local exports produced different archive SHA-256 values while both passed the exact-content validator; packwiz does not normalize all ZIP metadata. Treat the artifact uploaded by a specific CI run as immutable, rather than using a source-committed archive hash as a reproducibility claim.
+
+No host configuration or scheduler was changed. Minecraft was not started. Java and Bedrock chat, backup completion across restarts, and both restore drills remain required on the designated test host.

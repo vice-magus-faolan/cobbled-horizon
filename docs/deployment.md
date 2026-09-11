@@ -10,6 +10,7 @@ DatHost documents Fabric support and manual uploads of mods and configuration fi
 - Confirm DatHost's daily-backup retention, restore scope, and whether it counts against the 30 GB allocation.
 - Confirm at least 8 GB remains free after the world, squaremap tiles, logs, and current JEB backups are present.
 - Disable automatic mod/server-version updates.
+- Establish the [full-backup procedure across restarts](storage-and-recovery.md#create-full-backups-across-restarts) before enabling unattended restarts.
 - Take a host-level backup before replacing an existing installation.
 
 ## Build
@@ -32,11 +33,12 @@ With the DatHost server stopped:
 2. Upload `build/server/mods/` into DatHost's `/mods`.
 3. Upload `build/server/config/` into `/config`.
 4. Upload `build/server/squaremap/` into `/squaremap`.
-5. Apply selected values from `server.properties.example`; preserve DatHost-managed ports and secrets.
+5. Apply selected values from `server.properties.example`, including `online-mode=true` and `enforce-secure-profile=false`; preserve DatHost-managed ports and secrets.
 6. Start once so Floodgate creates its key.
 7. Recheck the Geyser UDP port and squaremap web address against DatHost allocations.
 8. Run `/jeb next` and verify the configured schedules and backup directory.
-9. Restart and run the acceptance tests, including the separate-instance JEB restore drill.
+9. Create and verify the initial full backup before admitting players.
+10. Restart and run the acceptance tests, including Java and Bedrock chat and separate-instance full and differential restore drills.
 
 ## Rollback
 
@@ -46,7 +48,7 @@ If startup fails, stop the server before making further changes. Restore the pri
 
 JEB replaces Textile Backup in the 26.2 baseline. Its checked-in policy limits retained backups to 6 GB and preserves an 8 GB free-space reserve. Keep DatHost's daily backup enabled as an independent layer and download an off-host snapshot before every pack or loader update.
 
-JEB is not production-proven until its named full backup is restored into a separate disposable instance. Follow [`storage-and-recovery.md`](storage-and-recovery.md); a successful archive is not enough.
+JEB resets its automatic timers at startup and config reload. Coordinate explicit full backups with the host's restart schedule, and verify completion before each scheduled restart. Follow [`storage-and-recovery.md`](storage-and-recovery.md) for the operating procedure and required full and differential restore drills.
 
 ## Optional Ledger deployment
 

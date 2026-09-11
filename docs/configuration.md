@@ -10,9 +10,10 @@ Before DatHost deployment:
 
 1. Replace Geyser's UDP port only if DatHost assigns a port other than `19132`.
 2. Leave `online-mode=true` in `server.properties`.
-3. Let Floodgate generate `config/floodgate/key.pem` on the live instance.
-4. Never copy or commit that private key.
-5. Test a real Bedrock login rather than relying only on a successful server boot.
+3. Set `enforce-secure-profile=false` so Bedrock players can chat. See [Geyser's secure-chat documentation](https://geysermc.org/wiki/geyser/secure-chat/).
+4. Let Floodgate generate `config/floodgate/key.pem` on the live instance.
+5. Never copy or commit that private key.
+6. Test login and chat with both Java and Bedrock clients.
 
 The included Floodgate configuration permits optional account linking but does not require it.
 
@@ -41,7 +42,11 @@ Krypton, Fast Noise with ZConfig, and ScalableLux are not part of the baseline e
 
 ## Just Enough Backups
 
-`config/justenoughbackups.json` enables a daily full backup and a differential backup every three hours after player activity. Partial, startup, and shutdown backups are disabled. Retention is bounded to two full backups, sixteen differential backups, 6,144 MB total per world, and an 8,192 MB minimum free-space reserve. Strict integrity checking and two worker threads favor predictable load over maximum compression speed.
+`config/justenoughbackups.json` enables full backups at 24-hour intervals and differential backups at three-hour intervals after player activity. JEB 1.2.0.6 resets those timers at startup and config reload. The full-backup interval therefore does not guarantee a backup each calendar day. The legacy `automaticBackupsEnabled` field applies only when migrating a config without `automaticSchedule`; it does not disable these schedules.
+
+Partial, startup, and shutdown backups remain disabled. The operating procedure requires an initial full backup and explicit full backups coordinated with host restarts. See [Create full backups across restarts](storage-and-recovery.md#create-full-backups-across-restarts).
+
+Retention requests two full backups and sixteen differential backups, subject to their dependency chains and the 6,144 MB per-world cap. JEB preserves an 8,192 MB minimum free-space reserve. Strict integrity checking and two worker threads limit backup load.
 
 These are safety limits, not proof that recovery works. Complete the separate-instance cold-restore drill in [`storage-and-recovery.md`](storage-and-recovery.md) before production.
 

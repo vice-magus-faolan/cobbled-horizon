@@ -290,7 +290,7 @@ def validate_jeb_config(errors: list[str]) -> None:
         "maxTotalSizeMb": 6144,
     }
     if jeb.get("automaticSchedule") != expected_schedule:
-        errors.append("JEB automatic schedule must remain daily full plus three-hour differential")
+        errors.append("JEB automatic intervals must remain 24-hour full plus three-hour differential")
     if jeb.get("retention") != expected_retention:
         errors.append("JEB retention must remain two full chains within 6144 MB")
     if jeb.get("minimumFreeSpaceReserveMb") != 8192:

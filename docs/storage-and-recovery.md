@@ -15,8 +15,8 @@ JEB supports full, partial, and differential schedules, dependency-aware retenti
 
 The checked-in `config/justenoughbackups.json` applies this initial policy:
 
-- full backup every 1,440 minutes;
-- differential backup every 180 minutes;
+- full-backup interval of 1,440 minutes;
+- differential-backup interval of 180 minutes;
 - partial backups disabled;
 - schedules pause when no player activity has occurred;
 - server-start and server-stop backups disabled;
@@ -27,10 +27,28 @@ The checked-in `config/justenoughbackups.json` applies this initial policy:
 
 The 6 GB cap limits retained archives; the 8 GB reserve protects operating headroom and can cause backups to fail early rather than fill the volume. JEB's preflight also accounts for the active world and temporary compression needs, so monitor failures and actual world, map, and backup sizes instead of assuming the caps guarantee capacity.[5][6]
 
+JEB 1.2.0.6 resets both schedule timers at server startup and config reload. Restarts less than 24 hours apart can prevent the scheduled full backup from becoming due, so the configured interval alone does not establish daily rotation.[9]
+
+### Create full backups across restarts
+
+Complete these steps before admitting players:
+
+1. Run `/jeb create full initial-baseline` from the server console.
+2. Wait for JEB to report successful completion.
+3. Confirm the full backup appears in `/jeb list` and its archive is present.
+4. Record the backup ID and completion time in the host's operations record.
+5. Configure or assign a daily full-backup operation while the server is running. Use `jeb create full` in a host console task, or run `/jeb create full` manually.
+6. If a restart is scheduled, require the full backup to finish before the restart. A fixed delay is not proof of completion.
+7. Record the schedule, responsible operator, completion check, and failure notification in the host's operations record.
+
+If the host cannot condition a restart on backup completion, keep the pre-restart operation manual. Do not enable unattended restarts until the full-backup procedure has been tested. These host operations are required deployment steps; the repository does not install a host scheduler.
+
+After an unexpected restart, check the last successful full-backup time. If the daily full backup is due, create it explicitly. Treat more than 24 hours since a successful full backup during active play as an alert. Also monitor the age of the latest successful recovery point; repeated restarts can postpone the three-hour differential timer.
+
 ### Operational checks
 
 - Inspect `/jeb next` after startup and after `/jeb config reload`.
-- Alert on backup failures, less than 8 GB free space, or unexpected growth in `world/`, `squaremap/`, or `backups/`.
+- Alert on backup failures, overdue recovery points during active play, less than 8 GB free space, or unexpected storage growth.
 - Confirm DatHost's backup retention, restore scope, and whether provider backups count against the 30 GB allocation before launch.
 - Do not increase JEB retention without a storage-budget review.
 
@@ -45,6 +63,17 @@ The 6 GB cap limits retained archives; the 8 GB reserve protects operating headr
 7. Start it again and require Minecraft's own `Done` readiness line.
 8. Join with Java, inspect representative chunks and inventories, and stop cleanly.
 9. Record the pack commit, backup name, restored world identity, and result in `docs/verification.md`.
+
+Repeat the drill for a differential recovery point:
+
+1. On the source test world, make an identifiable block or inventory change after the named full backup.
+2. Run `/jeb create differential differential-restore-test` and wait for successful completion.
+3. Confirm the differential backup's base full-backup ID.
+4. Copy both the differential archive and its base full archive into a fresh disposable instance using the same pack commit.
+5. Run `/jeb restore <differential-backup>` in that instance and allow JEB to prepare the restore and stop the server.
+6. Restart the instance and verify that the change made after the full backup is present.
+7. Verify Java and Bedrock login, representative chunks, inventories, and clean shutdown.
+8. Record both backup IDs and the differential restore result in `docs/verification.md`.
 
 Do not treat archive creation as proof of recovery. If this drill fails, JEB remains installed for investigation but production launch is blocked until it is fixed or replaced.
 
@@ -99,3 +128,4 @@ If Ledger's database fails, gameplay availability and bounded queue behavior mat
 [4] https://dathost.com/minecraft-server-hosting — DatHost Minecraft hosting
 [5] https://modrinth.com/mod/justenoughbackups-jeb — Just Enough Backups — Modrinth
 [6] https://github.com/frandm16/JustEnoughBackups — Just Enough Backups — source
+[9] https://github.com/frandm16/JustEnoughBackups/blob/2d0f5f0ea91c488cebca7db2ae767e92b1d38ded/src/main/java/com/frandm/justenoughbackups/scheduler/BackupScheduler.java — JEB 1.2.0.6 backup scheduler implementation
