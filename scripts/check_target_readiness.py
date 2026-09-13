@@ -56,7 +56,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--minecraft", default="26.3", help="exact target version")
     parser.add_argument("--release-only", action="store_true", help="reject alpha and beta files")
-    parser.add_argument("--baseline-only", action="store_true", help="omit staged performance candidates")
+    parser.add_argument("--baseline-only", action="store_true", help="omit staged candidates")
     args = parser.parse_args()
 
     missing: dict[str, list[str]] = {"baseline": [], "staged": []}

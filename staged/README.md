@@ -19,3 +19,4 @@ Current staged set:
 - Krypton
 - Fast Noise and its ZConfig dependency
 - ScalableLux
+- Spiral Tower Villages, the preferred next village addition ahead of future-only CTOV

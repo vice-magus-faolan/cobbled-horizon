@@ -135,6 +135,11 @@ hash = "6806d8d11a1504e4c6a6ed8fee36dd485580e438d89f3750bea033c494be5cd2"
 metafile = true
 
 [[files]]
+file = "mods/epic-structures-villages-standalone-edition.pw.toml"
+hash = "901014b075016cb4917a33b0eadeefb9480eff0b258c38515e7a0c4f60efa016"
+metafile = true
+
+[[files]]
 file = "mods/explorify.pw.toml"
 hash = "eb53686e058fe3ac3f646c0eab370d279af62f9fb79ae9cd391eb18395a610f5"
 metafile = true

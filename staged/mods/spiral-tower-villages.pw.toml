@@ -1,0 +1,14 @@
+name = "Lios Spiral Tower Villages"
+filename = "spiral_tower_village-0.0.3.jar"
+side = "server"
+pin = true
+
+[download]
+url = "https://cdn.modrinth.com/data/axDrRQEw/versions/CDwhH6U0/spiral_tower_village-0.0.3.jar"
+hash-format = "sha512"
+hash = "c9530e2ad758f1c5b01cb002e754df161c5bf79d1c2d2af06c744399d0e2661aebc4b424ff69af8d6eba4269b161c406bb78b9dc79750372fbe1b46237a19437"
+
+[update]
+[update.modrinth]
+mod-id = "axDrRQEw"
+version = "CDwhH6U0"

@@ -58,7 +58,12 @@ Ledger is not present in `mods/` or the standard export. Its proposed deployment
 
 - Towns and Towers, Explorify, Hopo Better Mineshaft, and DnT Stronghold Lite retain generated defaults.
 - Moog's Structure Lib uses a universal spacing multiplier of `2.0`.
+- Epic Structures: Villages Standalone Edition 1.0.0 adds five village styles without replacing vanilla village templates. Its packaged `epic:villages` structure set retains spacing `40` and separation `11`, with no exclusion zone around other settlements. No placement override is included; inspect density and proximity to Towns and Towers before deployment. These parameters do not guarantee distances between generated towns.
 - Structure changes only affect newly generated chunks. Freeze this configuration before Chunky pre-generation.
+
+Spiral Tower Villages 0.0.3 is staged with no configuration override. Its exclusion zones reference the vanilla village set, not `epic:villages`. Promotion requires checking proximity to Epic towns, loot balance, and hidden redstone mechanisms with Alternate Current.
+
+CTOV remains future-only, behind Spiral Tower Villages. Its evaluated Fabric 4.1.0 JAR requires Lithostitched even though that release's Modrinth dependency list omits it. Neither CTOV nor Lithostitched is included in the active or staged pack metadata.
 
 ## squaremap
 

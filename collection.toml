@@ -12,7 +12,7 @@ slug = "fabric-api"
 name = "Fabric API"
 category = "platform"
 role = "selected-library"
-also-required-by = ["Chunky", "Cristel Lib", "Geyser", "Polymer", "squaremap", "Server-Side Waystones"]
+also-required-by = ["Chunky", "Cristel Lib", "Epic Structures: Villages Standalone Edition", "Geyser", "Polymer", "squaremap", "Server-Side Waystones"]
 
 [[selected]]
 project-id = "Vebnzrzj"
@@ -116,6 +116,13 @@ role = "feature"
 project-id = "DjLobEOy"
 slug = "towns-and-towers"
 name = "Towns and Towers"
+category = "exploration"
+role = "feature"
+
+[[selected]]
+project-id = "3PvUBn3u"
+slug = "epic-structures-villages-standalone-edition"
+name = "Epic Structures: Villages Standalone Edition"
 category = "exploration"
 role = "feature"
 

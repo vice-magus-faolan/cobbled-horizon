@@ -23,7 +23,7 @@ make validate
 make materialize
 ```
 
-The generated server tree is `build/server/`. Inspect it before upload. It must contain the 24 active baseline project JARs and reviewed config overrides, but no staged/client-only JARs or credentials.
+The generated server tree is `build/server/`. Inspect it before upload. It must contain the 25 active baseline project JARs and reviewed config overrides, but no staged/client-only JARs or credentials.
 
 ## Upload
 

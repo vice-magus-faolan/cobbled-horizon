@@ -1,0 +1,14 @@
+name = "Epic Structures: Villages Standalone Edition"
+filename = "epic-structures-villages-standalone-edition-1.0.0.jar"
+side = "server"
+pin = true
+
+[download]
+url = "https://cdn.modrinth.com/data/3PvUBn3u/versions/OD6SDuW4/epic-structures-villages-standalone-edition-1.0.0.jar"
+hash-format = "sha512"
+hash = "63664edea835da127a9e5aad0761ef5dd8cfc8b48a0a1340c175d82bad125e36bd8e90b2a1bfbd86391a1567af898a24ea96e51cdde0d87555d4148bfd34cac6"
+
+[update]
+[update.modrinth]
+mod-id = "3PvUBn3u"
+version = "OD6SDuW4"

@@ -42,11 +42,16 @@ python3 scripts/validate_mrpack.py dist/cobbled-horizon-0.1.0+mc26.2.mrpack --mi
 Use disposable seeds and `/locate structure` where available.
 
 - [ ] Inspect several Towns and Towers structures.
+- [ ] Locate Epic Standalone's plains, taiga, snowy, desert, and savanna villages in newly generated chunks; inspect terrain joins and villager access to beds and workstations.
+- [ ] Confirm vanilla villages and Towns and Towers settlements still generate alongside Epic towns; inspect settlement density, overlap, and loot progression.
+- [ ] Test trading, containers, and village traversal with unmodded Java and Bedrock clients in Epic towns.
+- [ ] Compare chunk-generation cost and occupied-settlement tick time against the baseline without Epic Standalone using the same seed and test area.
 - [ ] Inspect several Explorify structures, including campsite-like structures.
 - [ ] Inspect Hopo mineshafts at different depths.
 - [ ] Locate and enter a DnT Lite stronghold; verify portal and loot progression.
 - [ ] Inspect several Moog floating structures and confirm rarity feels intentional.
 - [ ] If ScalableLux is promoted, generate chunks under load and inspect lighting and relighting behavior.
+- [ ] If Spiral Tower Villages is promoted, inspect proximity to Epic towns, reward frequency, books, and hidden redstone mechanisms with Alternate Current on both clients.
 
 Do not run final Chunky pre-generation until this section passes and the seed is accepted.
 

@@ -37,6 +37,16 @@ configs = ["staged/config/scalablelux.properties"]
 reason = "The selected 26.2 build is alpha and replaces lighting internals."
 activation-gate = "Measured lighting bottleneck plus clean generation and relighting tests."
 
+[[staged]]
+project-id = "axDrRQEw"
+slug = "spiral-tower-villages"
+name = "Lios Spiral Tower Villages"
+category = "exploration"
+metadata = "staged/mods/spiral-tower-villages.pw.toml"
+configs = []
+reason = "Preferred next village addition, pending evaluation alongside Towns and Towers and Epic Villages Standalone. Fabric API is already in the baseline."
+activation-gate = "Acceptable settlement density and separation from Epic towns, balanced loot, functioning hidden redstone with Alternate Current, and passing generation, occupied-settlement performance, and Java/Bedrock interaction tests."
+
 [[staged-dependency]]
 project-id = "4qmvXRB9"
 slug = "zconfig"
@@ -78,3 +88,11 @@ slug = "sparsestructures"
 name = "Sparse Structures"
 category = "exploration"
 activation-gate = "Structure-density test shows the active worldgen set is too crowded."
+
+[[future]]
+project-id = "fgmhI8kH"
+slug = "ct-overhaul-village"
+name = "ChoiceTheorem's Overhauled Village"
+category = "exploration"
+reason = "Lower priority than Spiral Tower Villages; overlaps existing settlements and requires Lithostitched."
+activation-gate = "Demonstrated need for more village and outpost variety, exact-version dependency review including Lithostitched even if omitted by release metadata, and passing compatibility tests with Cristel Lib and Moog's Structure Lib, settlement-density checks, and Java/Bedrock tests."

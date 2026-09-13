@@ -39,4 +39,4 @@ python3 scripts/check_target_readiness.py --minecraft 26.3
 
 A successful lookup is necessary but not sufficient. Stable Minecraft 26.3, Fabric Loader/API support, DatHost availability, a successful clean boot, Java/Bedrock testing, and world-generation inspection must all pass.
 
-Geyser/Floodgate are hard gates if Bedrock support is required. JEB must publish a compatible release and pass fresh full and differential restore drills. Recheck its scheduling behavior across host restarts. Krypton, Fast Noise, and ScalableLux remain staged risk items until their activation gates pass. Future-only Ledger does not block the baseline.
+Geyser/Floodgate are hard gates if Bedrock support is required. JEB must publish a compatible release and pass fresh full and differential restore drills. Recheck its scheduling behavior across host restarts. Epic Villages Standalone must publish a matching Fabric release and pass fresh structure and cross-play tests. Krypton, Fast Noise, ScalableLux, and Spiral Tower Villages remain staged until their activation gates pass. Future-only Ledger and CTOV do not block the baseline.
