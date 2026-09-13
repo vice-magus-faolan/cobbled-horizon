@@ -1,5 +1,13 @@
 # Version and update policy
 
+## Release versions
+
+`pack.toml` is the source of truth for release versions and artifact names. Its `version` is `<Minecraft version>.<pack major>.<pack minor>.<pack patch>`, currently `26.2.0.1.0`. Git tags add a leading `v`, giving `v26.2.0.1.0`. The Minecraft prefix must match `versions.minecraft` exactly. Both exported manifests retain the complete pack version.
+
+For a pack-only patch on Minecraft 26.2, use `26.2.0.1.1`. If Minecraft gains another version component, keep the complete prefix, for example `26.2.1.0.1.0` for Minecraft 26.2.1 and pack revision 0.1.0. Release tags currently accept numeric versions only, without prerelease suffixes.
+
+Pushing a matching tag builds and publishes the `.mrpack`, server CurseForge-format `.zip`, and `.sha256` file to GitHub Releases. See the [release instructions](../README.md#github-releases). Publication to Modrinth or CurseForge is not configured.
+
 ## Production pins
 
 `collection.toml` records why each active baseline project exists. Add deliberately chosen projects under `[[selected]]`; add only packwiz-resolved libraries under `[[resolved-dependency]]` with their `required-by` parent. The validation gate requires the union of those sections to match `mods/*.pw.toml` exactly.
@@ -25,7 +33,7 @@ The Minecraft and Fabric Loader versions are pinned in `pack.toml`. Do not broad
 4. Review changelogs, dependencies, environment metadata, and licenses.
 5. Run `packwiz refresh --build`.
 6. Run all automated and manual acceptance tests against a disposable copied world.
-7. Export an immutable `.mrpack` and record its checksum in release notes.
+7. Run `make release` to validate both pack formats and generate their checksums. Commit and push the source, then push its matching release tag. Retain the published archives and checksum file as the release record.
 8. Back up production before deployment.
 9. Deploy, verify, and retain the previous known-good pack for rollback.
 

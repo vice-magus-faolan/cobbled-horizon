@@ -90,3 +90,11 @@ make export PACKWIZ='/tmp/cobbled-horizon-village-tools/packwiz --cache /tmp/cob
 The export downloader stalled initially. All 25 pinned artifacts were then downloaded or reused from the inspection files, checked against their source SHA-512 pins, and cached with computed SHA-256, SHA-512, and SHA-1 entries. The pinned packwiz binary completed the export from that temporary cache. Archive validation confirmed all active pins and configuration overrides and excluded the staged tree.
 
 Epic Standalone retains its packaged placement defaults. No Minecraft server was started or world generated. Clean boot, Java and Bedrock village interactions, settlement density, and generation and occupied-settlement performance remain unverified. Complete the village checks in [`acceptance-tests.md`](acceptance-tests.md) on the designated test host before deployment or final pre-generation.
+
+## GitHub release exports
+
+The release identity is now `26.2.0.1.0`, with Git tag `v26.2.0.1.0`. A local `make release` completed with the same pinned packwiz revision and the existing temporary download cache. Both archives carry the complete version. The `.mrpack` references 25 required server mods; the CurseForge-format ZIP bundles all 25 JARs. Each archive contains all 27 configuration files, and both validators passed. Refresh left `index.toml` unchanged.
+
+All 27 Python tests passed, including tag mismatch, Minecraft prefix, missing server mod, changed JAR, missing or changed configuration, duplicate archive entry, and unexpected file regressions. Actionlint 1.7.12 accepted the workflow.
+
+The publication shell step was exercised locally with a fake `gh` executable. New release creation and draft recovery completed; an upload failure prevented publication, a checksum failure prevented all GitHub calls, and an already published release was left untouched. No live GitHub release or Minecraft server test was run for this change.

@@ -1,17 +1,25 @@
-name: Validate pack
+name: Build and release pack
 
 on:
   push:
     branches: [main]
+    tags: ['v*']
   pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: pack-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      version: ${{ steps.metadata.outputs.version }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
@@ -27,6 +35,16 @@ jobs:
           go-version: '1.25.x'
           cache: false
 
+      - name: Read version and verify release tag
+        id: metadata
+        shell: bash
+        run: |
+          args=()
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then
+            args+=(--tag "$GITHUB_REF_NAME")
+          fi
+          python3 scripts/release_metadata.py "${args[@]}" >> "$GITHUB_OUTPUT"
+
       - name: Test repository tooling
         run: python3 -m unittest discover -s tests -v
 
@@ -38,18 +56,56 @@ jobs:
           packwiz refresh --build
           git diff --exit-code -- pack.toml index.toml
 
-      - name: Export and validate mrpack
+      - name: Export and validate both pack formats
         run: |
-          mkdir -p dist
-          packwiz modrinth export -o dist/cobbled-horizon-0.1.0+mc26.2.mrpack
-          python3 scripts/validate_mrpack.py \
-            dist/cobbled-horizon-0.1.0+mc26.2.mrpack \
-            --minecraft 26.2
+          make release
+          git diff --exit-code -- pack.toml index.toml
 
-      - name: Upload validated mrpack
+      - name: Upload validated release files
         uses: actions/upload-artifact@v7
         with:
-          name: cobbled-horizon-mc26.2
-          path: dist/cobbled-horizon-0.1.0+mc26.2.mrpack
+          name: cobbled-horizon-${{ steps.metadata.outputs.version }}
+          path: |
+            dist/cobbled-horizon-${{ steps.metadata.outputs.version }}.mrpack
+            dist/cobbled-horizon-${{ steps.metadata.outputs.version }}.zip
+            dist/cobbled-horizon-${{ steps.metadata.outputs.version }}.sha256
           if-no-files-found: error
           retention-days: 14
+
+  publish:
+    if: github.event_name == 'push' && github.ref_type == 'tag'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Download validated release files
+        uses: actions/download-artifact@v8
+        with:
+          name: cobbled-horizon-${{ needs.validate.outputs.version }}
+          path: dist
+
+      - name: Create and publish GitHub release
+        working-directory: dist
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_VERSION: ${{ needs.validate.outputs.version }}
+        run: |
+          basename="cobbled-horizon-$RELEASE_VERSION"
+          sha256sum --check "$basename.sha256"
+          # Upload into a draft so failed uploads never publish a partial release.
+          if draft=$(gh release view "$GITHUB_REF_NAME" --json isDraft --jq .isDraft); then
+            if [[ "$draft" != true ]]; then
+              echo "Release already published; refusing to replace its assets."
+              exit 1
+            fi
+          else
+            gh release create "$GITHUB_REF_NAME" --verify-tag --draft \
+              --title "Cobbled Horizon $GITHUB_REF_NAME" --generate-notes
+          fi
+          gh release upload "$GITHUB_REF_NAME" \
+            "$basename.mrpack" "$basename.zip" "$basename.sha256" --clobber
+          gh release edit "$GITHUB_REF_NAME" --draft=false --verify-tag

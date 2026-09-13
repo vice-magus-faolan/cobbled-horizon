@@ -100,7 +100,7 @@ Export validation compares the exact mod pins, server/client flags, and configur
 The export lands at:
 
 ```text
-dist/cobbled-horizon-0.1.0+mc26.2.mrpack
+dist/cobbled-horizon-26.2.0.1.0.mrpack
 ```
 
 On the designated Minecraft test host, materialize a clean server tree with:
@@ -110,6 +110,40 @@ make materialize
 ```
 
 Do not upload the `.mrpack` to an undocumented DatHost field. Build and test on the designated Minecraft host, then upload the materialized `mods/`, `config/`, and `squaremap/` directories as described in [`docs/deployment.md`](docs/deployment.md).
+
+## GitHub releases
+
+Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. For the current pack, use `v26.2.0.1.0`, for Minecraft `26.2` and pack revision `0.1.0`. `pack.toml` stores the complete version, `26.2.0.1.0`, without the leading `v`.
+
+To build and validate both release formats locally, run:
+
+```bash
+make test
+make release
+```
+
+The release files are:
+
+```text
+dist/cobbled-horizon-26.2.0.1.0.mrpack
+dist/cobbled-horizon-26.2.0.1.0.zip
+dist/cobbled-horizon-26.2.0.1.0.sha256
+```
+
+Both archives describe the server pack. The `.mrpack` preserves the server-only flags and references pinned Modrinth downloads. The CurseForge-format ZIP bundles those mod JARs under `overrides/mods/`, along with the configuration overrides. It is larger and is not a ready-to-run server directory. Java players do not need either archive to join.
+
+After committing and pushing the intended release changes, create and push the matching tag:
+
+```bash
+git tag -a v26.2.0.1.0 -m "Cobbled Horizon v26.2.0.1.0"
+git push origin v26.2.0.1.0
+```
+
+GitHub Actions checks the version, tests the tooling, verifies the source index, and validates both exports. It then creates a GitHub release with both archives, their SHA-256 checksums, and generated release notes. Publishing uses the built-in `GITHUB_TOKEN`; no additional secrets are required. This workflow uploads to GitHub only.
+
+The workflow uploads into a draft and publishes it after all three files arrive. If an upload fails, rerun the failed job to complete the draft. A rerun refuses to replace assets on an already published release. Use a new pack version and tag for a corrected release. Branch, pull request, and manual workflow runs build artifacts without publishing.
+
+Release automation performs static validation. Complete the designated-host acceptance tests before treating a release as production-ready. See [`docs/version-policy.md`](docs/version-policy.md) for the update procedure.
 
 ## Updating
 

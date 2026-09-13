@@ -10,7 +10,7 @@ All Minecraft server startup, world-generation, and gameplay tests must run on t
 make test
 make validate
 make export
-python3 scripts/validate_mrpack.py dist/cobbled-horizon-0.1.0+mc26.2.mrpack --minecraft 26.2
+python3 scripts/validate_mrpack.py dist/cobbled-horizon-26.2.0.1.0.mrpack --minecraft 26.2
 ```
 
 ## Server lifecycle

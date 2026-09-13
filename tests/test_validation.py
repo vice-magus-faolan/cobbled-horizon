@@ -71,6 +71,7 @@ class MrpackTests(unittest.TestCase):
     def setUp(self) -> None:
         pack = tomllib.loads((ROOT / "pack.toml").read_text())
         self.index = {
+            "versionId": pack["version"],
             "formatVersion": 1,
             "game": "minecraft",
             "dependencies": {"minecraft": pack["versions"]["minecraft"], "fabric-loader": pack["versions"]["fabric"]},
@@ -111,6 +112,9 @@ class MrpackTests(unittest.TestCase):
     def test_complete_server_archive_passes(self) -> None:
         result, output = self.run_archive(self.index, self.overrides)
         self.assertEqual(0, result, output)
+
+    def test_wrong_release_version_is_rejected(self) -> None:
+        self.assert_archive_rejected({**self.index, "versionId": "0.1.0"}, self.overrides, "versionId must match pack.toml")
 
     def test_missing_or_modified_config_is_rejected(self) -> None:
         key = "overrides/config/justenoughbackups.json"

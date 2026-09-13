@@ -68,6 +68,8 @@ def validate_entry(entry: object, position: int, errors: list[str]) -> tuple[str
 def validate_contract(index: dict, archive_files: dict[str, bytes], source_root: pathlib.Path, errors: list[str]) -> None:
     """Compare the export with the repository's pins and indexed overrides."""
     pack = tomllib.loads((source_root / "pack.toml").read_text(encoding="utf-8"))
+    if index.get("versionId") != pack["version"]:
+        errors.append("versionId must match pack.toml")
     expected_dependencies = {
         "minecraft": pack["versions"]["minecraft"],
         "fabric-loader": pack["versions"]["fabric"],
