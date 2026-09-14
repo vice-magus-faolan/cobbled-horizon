@@ -120,6 +120,11 @@ hash = "ebb5edb3af62967147f1b4fcf78510bd99cf2f97cfa62eae286eeb5b9bb7e8f6"
 metafile = true
 
 [[files]]
+file = "mods/collective.pw.toml"
+hash = "25860e74a5b285d67d9af40bf3cc48fdbfd4997b340657e6f6579ca29f1f9978"
+metafile = true
+
+[[files]]
 file = "mods/creeper-no-break-blocks.pw.toml"
 hash = "332af6ba9cf36e0d61eaf460cd445d68457b98aa66ddaa98363685fe78d2ed89"
 metafile = true
@@ -227,6 +232,16 @@ metafile = true
 [[files]]
 file = "mods/universal-graves.pw.toml"
 hash = "259b6e987a2e9b5b36b42574efef96ad08e6830c6b1c82dad0271a9015bf6979"
+metafile = true
+
+[[files]]
+file = "mods/villager-names-serilum.pw.toml"
+hash = "92ceedbf99ead131b39d6dfbcc7f93e032866177741e5a6c93c153625d40ba51"
+metafile = true
+
+[[files]]
+file = "mods/villagers-tasks.pw.toml"
+hash = "fb44a3ec0ddecd5b69f6c9288d9a698bc10031bde2c4aaaba920dbb398d72bf2"
 metafile = true
 
 [[files]]

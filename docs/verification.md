@@ -98,3 +98,26 @@ The release identity is now `26.2.0.1.0`, with Git tag `v26.2.0.1.0`. A local `m
 All 27 Python tests passed, including tag mismatch, Minecraft prefix, missing server mod, changed JAR, missing or changed configuration, duplicate archive entry, and unexpected file regressions. Actionlint 1.7.12 accepted the workflow.
 
 The publication shell step was exercised locally with a fake `gh` executable. New release creation and draft recovery completed; an upload failure prevented publication, a checksum failure prevented all GitHub calls, and an already published release was left untouched. No live GitHub release or Minecraft server test was run for this change.
+
+## Villager behavior additions
+
+Date: 2026-09-14 UTC
+
+Villager Names `26.2.0-8.6` (Modrinth version `D78qWxUx`) and Villagers Tasks `1.1.3+mod` (`iagZx4K4`) are active and pinned. Villager Names resolved Collective `26.2.0-8.39` (`M75JwjyS`) as a required dependency. All three records are marked `side = "server"`.
+
+Modrinth classifies both selected projects as required on the server and optional on the client. Villagers Tasks is a resource/data-pack JAR with no Java classes or custom client assets; its actions use vanilla entities, loot, inventories, particles, sounds, and scoreboard/functions. Villager Names assigns ordinary entity custom names; its client-side trade-screen enhancement is optional and will not be installed through this server pack. The downloaded files matched their published SHA-512 hashes.
+
+Static validation completed with:
+
+```text
+make test
+-> 27 tests passed
+
+make validate
+-> PASS: baseline 23 selected + 5 dependencies; staged 4 selected + 1 dependency; 6 future candidates; 55 indexed pack files
+
+make export
+-> PASS: 28 required server file(s); pins and configuration overrides match source
+```
+
+This is strong evidence that both mods remain server-only and use vanilla-visible behavior, but it is not a real Bedrock compatibility pass. Clean boot, villager naming/trading, each profession task, balance, occupied-village tick cost, and direct Bedrock observation through Geyser remain acceptance gates on the designated test host.

@@ -12,7 +12,7 @@ slug = "fabric-api"
 name = "Fabric API"
 category = "platform"
 role = "selected-library"
-also-required-by = ["Chunky", "Cristel Lib", "Epic Structures: Villages Standalone Edition", "Geyser", "Polymer", "squaremap", "Server-Side Waystones"]
+also-required-by = ["Chunky", "Collective", "Cristel Lib", "Epic Structures: Villages Standalone Edition", "Geyser", "Polymer", "squaremap", "Server-Side Waystones", "Villager Names", "Villagers Tasks"]
 
 [[selected]]
 project-id = "Vebnzrzj"
@@ -113,6 +113,20 @@ category = "quality-of-life"
 role = "feature"
 
 [[selected]]
+project-id = "gqRXDo8B"
+slug = "villager-names-serilum"
+name = "Villager Names"
+category = "quality-of-life"
+role = "feature"
+
+[[selected]]
+project-id = "nq8iJtT5"
+slug = "villagers-tasks"
+name = "Villagers Tasks"
+category = "quality-of-life"
+role = "feature"
+
+[[selected]]
 project-id = "DjLobEOy"
 slug = "towns-and-towers"
 name = "Towns and Towers"
@@ -177,3 +191,9 @@ project-id = "1oUDhxuy"
 slug = "moogs-structure-lib"
 name = "Moog's Structure Lib (moogs_structures)"
 required-by = ["MSS - Moog's Soaring Structures"]
+
+[[resolved-dependency]]
+project-id = "e0M1UDsY"
+slug = "collective"
+name = "Collective"
+required-by = ["Villager Names"]

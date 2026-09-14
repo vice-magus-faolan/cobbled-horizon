@@ -36,6 +36,9 @@ python3 scripts/validate_mrpack.py dist/cobbled-horizon-26.2.0.1.0.mrpack --mine
 - [ ] Java and Bedrock players can see, open, and completely recover a grave.
 - [ ] Grave XP recovery and real-time expiry match policy.
 - [ ] Creepers damage entities without breaking blocks; unrelated mob behavior remains normal.
+- [ ] Java and Bedrock players see persistent villager names and can trade normally; profession text may differ because the client-side enhancement is optional.
+- [ ] Each Villagers Tasks profession action uses only vanilla-visible entities, items, particles, inventories, and sounds on both Java and Bedrock clients.
+- [ ] Villagers Tasks culling, breeding, healing, resource generation, fishing, and shearing rates are acceptable for balance and occupied-village tick cost.
 
 ## World generation
 

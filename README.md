@@ -2,7 +2,7 @@
 
 A reproducible, server-side Fabric collection for a Vanilla+ Minecraft world focused on performance, exploration, and restrained quality-of-life improvements.
 
-The current baseline targets **Minecraft Java 26.2** with **Fabric Loader 0.19.5**. It contains 21 deliberately selected projects plus four dependencies resolved by packwiz. Just Enough Backups (JEB) replaces the obsolete Textile Backup candidate.
+The current baseline targets **Minecraft Java 26.2** with **Fabric Loader 0.19.5**. It contains 23 deliberately selected projects plus five dependencies resolved by packwiz. Just Enough Backups (JEB) replaces the obsolete Textile Backup candidate.
 
 Java players should not need this pack on their clients: every packwiz entry is marked `side = "server"`. Bedrock access is provided by Geyser and Floodgate and still requires a reachable UDP port on the host.
 
@@ -34,6 +34,9 @@ Java players should not need this pack on their clients: every packwiz entry is 
 - Server-Side Waystones
 - Universal Graves
 - Creeper No Break Blocks
+- [Villager Names](https://modrinth.com/mod/villager-names-serilum)
+- [Villagers Tasks](https://modrinth.com/mod/villagers-tasks)
+- Collective *(dependency of Villager Names)*
 - Towns and Towers
 - [Epic Structures: Villages Standalone Edition](https://modrinth.com/datapack/epic-structures-villages-standalone-edition)
 - Explorify
@@ -54,12 +57,12 @@ Packwiz writes the same `.pw.toml` shape for a project whether it was selected d
 
 This repository keeps the two concerns separate:
 
-- [`collection.toml`](collection.toml) defines the active baseline: 21 selected projects and four resolved dependencies.
+- [`collection.toml`](collection.toml) defines the active baseline: 23 selected projects and five resolved dependencies.
 - [`candidates.toml`](candidates.toml) defines staged and future projects, why they are inactive, and the evidence required to promote them.
-- `mods/*.pw.toml` is the machine-maintained baseline lock layer. It contains the 25 projects exported by the standard pack.
+- `mods/*.pw.toml` is the machine-maintained baseline lock layer. It contains the 28 projects exported by the standard pack.
 - `staged/mods/*.pw.toml` retains five pinned candidate records outside packwiz's active index.
 
-Fabric API is the only explicitly selected platform library. Polymer, Cristel Lib, Cloth Config API, and Moog's Structure Lib close baseline dependencies. ZConfig is staged beside Fast Noise. Cristel Lib demonstrates why dependency chains matter: Towns and Towers requires Cristel Lib, which in turn requires Cloth Config API and Fabric API.
+Fabric API is the only explicitly selected platform library. Polymer, Cristel Lib, Cloth Config API, Moog's Structure Lib, and Collective close baseline dependencies. ZConfig is staged beside Fast Noise. Cristel Lib demonstrates why dependency chains matter: Towns and Towers requires Cristel Lib, which in turn requires Cloth Config API and Fabric API. Villager Names requires Collective.
 
 `scripts/check_pack.py` verifies that both layers agree, so a dependency cannot silently disappear or become an undeclared top-level choice.
 
