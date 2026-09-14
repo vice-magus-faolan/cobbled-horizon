@@ -49,6 +49,29 @@ class PackSourceTests(unittest.TestCase):
             summary.baseline_selected + summary.baseline_dependencies,
         )
 
+    def test_friends_and_family_policy_is_pinned(self) -> None:
+        waystones = json.loads((ROOT / "config/sswaystones.json").read_text())
+        self.assertEqual(2, waystones["xp_cost"])
+        self.assertEqual(2_147_483_647, waystones["cross_dimension_xp_cost"])
+        self.assertEqual(30, waystones["combat_cooldown"])
+        self.assertIs(True, waystones["pve_combat"])
+        self.assertEqual(10, waystones["waystone_limit"])
+
+        backups = json.loads((ROOT / "config/justenoughbackups.json").read_text())
+        self.assertEqual(4, backups["commandPermissionLevel"])
+
+        resource_pack = json.loads((ROOT / "config/polymer/resource-pack.json").read_text())
+        self.assertEqual([], resource_pack["include_zips"])
+
+        properties = {}
+        for line in (ROOT / "server.properties.example").read_text().splitlines():
+            if line and not line.startswith("#"):
+                key, value = line.split("=", 1)
+                properties[key] = value
+        self.assertEqual("true", properties["pvp"])
+        self.assertEqual("16", properties["spawn-protection"])
+        self.assertEqual("4", properties["op-permission-level"])
+
     def test_safe_relative_paths(self) -> None:
         self.assertTrue(check_pack.safe_relative("mods/lithium.pw.toml"))
         self.assertFalse(check_pack.safe_relative("../key.pem"))

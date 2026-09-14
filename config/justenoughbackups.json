@@ -21,7 +21,7 @@
   },
   "automaticBackupWarningEnabled": true,
   "automaticBackupWarningMinutes": 5,
-  "commandPermissionLevel": 2,
+  "commandPermissionLevel": 4,
   "messageChannel": "ACTION_BAR",
   "integrityMode": "STRICT",
   "includeSummaryFile": true,

@@ -73,11 +73,12 @@ Fabric API is the only explicitly selected platform library. Polymer, Cristel Li
 - Moog's structures use a `2.0` spacing multiplier so they remain uncommon.
 - Epic Villages Standalone preserves vanilla villages and initially uses its packaged placement defaults. Settlement density and performance still require acceptance testing before deployment.
 - Universal Graves retains 75% of XP, protects graves for one hour, and expires them after 24 real-time hours.
-- squaremap enables only the Overworld, limits zoom, and reduces background rendering pressure.
-- JEB uses 24-hour full and three-hour differential intervals, a 6 GB retention cap, and an 8 GB free-space reserve. Startup resets the timers, so deployment requires an initial full backup and explicit daily full backups coordinated with host restarts. Production launch requires full and differential restore drills.
+- squaremap enables only the Overworld, limits zoom, reduces background rendering pressure, and intentionally retains its live player tracker. The tracker becomes public to anyone who can reach the configured map endpoint.
+- JEB uses 24-hour full and three-hour differential intervals, a 6 GB retention cap, an 8 GB free-space reserve, and operator-level-4 commands. Startup resets the timers, so deployment requires an initial full backup and explicit daily full backups coordinated with host restarts. Production launch requires full and differential restore drills.
 - Ledger remains future-only. If promoted, it will use bounded retention and preferably DatHost's included MySQL service rather than the 30 GB game filesystem.
-- Global waystone creation is denied through LuckPerms bootstrap commands.
-- Server-Side Waystones 1.3.2 does not expose a true cross-dimensional disable switch; this remains an acceptance-test item rather than a falsely claimed setting.
+- PvP remains enabled, world spawn has a 16-block protection radius, and only the owner is a Minecraft operator. Helpers inherit the ordinary-player policy without operator status; the baseline grants them no additional nodes, and any future support capability must be added as an explicit LuckPerms node.
+- Same-dimension waystone travel costs two XP levels, has a 30-second PvP/PvE combat lock, and allows ten player-owned waystones per player. Only the owner may create global/server-owned waystones.
+- Server-Side Waystones 1.3.2 has no hard cross-dimension switch or strictly private owner-only mode. Survival cross-dimension travel is made infeasible with the maximum XP cost, while creative-owner bypass and physical discovery of player waystones are documented limitations.
 
 See [`docs/configuration.md`](docs/configuration.md) for the rationale and unresolved deployment values.
 

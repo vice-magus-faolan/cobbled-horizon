@@ -54,7 +54,7 @@ hash = "5eb5aa82473cec5aa1dd6e0cf1a7ef088e9d929defa51ac0a9ad211eb9e16e87"
 
 [[files]]
 file = "config/justenoughbackups.json"
-hash = "6a5aca0a9c0201aa5dd0e280430011be1da1810cf9d2cca22c9f8dc0f40530d7"
+hash = "23c390e8f98f208512baf1129407aa22f55fd883a5869719b65d054f3fb06128"
 
 [[files]]
 file = "config/lithium.properties"
@@ -70,7 +70,7 @@ hash = "310dee45deffb1f13169492bf25cee00503e91403daa8cffa653939feb76cc03"
 
 [[files]]
 file = "config/polymer/resource-pack.json"
-hash = "1478d80c908f2d17eccf2f6c042f75ccc4ca6c50d2ab8b67c54019852baf4758"
+hash = "0d878855a2884569833964e857170c4ac0d01dfc91a6a68e5282f7ce8d1f4e80"
 
 [[files]]
 file = "config/polymer/server.json"
@@ -90,7 +90,7 @@ hash = "992ba9f3a4a7ce3de112eb95575328956fdc3ce6781c455ebce7b23db7e7da42"
 
 [[files]]
 file = "config/sswaystones.json"
-hash = "9641fab829705df284a1ae79f5abfc46010a8a8fa712989809897e1fbfc18d08"
+hash = "4d1f31f692532d11a6c0f056a9a154304af84414b6ec6611bb953cf4c60bf8d7"
 
 [[files]]
 file = "config/towns_and_towers/structure_enable_or_disable_new.json5"

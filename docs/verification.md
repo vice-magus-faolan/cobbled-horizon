@@ -121,3 +121,36 @@ make export
 ```
 
 This is strong evidence that both mods remain server-only and use vanilla-visible behavior, but it is not a real Bedrock compatibility pass. Clean boot, villager naming/trading, each profession task, balance, occupied-village tick cost, and direct Bedrock observation through Geyser remain acceptance gates on the designated test host.
+
+## Friends-and-family configuration baseline
+
+Date: 2026-09-14 UTC
+
+All 28 active project records and 27 committed configuration overrides were reviewed for ordinary-player authority, destructive administration, cross-play, mutable inputs, gameplay balance, and world-generation scope. The resulting source policy keeps PvP and the public squaremap live-player tracker by explicit operator choice, retains Villagers Tasks unchanged, and establishes one owner operator with non-operator helpers receiving explicit permissions only.
+
+Source changes include:
+
+- a 16-block vanilla spawn-protection radius
+- JEB commands raised from permission level 2 to level 4
+- Polymer no longer imports the untracked mutable `world/resources.zip`
+- same-dimension waystone travel costs two XP levels, with a 30-second PvP/PvE combat lock and ten player-owned waystones per player
+- global, server-owned, management, and configuration waystone capabilities reserved for the owner through the documented LuckPerms bootstrap
+- the maximum signed integer cross-dimension XP cost as an effective survival-player barrier
+
+Server-Side Waystones 1.3.2 has two material limitations that are documented rather than hidden. Its waystone limit is per owner and excludes server-owned waystones, but a player-owned waystone can be discovered by another player who physically interacts with it. The mod has no true cross-dimension disable switch, and creative players pay no XP, so the configured cost is not a hard prohibition for the owner in creative mode.
+
+Static verification completed with:
+
+```text
+make test
+-> 28 tests passed
+
+make validate
+-> PASS: baseline 23 selected + 5 dependencies; staged 4 selected + 1 dependency; 6 future candidates; 55 indexed pack files
+
+make release
+-> PASS: 28 required server file(s); pins and configuration overrides match source
+-> PASS: CurseForge server ZIP metadata, bundled mod hashes, and configs match source
+```
+
+No Minecraft server was started and no DatHost, LuckPerms, map endpoint, or live world state was changed. The permission bootstrap, spawn protection, public tracker visibility, waystone behavior, new Villager Names/Collective generated configs, Villagers Tasks balance, and Java/Bedrock behavior remain runtime acceptance gates on the designated Minecraft test host.

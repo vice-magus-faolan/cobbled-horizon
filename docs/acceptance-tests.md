@@ -19,6 +19,7 @@ python3 scripts/validate_mrpack.py dist/cobbled-horizon-26.2.0.1.0.mrpack --mine
 - [ ] A second boot succeeds using the generated world and configs.
 - [ ] `stop` exits cleanly and saves all dimensions.
 - [ ] No private key, refresh token, player database, world, or log enters Git.
+- [ ] PvP remains enabled outside spawn, while an ordinary non-operator cannot normally break or place blocks inside the 16-block spawn-protection radius. Do not treat vanilla spawn protection as comprehensive land or mechanism protection.
 
 ## Clients and cross-play
 
@@ -30,9 +31,13 @@ python3 scripts/validate_mrpack.py dist/cobbled-horizon-26.2.0.1.0.mrpack --mine
 
 ## Quality of life
 
-- [ ] Default players cannot create global waystones.
-- [ ] Local waystones work for Java and Bedrock players.
-- [ ] Cross-dimensional waystone behavior is recorded honestly; version 1.3.2 has no verified disable switch.
+- [ ] Ordinary players can place waystones but cannot create global, team, or server-owned waystones or use `/sswaystones` administration.
+- [ ] The owner can create a server-owned waystone; it is visible and usable from both Java and Bedrock and ordinary players cannot break it.
+- [ ] Same-dimension travel costs two XP levels on both clients.
+- [ ] Player and mob attacks both prevent opening a waystone for 30 seconds.
+- [ ] Each player can create ten player-owned waystones; an eleventh is rejected, while server-owned waystones do not consume that allowance.
+- [ ] A player-owned waystone is initially known only to its owner, but another player can discover it by physically interacting with it. Record this as a limitation rather than claiming strict privacy.
+- [ ] A survival player cannot pay the configured `2147483647`-level cross-dimension cost. Confirm that creative owner bypass still exists and do not describe this as a hard mod-level disable.
 - [ ] Java and Bedrock players can see, open, and completely recover a grave.
 - [ ] Grave XP recovery and real-time expiry match policy.
 - [ ] Creepers damage entities without breaking blocks; unrelated mob behavior remains normal.
@@ -61,14 +66,17 @@ Do not run final Chunky pre-generation until this section passes and the seed is
 ## Operations
 
 - [ ] spark profile captures idle and active baselines.
-- [ ] squaremap renders only the Overworld and uses the assigned HTTP endpoint.
-- [ ] LuckPerms contains only the intended default/admin model.
+- [ ] squaremap renders only the Overworld and uses the assigned HTTP endpoint; its public tracker visibly reports player position, health, and armor as intentionally configured.
+- [ ] LuckPerms contains the intended default, helper, and owner groups; only the owner is present in `ops.json`.
+- [ ] Ordinary and helper accounts cannot run `/sswaystones`, Chunky operations, creative-mode commands, or JEB commands.
+- [ ] The owner can run the required administrative commands without a wildcard LuckPerms grant.
 - [ ] `/jeb next` reports the 24-hour full and three-hour differential intervals.
 - [ ] Startup and config reload reset the timers as expected; the host's full-backup procedure still completes across scheduled restarts.
 - [ ] The initial full backup completes and is recorded before players are admitted.
 - [ ] The daily full-backup operation has an assigned schedule, responsible operator, completion check, and failure notification.
 - [ ] Scheduled restarts wait for full-backup completion; failed or overdue backups produce an alert.
 - [ ] JEB creates a named full backup and a later differential backup without save errors.
+- [ ] JEB backup and restore commands require permission level 4 and are available only to the owner operator or DatHost console.
 - [ ] JEB skips inactive intervals when no player has been online.
 - [ ] Retention never exceeds 6,144 MB and a low-space preflight fails without filling the filesystem.
 - [ ] The named full backup is cold-restored into a separate disposable instance using the exact pack commit.
