@@ -31,18 +31,18 @@ Java players should not need this pack on their clients: every packwiz entry is 
 
 ### Quality of life and exploration
 
-- Server-Side Waystones
-- Universal Graves
-- Creeper No Break Blocks
+- [Server-Side Waystones](https://modrinth.com/mod/sswaystones)
+- [Universal Graves](https://modrinth.com/mod/universal-graves)
+- [Creeper No Break Blocks](https://modrinth.com/mod/creeper-no-break-blocks)
 - [Villager Names](https://modrinth.com/mod/villager-names-serilum)
 - [Villagers Tasks](https://modrinth.com/mod/villagers-tasks)
 - Collective *(dependency of Villager Names)*
-- Towns and Towers
-- [Epic Structures: Villages Standalone Edition](https://modrinth.com/datapack/epic-structures-villages-standalone-edition)
-- Explorify
-- Hopo Better Mineshaft
-- Dungeons and Taverns Stronghold Overhaul Lite
-- Moog's Soaring Structures
+- [Towns and Towers](https://modrinth.com/mod/towns-and-towers)
+- [Epic Structures: Villages Standalone Edition](https://modrinth.com/mod/epic-structures-villages-standalone-edition)
+- [Explorify](https://modrinth.com/mod/explorify)
+- [Hopo Better Mineshaft](https://modrinth.com/mod/hopo-better-mineshaft)
+- [Dungeons and Taverns Stronghold Overhaul Lite](https://modrinth.com/mod/dnt-stronghold-overhaul-lite-edition)
+- [Moog's Soaring Structures](https://modrinth.com/mod/mss-moogs-soaring-structures)
 - Moog's Structure Lib *(dependency)*
 
 Exact baseline project IDs, version IDs, download URLs, and SHA-512 hashes live in `mods/*.pw.toml`. All entries are pinned.
