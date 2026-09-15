@@ -43,6 +43,7 @@ Java players should not need this pack on their clients: every packwiz entry is 
 - [Hopo Better Mineshaft](https://modrinth.com/mod/hopo-better-mineshaft)
 - [Dungeons and Taverns Stronghold Overhaul Lite](https://modrinth.com/mod/dnt-stronghold-overhaul-lite-edition)
 - [Moog's Soaring Structures](https://modrinth.com/mod/mss-moogs-soaring-structures)
+- [Moog's Ocean Structures](https://modrinth.com/mod/mos-moogs-ocean-structures)
 - Moog's Structure Lib *(dependency)*
 
 Exact baseline project IDs, version IDs, download URLs, and SHA-512 hashes live in `mods/*.pw.toml`. All entries are pinned.
@@ -57,9 +58,9 @@ Packwiz writes the same `.pw.toml` shape for a project whether it was selected d
 
 This repository keeps the two concerns separate:
 
-- [`collection.toml`](collection.toml) defines the active baseline: 23 selected projects and five resolved dependencies.
+- [`collection.toml`](collection.toml) defines the active baseline: 24 selected projects and five resolved dependencies.
 - [`candidates.toml`](candidates.toml) defines staged and future projects, why they are inactive, and the evidence required to promote them.
-- `mods/*.pw.toml` is the machine-maintained baseline lock layer. It contains the 28 projects exported by the standard pack.
+- `mods/*.pw.toml` is the machine-maintained baseline lock layer. It contains the 29 projects exported by the standard pack.
 - `staged/mods/*.pw.toml` retains five pinned candidate records outside packwiz's active index.
 
 Fabric API is the only explicitly selected platform library. Polymer, Cristel Lib, Cloth Config API, Moog's Structure Lib, and Collective close baseline dependencies. ZConfig is staged beside Fast Noise. Cristel Lib demonstrates why dependency chains matter: Towns and Towers requires Cristel Lib, which in turn requires Cloth Config API and Fabric API. Villager Names requires Collective.
@@ -70,7 +71,7 @@ Fabric API is the only explicitly selected platform library. Polymer, Cristel Li
 
 - Geyser uses Floodgate authentication; generated Floodgate keys are never committed.
 - ServerCore's non-vanilla-parity optimizations remain disabled.
-- Moog's structures use a `2.0` spacing multiplier so they remain uncommon.
+- Moog's spacing is scoped by namespace: Soaring Structures uses `2.0`, while Ocean Structures uses `3.0`. The universal multiplier remains `1.0` so future Moog packs do not inherit either rarity policy.
 - Epic Villages Standalone preserves vanilla villages and initially uses its packaged placement defaults. Settlement density and performance still require acceptance testing before deployment.
 - Universal Graves retains 75% of XP, protects graves for one hour, and expires them after 24 real-time hours.
 - squaremap enables only the Overworld, limits zoom, reduces background rendering pressure, and intentionally retains its live player tracker. The tracker becomes public to anyone who can reach the configured map endpoint.

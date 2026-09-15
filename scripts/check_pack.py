@@ -266,7 +266,14 @@ def require_fragments(path: pathlib.Path, fragments: Iterable[str], errors: list
 def validate_configs(errors: list[str]) -> None:
     require_fragments(ROOT / "config/Geyser-Fabric/config.yml", ["auth-type: floodgate", "log-player-ip-addresses: false"], errors)
     require_fragments(ROOT / "config/servercore/optimizations.yml", ["reduce-sync-loads: false", "cache-ticking-chunks: false"], errors)
-    require_fragments(ROOT / "config/moogs_structures.json", ['"universal_multiplier": 2.0'], errors)
+    moogs = json.loads((ROOT / "config/moogs_structures.json").read_text(encoding="utf-8"))
+    expected_spacing = {
+        "universal_multiplier": 1.0,
+        "per_mod": {"mos": 3.0, "mss": 2.0},
+        "per_structure": {},
+    }
+    if moogs.get("spacing") != expected_spacing:
+        errors.append("Moog spacing must keep independent MOS and MSS rarity policies")
     require_fragments(ROOT / "squaremap/config.yml", ["minecraft:the_nether:", "minecraft:the_end:", "enabled: false"], errors)
     graves = json.loads((ROOT / "config/universal-graves/config.json").read_text(encoding="utf-8"))
     if graves["storage"].get("experience_percent:setting_value") != 75.0:

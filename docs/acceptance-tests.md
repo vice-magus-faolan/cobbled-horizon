@@ -58,6 +58,9 @@ Use disposable seeds and `/locate structure` where available.
 - [ ] Inspect Hopo mineshafts at different depths.
 - [ ] Locate and enter a DnT Lite stronghold; verify portal and loot progression.
 - [ ] Inspect several Moog floating structures and confirm rarity feels intentional.
+- [ ] Locate several MOS structures in newly generated ordinary, deep, warm, and cold ocean chunks; include seafloor ruins and surface ships or rafts.
+- [ ] On both unmodded Java and Bedrock, inspect MOS blocks and entities, open every encountered container type, and verify loot and hostile encounters remain usable and balanced.
+- [ ] Sail through a repeatable test route and confirm `mos = 3.0` produces worthwhile discoveries without crowding vanilla shipwrecks, Towns and Towers fleets, or the horizon.
 - [ ] If ScalableLux is promoted, generate chunks under load and inspect lighting and relighting behavior.
 - [ ] If Spiral Tower Villages is promoted, inspect proximity to Epic towns, reward frequency, books, and hidden redstone mechanisms with Alternate Current on both clients.
 

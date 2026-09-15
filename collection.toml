@@ -12,7 +12,7 @@ slug = "fabric-api"
 name = "Fabric API"
 category = "platform"
 role = "selected-library"
-also-required-by = ["Chunky", "Collective", "Cristel Lib", "Epic Structures: Villages Standalone Edition", "Geyser", "Polymer", "squaremap", "Server-Side Waystones", "Villager Names", "Villagers Tasks"]
+also-required-by = ["Chunky", "Collective", "Cristel Lib", "Epic Structures: Villages Standalone Edition", "Geyser", "MOS - Moog's Ocean Structures", "Polymer", "squaremap", "Server-Side Waystones", "Villager Names", "Villagers Tasks"]
 
 [[selected]]
 project-id = "Vebnzrzj"
@@ -168,6 +168,13 @@ name = "MSS - Moog's Soaring Structures"
 category = "exploration"
 role = "feature"
 
+[[selected]]
+project-id = "ZKBkklMv"
+slug = "mos-moogs-ocean-structures"
+name = "MOS - Moog's Ocean Structures"
+category = "exploration"
+role = "feature"
+
 [[resolved-dependency]]
 project-id = "xGdtZczs"
 slug = "polymer"
@@ -190,7 +197,7 @@ required-by = ["Cristel Lib"]
 project-id = "1oUDhxuy"
 slug = "moogs-structure-lib"
 name = "Moog's Structure Lib (moogs_structures)"
-required-by = ["MSS - Moog's Soaring Structures"]
+required-by = ["MOS - Moog's Ocean Structures", "MSS - Moog's Soaring Structures"]
 
 [[resolved-dependency]]
 project-id = "e0M1UDsY"

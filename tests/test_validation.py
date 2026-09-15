@@ -39,7 +39,7 @@ class PackSourceTests(unittest.TestCase):
     def test_repository_passes_source_validation(self) -> None:
         errors, summary = check_pack.validate()
         self.assertEqual([], errors)
-        self.assertEqual(23, summary.baseline_selected)
+        self.assertEqual(24, summary.baseline_selected)
         self.assertEqual(5, summary.baseline_dependencies)
         self.assertEqual(4, summary.staged_selected)
         self.assertEqual(1, summary.staged_dependencies)
@@ -71,6 +71,18 @@ class PackSourceTests(unittest.TestCase):
         self.assertEqual("true", properties["pvp"])
         self.assertEqual("16", properties["spawn-protection"])
         self.assertEqual("4", properties["op-permission-level"])
+
+    def test_moog_structure_policy_is_pinned(self) -> None:
+        config = json.loads((ROOT / "config/moogs_structures.json").read_text())
+        self.assertEqual(1.0, config["spacing"]["universal_multiplier"])
+        self.assertEqual({"mos": 3.0, "mss": 2.0}, config["spacing"]["per_mod"])
+        self.assertEqual({}, config["spacing"]["per_structure"])
+
+        mos = tomllib.loads((ROOT / "mods/mos-moogs-ocean-structures.pw.toml").read_text())
+        self.assertEqual("server", mos["side"])
+        self.assertIs(True, mos["pin"])
+        self.assertEqual("ZKBkklMv", mos["update"]["modrinth"]["mod-id"])
+        self.assertEqual("4b7dG23l", mos["update"]["modrinth"]["version"])
 
     def test_safe_relative_paths(self) -> None:
         self.assertTrue(check_pack.safe_relative("mods/lithium.pw.toml"))

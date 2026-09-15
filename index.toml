@@ -62,7 +62,7 @@ hash = "6cf6f83720071fd1657c8e79b357caf68d40f410ae123e5f922483eb1d1d25be"
 
 [[files]]
 file = "config/moogs_structures.json"
-hash = "1676c65b94ec2df5ddb0c092fb8b9f85e423a3398356a83d85da5566d8ab3b2e"
+hash = "27093228279d7e71bb7395fe622a825b2572cf9bb005f8d98a8a37c5654b3774"
 
 [[files]]
 file = "config/polymer/common.json"
@@ -192,6 +192,11 @@ metafile = true
 [[files]]
 file = "mods/moogs-structure-lib.pw.toml"
 hash = "f986dffaf8dcca7fc0e63f748087d0faac8e9cb7fd08ebf9a5f3d2f1294b45c5"
+metafile = true
+
+[[files]]
+file = "mods/mos-moogs-ocean-structures.pw.toml"
+hash = "b100b7b33e95640ee846220e384f1d0e65bd7463d21b1f49bc675cb501e5674d"
 metafile = true
 
 [[files]]

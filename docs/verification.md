@@ -154,3 +154,29 @@ make release
 ```
 
 No Minecraft server was started and no DatHost, LuckPerms, map endpoint, or live world state was changed. The permission bootstrap, spawn protection, public tracker visibility, waystone behavior, new Villager Names/Collective generated configs, Villagers Tasks balance, and Java/Bedrock behavior remain runtime acceptance gates on the designated Minecraft test host.
+
+## Moog's Ocean Structures
+
+Date: 2026-09-15 UTC
+
+MOS 1.1.0 (Modrinth project `ZKBkklMv`, version `4b7dG23l`) is active, pinned, and marked server-only. Its published SHA-512 matches the selected artifact. Moog's Structure Lib remains pinned at 3.2.0 and is now recorded as a dependency of both MOS and MSS.
+
+Static artifact inspection found 12 MOS structure sets, 26 registered structures, more than 100 structure templates, and no Java class files. The content uses vanilla-visible blocks and entities through Moog's Structure Lib. This is favorable static evidence for unmodded clients, not a Java or Bedrock runtime pass.
+
+The Moog configuration now uses a universal multiplier of `1.0`, with namespace-specific multipliers `mss = 2.0` and `mos = 3.0`. The MSS effective placement policy is unchanged. For MOS, the ten broadly ocean-eligible candidate grids total approximately 1.03 candidates per square kilometre, or one candidate cell per approximately 0.97 square kilometres, with a Poisson-style median-nearest estimate of approximately 462 blocks. These are placement candidates rather than guaranteed structures; biome and terrain checks can reduce observed generation.
+
+Static verification completed with:
+
+```text
+make test
+-> 29 tests passed
+
+make validate
+-> PASS: baseline 24 selected + 5 dependencies; staged 4 selected + 1 dependency; 6 future candidates; 56 indexed pack files
+
+make release
+-> PASS: 29 required server file(s); pins and configuration overrides match source
+-> PASS: CurseForge server ZIP metadata, bundled mod hashes, and configs match source
+```
+
+No Minecraft server was started and no world or DatHost state was changed. Clean boot, fresh-chunk ocean generation, loot and encounter balance, overlap with vanilla and Towns and Towers structures, unmodded Java interaction, and direct Bedrock observation remain acceptance gates on the designated test host.

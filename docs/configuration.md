@@ -69,7 +69,8 @@ Ledger is not present in `mods/` or the standard export. Its proposed deployment
 ## Structure generation
 
 - Towns and Towers, Explorify, Hopo Better Mineshaft, and DnT Stronghold Lite retain generated defaults.
-- Moog's Structure Lib uses a universal spacing multiplier of `2.0`.
+- Moog's Structure Lib keeps its universal multiplier at `1.0`. Namespace-specific multipliers preserve Soaring Structures at `mss = 2.0` and make Ocean Structures uncommon at `mos = 3.0`; adding another Moog pack will not silently inherit either setting.
+- MOS 1.1.0 adds vanilla-block ocean ruins, wrecks, ships, temples, rafts, and seafloor oddities. Its static server-only packaging is favorable for unmodded Java and Geyser, but structure visibility, entities, containers, loot, density, and overlap with Towns and Towers remain runtime acceptance items on both Java and Bedrock.
 - Epic Structures: Villages Standalone Edition 1.0.0 adds five village styles without replacing vanilla village templates. Its packaged `epic:villages` structure set retains spacing `40` and separation `11`, with no exclusion zone around other settlements. No placement override is included; inspect density and proximity to Towns and Towers before deployment. These parameters do not guarantee distances between generated towns.
 - Structure changes only affect newly generated chunks. Freeze this configuration before Chunky pre-generation.
 
