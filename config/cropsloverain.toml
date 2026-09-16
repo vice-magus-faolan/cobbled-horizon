@@ -1,0 +1,23 @@
+[general]
+use_rain_growth_speed = true
+# Fallback chance denominator: 10 means a 1-in-10 chance of one extra growth
+# stage on an applicable random tick while exposed to rain.
+rain_growth_speed = 10
+
+[individual]
+use_individual_speeds = true
+# Bamboo checks global rain rather than direct exposure, so keep its rain bonus
+# disabled until that behavior is acceptable and verified.
+bamboo_custom_speed = 0
+cocoa_custom_speed = 10
+crops_custom_speed = 10
+sapling_custom_speed = 15
+sugar_cane_custom_speed = 15
+sweet_berry_custom_speed = 15
+separate_stem_speed = true
+melon_custom_speed = 15
+pumpkin_custom_speed = 15
+
+[debug]
+debug_mode = false
+halt_regular_growth = false

@@ -45,6 +45,10 @@ file = "config/cristellib/mss/structure_toggle_config.json5"
 hash = "568a6777a52db183feaf9354db55eb0690688d9919e34e23c04ef22bfc90f74b"
 
 [[files]]
+file = "config/cropsloverain.toml"
+hash = "a269043130ed86ce14de321bb0cf11f18a1e9b5b0483a8267dd72d7ea6a83ade"
+
+[[files]]
 file = "config/ferritecore.mixin.properties"
 hash = "fc4d7a195210fb6d32cdfc5a255b6d555ab0225da1a929b61d17dd6b5648c2ba"
 
@@ -63,6 +67,10 @@ hash = "6cf6f83720071fd1657c8e79b357caf68d40f410ae123e5f922483eb1d1d25be"
 [[files]]
 file = "config/moogs_structures.json"
 hash = "27093228279d7e71bb7395fe622a825b2572cf9bb005f8d98a8a37c5654b3774"
+
+[[files]]
+file = "config/naturally_trimmed.json5"
+hash = "712080fe519d31303dd918c7815ce1524ca49fa329914c58781ad6dd09d0c1b0"
 
 [[files]]
 file = "config/polymer/common.json"
@@ -135,6 +143,11 @@ hash = "f5e003c79747656afdd71f4344c0aef5cd804ad370f2f97194e6a434d28a2835"
 metafile = true
 
 [[files]]
+file = "mods/crops-love-rain.pw.toml"
+hash = "43fe53c1974bb66ee143007bbc8c6de2604940aa1513045be6712cbf09e518e9"
+metafile = true
+
+[[files]]
 file = "mods/dnt-stronghold-overhaul-lite-edition.pw.toml"
 hash = "6806d8d11a1504e4c6a6ed8fee36dd485580e438d89f3750bea033c494be5cd2"
 metafile = true
@@ -162,6 +175,11 @@ metafile = true
 [[files]]
 file = "mods/floodgate.pw.toml"
 hash = "e9520e6bb14b70a4d7c60b25f0c93e2303d0535f64213262f037aa381d56d5b2"
+metafile = true
+
+[[files]]
+file = "mods/forge-config-api-port.pw.toml"
+hash = "f6736bea7ee68148b761a747b4e078c6489a22ab2e8a96e1bb6bb8c181f59227"
 metafile = true
 
 [[files]]
@@ -202,6 +220,11 @@ metafile = true
 [[files]]
 file = "mods/mss-moogs-soaring-structures.pw.toml"
 hash = "4a2ff2c654ac7828b13af858c3bd9751982db5945cdff5068f932c543676b129"
+metafile = true
+
+[[files]]
+file = "mods/naturally-trimmed.pw.toml"
+hash = "eea1f6968372cfe2fd48579cebb57bd2701715b16cd4f029ab6cc1b98c3c12c7"
 metafile = true
 
 [[files]]

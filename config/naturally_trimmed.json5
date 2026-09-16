@@ -1,0 +1,26 @@
+{
+  "enable_trim_mobs": true,
+  "enable_trim_loot_tables": true,
+  "enable_trim_trades": true,
+  "trim_filtering": {
+    "texture_validation_filtering": false,
+    "vanilla_only": true,
+    "material_filter": [],
+    "pattern_filter": [
+      "-tooltrims:.*"
+    ]
+  },
+  "trim_mobs": {
+    "trim_system": "RANDOM_TRIMS",
+    "no_trims_chance": 75,
+    "trim_chance": 35,
+    "predefined_trims": []
+  },
+  "trim_loot_tables": {
+    "trim_chance": 15
+  },
+  "trim_trades": {
+    "trim_chance": 10,
+    "min_level": 3
+  }
+}

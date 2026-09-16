@@ -280,6 +280,47 @@ def validate_configs(errors: list[str]) -> None:
         errors.append("Universal Graves must retain 75% of XP")
     if graves["protection"].get("self_destruction_time") != 86400:
         errors.append("Universal Graves expiry must remain 24 real-time hours")
+    naturally_trimmed = json.loads((ROOT / "config/naturally_trimmed.json5").read_text(encoding="utf-8"))
+    expected_trim_policy = {
+        "enable_trim_mobs": True,
+        "enable_trim_loot_tables": True,
+        "enable_trim_trades": True,
+        "trim_filtering": {
+            "texture_validation_filtering": False,
+            "vanilla_only": True,
+            "material_filter": [],
+            "pattern_filter": ["-tooltrims:.*"],
+        },
+        "trim_mobs": {
+            "trim_system": "RANDOM_TRIMS",
+            "no_trims_chance": 75,
+            "trim_chance": 35,
+            "predefined_trims": [],
+        },
+        "trim_loot_tables": {"trim_chance": 15},
+        "trim_trades": {"trim_chance": 10, "min_level": 3},
+    }
+    if naturally_trimmed != expected_trim_policy:
+        errors.append("Naturally Trimmed must retain the restrained vanilla-only trim policy")
+    crops_love_rain = load_toml(ROOT / "config/cropsloverain.toml")
+    expected_rain_policy = {
+        "general": {"use_rain_growth_speed": True, "rain_growth_speed": 10},
+        "individual": {
+            "use_individual_speeds": True,
+            "bamboo_custom_speed": 0,
+            "cocoa_custom_speed": 10,
+            "crops_custom_speed": 10,
+            "sapling_custom_speed": 15,
+            "sugar_cane_custom_speed": 15,
+            "sweet_berry_custom_speed": 15,
+            "separate_stem_speed": True,
+            "melon_custom_speed": 15,
+            "pumpkin_custom_speed": 15,
+        },
+        "debug": {"debug_mode": False, "halt_regular_growth": False},
+    }
+    if crops_love_rain != expected_rain_policy:
+        errors.append("Crops Love Rain must retain the exposed-crop policy with bamboo disabled")
     validate_jeb_config(errors)
 
 

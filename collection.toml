@@ -12,7 +12,7 @@ slug = "fabric-api"
 name = "Fabric API"
 category = "platform"
 role = "selected-library"
-also-required-by = ["Chunky", "Collective", "Cristel Lib", "Epic Structures: Villages Standalone Edition", "Geyser", "MOS - Moog's Ocean Structures", "Polymer", "squaremap", "Server-Side Waystones", "Villager Names", "Villagers Tasks"]
+also-required-by = ["Chunky", "Collective", "Cristel Lib", "Crops Love Rain", "Epic Structures: Villages Standalone Edition", "Geyser", "MOS - Moog's Ocean Structures", "Naturally Trimmed", "Polymer", "squaremap", "Server-Side Waystones", "Villager Names", "Villagers Tasks"]
 
 [[selected]]
 project-id = "Vebnzrzj"
@@ -113,6 +113,20 @@ category = "quality-of-life"
 role = "feature"
 
 [[selected]]
+project-id = "hHVaPgFK"
+slug = "naturally-trimmed"
+name = "Naturally Trimmed"
+category = "quality-of-life"
+role = "feature"
+
+[[selected]]
+project-id = "cRci7UZp"
+slug = "crops-love-rain"
+name = "Crops Love Rain"
+category = "quality-of-life"
+role = "feature"
+
+[[selected]]
 project-id = "gqRXDo8B"
 slug = "villager-names-serilum"
 name = "Villager Names"
@@ -192,6 +206,12 @@ project-id = "9s6osm5g"
 slug = "cloth-config"
 name = "Cloth Config API"
 required-by = ["Cristel Lib"]
+
+[[resolved-dependency]]
+project-id = "ohNO6lps"
+slug = "forge-config-api-port"
+name = "Forge Config API Port"
+required-by = ["Crops Love Rain"]
 
 [[resolved-dependency]]
 project-id = "1oUDhxuy"

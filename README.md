@@ -2,7 +2,7 @@
 
 A reproducible, server-side Fabric collection for a Vanilla+ Minecraft world focused on performance, exploration, and restrained quality-of-life improvements.
 
-The current baseline targets **Minecraft Java 26.2** with **Fabric Loader 0.19.5**. It contains 23 deliberately selected projects plus five dependencies resolved by packwiz. Just Enough Backups (JEB) replaces the obsolete Textile Backup candidate.
+The current baseline targets **Minecraft Java 26.2** with **Fabric Loader 0.19.5**. It contains 26 deliberately selected projects plus six dependencies resolved by packwiz. Just Enough Backups (JEB) replaces the obsolete Textile Backup candidate.
 
 Java players should not need this pack on their clients: every packwiz entry is marked `side = "server"`. Bedrock access is provided by Geyser and Floodgate and still requires a reachable UDP port on the host.
 
@@ -14,6 +14,7 @@ Java players should not need this pack on their clients: every packwiz entry is 
 - Polymer *(dependency)*
 - Cristel Lib *(dependency)*
 - Cloth Config API *(dependency of Cristel Lib)*
+- Forge Config API Port *(dependency of Crops Love Rain)*
 - LuckPerms
 - Geyser
 - Floodgate
@@ -34,6 +35,8 @@ Java players should not need this pack on their clients: every packwiz entry is 
 - [Server-Side Waystones](https://modrinth.com/mod/sswaystones)
 - [Universal Graves](https://modrinth.com/mod/universal-graves)
 - [Creeper No Break Blocks](https://modrinth.com/mod/creeper-no-break-blocks)
+- [Naturally Trimmed](https://modrinth.com/mod/naturally-trimmed)
+- [Crops Love Rain](https://modrinth.com/mod/crops-love-rain)
 - [Villager Names](https://modrinth.com/mod/villager-names-serilum)
 - [Villagers Tasks](https://modrinth.com/mod/villagers-tasks)
 - Collective *(dependency of Villager Names)*
@@ -58,12 +61,12 @@ Packwiz writes the same `.pw.toml` shape for a project whether it was selected d
 
 This repository keeps the two concerns separate:
 
-- [`collection.toml`](collection.toml) defines the active baseline: 24 selected projects and five resolved dependencies.
+- [`collection.toml`](collection.toml) defines the active baseline: 26 selected projects and six resolved dependencies.
 - [`candidates.toml`](candidates.toml) defines staged and future projects, why they are inactive, and the evidence required to promote them.
-- `mods/*.pw.toml` is the machine-maintained baseline lock layer. It contains the 29 projects exported by the standard pack.
+- `mods/*.pw.toml` is the machine-maintained baseline lock layer. It contains the 32 projects exported by the standard pack.
 - `staged/mods/*.pw.toml` retains five pinned candidate records outside packwiz's active index.
 
-Fabric API is the only explicitly selected platform library. Polymer, Cristel Lib, Cloth Config API, Moog's Structure Lib, and Collective close baseline dependencies. ZConfig is staged beside Fast Noise. Cristel Lib demonstrates why dependency chains matter: Towns and Towers requires Cristel Lib, which in turn requires Cloth Config API and Fabric API. Villager Names requires Collective.
+Fabric API is the only explicitly selected platform library. Polymer, Cristel Lib, Cloth Config API, Forge Config API Port, Moog's Structure Lib, and Collective close baseline dependencies. ZConfig is staged beside Fast Noise. Cristel Lib demonstrates why dependency chains matter: Towns and Towers requires Cristel Lib, which in turn requires Cloth Config API and Fabric API. Crops Love Rain requires Forge Config API Port and Fabric API. Villager Names requires Collective.
 
 `scripts/check_pack.py` verifies that both layers agree, so a dependency cannot silently disappear or become an undeclared top-level choice.
 
@@ -71,6 +74,8 @@ Fabric API is the only explicitly selected platform library. Polymer, Cristel Li
 
 - Geyser uses Floodgate authentication; generated Floodgate keys are never committed.
 - ServerCore's non-vanilla-parity optimizations remain disabled.
+- Naturally Trimmed uses only vanilla trim materials and patterns. Trimmed equipment remains uncommon: 75% of eligible mobs receive no trims, each remaining armor piece has a 35% chance, loot uses 15%, and level-three-or-higher trades use 10%.
+- Crops Love Rain gives directly rain-exposed crops and cocoa a 1-in-10 extra-stage chance per applicable random tick; slower-growing plants use 1-in-15. Bamboo's rain bonus is disabled because the mod checks global rain rather than direct exposure for bamboo.
 - Moog's spacing is scoped by namespace: Soaring Structures uses `2.0`, while Ocean Structures uses `3.0`. The universal multiplier remains `1.0` so future Moog packs do not inherit either rarity policy.
 - Epic Villages Standalone preserves vanilla villages and initially uses its packaged placement defaults. Settlement density and performance still require acceptance testing before deployment.
 - Universal Graves retains 75% of XP, protects graves for one hour, and expires them after 24 real-time hours.

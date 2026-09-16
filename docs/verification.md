@@ -179,4 +179,30 @@ make release
 -> PASS: CurseForge server ZIP metadata, bundled mod hashes, and configs match source
 ```
 
-No Minecraft server was started and no world or DatHost state was changed. Clean boot, fresh-chunk ocean generation, loot and encounter balance, overlap with vanilla and Towns and Towers structures, unmodded Java interaction, and direct Bedrock observation remain acceptance gates on the designated test host.
+No Minecraft server was started and no world or DatHost state was changed. Clean boot, fresh-chunk ocean generation, loot and encounter balance, overlap with vanilla and Towns and Towers structures, unmodded Java interaction, and direct Bedrock observation remain acceptance gates on the designated Minecraft test host.
+
+## Naturally Trimmed and Crops Love Rain
+
+Date: 2026-09-16 UTC
+
+Naturally Trimmed 3.5.0 (Modrinth project `hHVaPgFK`, version `vnFt7Fhi`) and Crops Love Rain 3.2.1 (project `cRci7UZp`, version `YzNJMQVQ`) are active, pinned, and marked server-only. Forge Config API Port 26.2.1 (project `ohNO6lps`, version `rSd3GiG8`) is included as Crops Love Rain's required dependency. All three published SHA-512 hashes match the selected artifacts.
+
+Naturally Trimmed is constrained to vanilla trim materials and patterns. Its policy gives 75% of eligible mobs no trims, then applies a 35% chance per equipped piece; generated loot uses 15%, and level-three-or-higher trades use 10%. Static artifact inspection found no template items, recipes, extraction behavior, or custom networking. This is favorable evidence for unmodded clients, not a Java or Bedrock rendering pass.
+
+Crops Love Rain uses per-plant chance denominators: 10 for ordinary crops and cocoa, 15 for saplings, sugar cane, sweet berries, melons, and pumpkins, and 0 for bamboo. Regular growth remains enabled. Static artifact inspection found no custom blocks, items, or networking. The exact artifact checks global rain for bamboo rather than direct plant exposure, which is why bamboo's extra-growth path is disabled.
+
+Static verification completed with:
+
+```text
+make test
+-> 29 tests passed
+
+make validate
+-> PASS: baseline 26 selected + 6 dependencies; staged 4 selected + 1 dependency; 6 future candidates; 61 indexed pack files
+
+make release
+-> PASS: 32 required server file(s); pins and configuration overrides match source
+-> PASS: CurseForge server ZIP metadata, bundled mod hashes, and configs match source
+```
+
+No Minecraft server was started and no world or DatHost state was changed. Clean boot, unmodded Java login, direct Bedrock trim rendering and crop interaction, exposed-versus-covered rain growth, observed trim frequencies, and storm-time farm tick cost remain acceptance gates on the designated Minecraft test host.

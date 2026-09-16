@@ -44,6 +44,11 @@ python3 scripts/validate_mrpack.py dist/cobbled-horizon-26.2.0.1.0.mrpack --mine
 - [ ] Java and Bedrock players see persistent villager names and can trade normally; profession text may differ because the client-side enhancement is optional.
 - [ ] Each Villagers Tasks profession action uses only vanilla-visible entities, items, particles, inventories, and sounds on both Java and Bedrock clients.
 - [ ] Villagers Tasks culling, breeding, healing, resource generation, fishing, and shearing rates are acceptable for balance and occupied-village tick cost.
+- [ ] On unmodded Java and Bedrock clients, vanilla trim materials and patterns render correctly on representative naturally equipped mobs, generated loot, and level-three-or-higher trade equipment.
+- [ ] Naturally Trimmed does not create or duplicate smithing templates, and observed mob, loot, and trade frequencies remain uncommon enough to preserve discovery.
+- [ ] During rain, directly exposed crops receive occasional extra growth while covered crops do not; normal growth remains unchanged when weather is clear.
+- [ ] Bamboo receives no extra rain growth, and the tuned crop, sapling, sugar cane, berry, melon, and pumpkin rates feel useful without trivializing farming.
+- [ ] Java and Bedrock players interact normally with every affected crop, and a large loaded farm shows acceptable storm-time tick cost in spark.
 
 ## World generation
 

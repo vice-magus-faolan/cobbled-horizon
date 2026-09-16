@@ -39,8 +39,8 @@ class PackSourceTests(unittest.TestCase):
     def test_repository_passes_source_validation(self) -> None:
         errors, summary = check_pack.validate()
         self.assertEqual([], errors)
-        self.assertEqual(24, summary.baseline_selected)
-        self.assertEqual(5, summary.baseline_dependencies)
+        self.assertEqual(26, summary.baseline_selected)
+        self.assertEqual(6, summary.baseline_dependencies)
         self.assertEqual(4, summary.staged_selected)
         self.assertEqual(1, summary.staged_dependencies)
         self.assertEqual(6, summary.future_candidates)
@@ -62,6 +62,32 @@ class PackSourceTests(unittest.TestCase):
 
         resource_pack = json.loads((ROOT / "config/polymer/resource-pack.json").read_text())
         self.assertEqual([], resource_pack["include_zips"])
+
+        trims = json.loads((ROOT / "config/naturally_trimmed.json5").read_text())
+        self.assertIs(True, trims["trim_filtering"]["vanilla_only"])
+        self.assertEqual(75, trims["trim_mobs"]["no_trims_chance"])
+        self.assertEqual(35, trims["trim_mobs"]["trim_chance"])
+        self.assertEqual(15, trims["trim_loot_tables"]["trim_chance"])
+        self.assertEqual({"trim_chance": 10, "min_level": 3}, trims["trim_trades"])
+
+        rain = tomllib.loads((ROOT / "config/cropsloverain.toml").read_text())
+        self.assertEqual(10, rain["individual"]["crops_custom_speed"])
+        self.assertEqual(15, rain["individual"]["sapling_custom_speed"])
+        self.assertEqual(0, rain["individual"]["bamboo_custom_speed"])
+        self.assertIs(False, rain["debug"]["halt_regular_growth"])
+
+        expected_pins = {
+            "naturally-trimmed.pw.toml": ("hHVaPgFK", "vnFt7Fhi"),
+            "crops-love-rain.pw.toml": ("cRci7UZp", "YzNJMQVQ"),
+            "forge-config-api-port.pw.toml": ("ohNO6lps", "rSd3GiG8"),
+        }
+        for filename, (project_id, version_id) in expected_pins.items():
+            with self.subTest(filename=filename):
+                metadata = tomllib.loads((ROOT / "mods" / filename).read_text())
+                self.assertEqual("server", metadata["side"])
+                self.assertIs(True, metadata["pin"])
+                self.assertEqual(project_id, metadata["update"]["modrinth"]["mod-id"])
+                self.assertEqual(version_id, metadata["update"]["modrinth"]["version"])
 
         properties = {}
         for line in (ROOT / "server.properties.example").read_text().splitlines():
