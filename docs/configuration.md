@@ -1,6 +1,6 @@
 # Configuration decisions
 
-The 29 checked-in overrides began with a successful Minecraft 26.2 server boot, were copied into packwiz, and were then changed deliberately. Naturally Trimmed and Crops Love Rain were added from their documented schemas after that runtime capture. Avoid regenerating overrides blindly; review diffs when mods update their schemas. Villager Names and Collective were also added after the original runtime capture, so any configuration they generate must still be reviewed on the designated test host. Villagers Tasks exposes no configuration surface.
+The retained overrides originated in a historical Minecraft 26.2 server boot and were then changed deliberately. The 26.3 candidate removes three obsolete Explorify/Lite overrides; retained values are policy inputs, not proof that updated mods accept their schemas. Naturally Trimmed and Crops Love Rain were added from their documented schemas after that runtime capture. Avoid regenerating overrides blindly; review diffs when mods update their schemas. Villager Names and Collective were also added after the original runtime capture, so any configuration they generate must still be reviewed on the designated test host. Villagers Tasks exposes no configuration surface.
 
 ## Geyser and Floodgate
 
@@ -8,14 +8,16 @@ The 29 checked-in overrides began with a successful Minecraft 26.2 server boot, 
 
 Before DatHost deployment:
 
-1. Replace Geyser's UDP port only if DatHost assigns a port other than `19132`.
+1. Verify the exact-build [Geyser network arrangement](deployment.md#geyser-networking): suitable UDP reachability and either TCP on the Bedrock port for built-in signaling, distinct from Java's TCP listener, or an explicitly configured and verified external signaling service. Use verified host allocations, not an assumed `19132` UDP-only setup.
 2. Leave `online-mode=true` in `server.properties`.
 3. Set `enforce-secure-profile=false` so Bedrock players can chat. See [Geyser's secure-chat documentation](https://geysermc.org/wiki/geyser/secure-chat/).
-4. Let Floodgate generate `config/floodgate/key.pem` on the live instance.
+4. Preserve an existing `config/floodgate/key.pem`; let Floodgate generate it only for a new instance.
 5. Never copy or commit that private key.
 6. Test login and chat with both Java and Bedrock clients.
 
 The included Floodgate configuration permits optional account linking but does not require it.
+
+The exact 26.3 Geyser pin `2.12.1-b1281` is beta. Retain the existing authentication/privacy policy, but recheck schema migration, actual listeners and advertised addresses, signaling, login, chat and identity with real Java/Bedrock clients before deployment; earlier cross-play evidence does not transfer to this candidate. Follow the linked network procedure without silently enabling an external service or assuming host support.
 
 ## Server access and world interaction
 
@@ -64,7 +66,7 @@ Krypton, Fast Noise with ZConfig, and ScalableLux are not part of the baseline e
 
 ## Just Enough Backups
 
-`config/justenoughbackups.json` enables full backups at 24-hour intervals and differential backups at three-hour intervals after player activity. JEB 1.2.0.6 resets those timers at startup and config reload. The full-backup interval therefore does not guarantee a backup each calendar day. The legacy `automaticBackupsEnabled` field applies only when migrating a config without `automaticSchedule`; it does not disable these schedules.
+`config/justenoughbackups.json` enables full backups at 24-hour intervals and differential backups at three-hour intervals after player activity. The previously inspected JEB 1.2.0.6 resets those timers at startup and config reload; retain the conservative restart procedure and verify it again with this candidate's 1.2.0.10+26.3. The full-backup interval is not a calendar-day guarantee. The historical `automaticBackupsEnabled` migration semantics must also be rechecked rather than assumed unchanged.
 
 Partial, startup, and shutdown backups remain disabled. The operating procedure requires an initial full backup and explicit full backups coordinated with host restarts. See [Create full backups across restarts](storage-and-recovery.md#create-full-backups-across-restarts).
 
@@ -80,11 +82,13 @@ Ledger is not present in `mods/` or the standard export. Its proposed deployment
 
 ## Structure generation
 
-- Towns and Towers, Explorify, Hopo Better Mineshaft, and DnT Stronghold Lite retain generated defaults.
+- Towns and Towers retains its Cristel Lib overrides; Hopo Better Mineshaft retains its packaged defaults. Generic Cristel Lib settings and its Towns and Towers waystone patch remain unchanged.
+- Structory replaces Explorify; Formations is not installed. The obsolete `config/cristellib/explorify/structure_placement_config.json5` and `config/cristellib/explorify/structure_toggle_config.json5` are removed from the pack because their owner is no longer active. Remove those exact active-host files only through the stopped-server [deployment reconciliation procedure](deployment.md#upload), preserving other configs and rollback copies. Structory uses its own packaged placement; old Explorify settings are not a migration mechanism.
+- Standalone Dungeons and Taverns Stronghold Overhaul replaces retired Lite. The third obsolete file is the Lite-only `config/cristellib/mr_dnt_strongholdoverhaulliteedition/structure_toggle_config.json5`; remove only its active-host copy through the same reconciliation procedure, and do not copy it to the replacement namespace. This standalone pack replaces vanilla stronghold generation and includes enchantment/progression data, so it is not equivalent to Lite and is not the broad DnT collection. Upstream artifact notes warn about a first-generation freeze: measure generation stalls and verify portals, loot, trades, enchantments and Java/Bedrock interactions before production or Chunky pre-generation.
 - Moog's Structure Lib keeps its universal multiplier at `1.0`. Namespace-specific multipliers preserve Soaring Structures at `mss = 2.0` and make Ocean Structures uncommon at `mos = 3.0`; adding another Moog pack will not silently inherit either setting.
-- MOS 1.1.0 adds vanilla-block ocean ruins, wrecks, ships, temples, rafts, and seafloor oddities. Its static server-only packaging is favorable for unmodded Java and Geyser, but structure visibility, entities, containers, loot, density, and overlap with Towns and Towers remain runtime acceptance items on both Java and Bedrock.
+- MOS 1.1.1 supplies vanilla-block ocean ruins, wrecks, ships, temples, rafts, and seafloor oddities. Its static server-only packaging is favorable for unmodded Java and Geyser, but structure visibility, entities, containers, loot, density, and overlap with Towns and Towers remain runtime acceptance items on both Java and Bedrock.
 - Epic Structures: Villages Standalone Edition 1.0.0 adds five village styles without replacing vanilla village templates. Its packaged `epic:villages` structure set retains spacing `40` and separation `11`, with no exclusion zone around other settlements. No placement override is included; inspect density and proximity to Towns and Towers before deployment. These parameters do not guarantee distances between generated towns.
-- Structure changes only affect newly generated chunks. Freeze this configuration before Chunky pre-generation.
+- Structure generation changes affect newly generated chunks; they do not rewrite existing structures. Standalone DnT's data can also change progression outside generation. Test on a disposable world copy, preserve a full rollback snapshot, review newly generated configs, and freeze the approved composition before Chunky pre-generation. No live-world migration is established by this source update.
 
 Spiral Tower Villages 0.0.3 is staged with no configuration override. Its exclusion zones reference the vanilla village set, not `epic:villages`. Promotion requires checking proximity to Epic towns, loot balance, and hidden redstone mechanisms with Alternate Current.
 

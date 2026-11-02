@@ -1,5 +1,5 @@
 schema = 1
-minecraft = "26.2"
+minecraft = "26.3"
 loader = "fabric"
 
 # Active baseline intent lives here. Packwiz's mods/*.pw.toml files are
@@ -12,7 +12,7 @@ slug = "fabric-api"
 name = "Fabric API"
 category = "platform"
 role = "selected-library"
-also-required-by = ["Chunky", "Collective", "Cristel Lib", "Crops Love Rain", "Epic Structures: Villages Standalone Edition", "Geyser", "MOS - Moog's Ocean Structures", "Naturally Trimmed", "Polymer", "squaremap", "Server-Side Waystones", "Villager Names", "Villagers Tasks"]
+also-required-by = ["Chunky", "Collective", "Creeper No Break", "Cristel Lib", "Crops Love Rain", "Dungeons and Taverns Stronghold Overhaul", "Epic Structures: Villages Standalone Edition", "Floodgate", "Forge Config API Port", "Geyser", "Just Enough Backups (JEB)", "LuckPerms", "Moog's Structure Lib (moogs_structures)", "MOS - Moog's Ocean Structures", "MSS - Moog's Soaring Structures", "Naturally Trimmed", "Polymer", "ServerCore", "spark", "squaremap", "Server-Side Waystones", "Towns and Towers", "Universal Graves", "Villager Names", "Villagers Tasks"]
 
 [[selected]]
 project-id = "Vebnzrzj"
@@ -106,9 +106,9 @@ category = "quality-of-life"
 role = "feature"
 
 [[selected]]
-project-id = "ptis34fZ"
-slug = "creeper-no-break-blocks"
-name = "Creeper no Break Blocks"
+project-id = "ujZZZb4P"
+slug = "creeper-no-break"
+name = "Creeper No Break"
 category = "quality-of-life"
 role = "feature"
 
@@ -155,9 +155,9 @@ category = "exploration"
 role = "feature"
 
 [[selected]]
-project-id = "HSfsxuTo"
-slug = "explorify"
-name = "Explorify"
+project-id = "aKCwCJlY"
+slug = "structory"
+name = "Structory"
 category = "exploration"
 role = "feature"
 
@@ -169,9 +169,9 @@ category = "exploration"
 role = "feature"
 
 [[selected]]
-project-id = "LbGT0kSV"
-slug = "dnt-stronghold-overhaul-lite-edition"
-name = "Dungeons and Taverns Stronghold Overhaul LITE edition"
+project-id = "rYocd2LE"
+slug = "dungeons-and-taverns-stronghold-overhaul"
+name = "Dungeons and Taverns Stronghold Overhaul"
 category = "exploration"
 role = "feature"
 

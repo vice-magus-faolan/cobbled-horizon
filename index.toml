@@ -17,24 +17,12 @@ file = "config/cristellib/built_in_packs.json5"
 hash = "76120cb769b1303ffdbd30a197e01e69692a9c111eb818a3b5a5272925343364"
 
 [[files]]
-file = "config/cristellib/explorify/structure_placement_config.json5"
-hash = "b62bc9f5047bc1c1b8b62e7d71b2314ad4349af5cef35c63144bad6fb0591ad2"
-
-[[files]]
-file = "config/cristellib/explorify/structure_toggle_config.json5"
-hash = "1923a4597e7ee5291a74ba8a97510340ef72f2202108c3895bf074031275e135"
-
-[[files]]
 file = "config/cristellib/hopobettermineshaft/structure_placement_config.json5"
 hash = "b464aa3fb5f38ac0c7d378acd13fea33624e51c9f9e5c3427bdb1d117b322714"
 
 [[files]]
 file = "config/cristellib/hopobettermineshaft/structure_toggle_config.json5"
 hash = "6cff4f886a82776d93d38f88fda541ebd11319f1208c259bd39fbfacebb0b416"
-
-[[files]]
-file = "config/cristellib/mr_dnt_strongholdoverhaulliteedition/structure_toggle_config.json5"
-hash = "96939569fa5c4f868d16601afa3d63e8f8c69004e217c9a0c3be1b3c789f8fbf"
 
 [[files]]
 file = "config/cristellib/mss/structure_placement_config.json5"
@@ -114,7 +102,7 @@ hash = "d198351202640a24a8d15b1f38a0c60d43f6bb10f58340028c2500ed631ba681"
 
 [[files]]
 file = "mods/alternate-current.pw.toml"
-hash = "5b0893fdba5b227d36a4cd0c2deb6cd2b5c1620210b16d0363105b299f62d8cd"
+hash = "e95c32a64d8c8d48755a2c483231c711a10ce8d78aeb272b3181ebd45f0cc9ce"
 metafile = true
 
 [[files]]
@@ -124,32 +112,32 @@ metafile = true
 
 [[files]]
 file = "mods/cloth-config.pw.toml"
-hash = "ebb5edb3af62967147f1b4fcf78510bd99cf2f97cfa62eae286eeb5b9bb7e8f6"
+hash = "8f560afc71838b7f50fb40513913b2467a158675c8367c70a5d8e93a57a73e2e"
 metafile = true
 
 [[files]]
 file = "mods/collective.pw.toml"
-hash = "25860e74a5b285d67d9af40bf3cc48fdbfd4997b340657e6f6579ca29f1f9978"
+hash = "d147550d4e0d203ddacd0600da57d11866e21bc590dac66d18eb1254bd6a6dcd"
 metafile = true
 
 [[files]]
-file = "mods/creeper-no-break-blocks.pw.toml"
-hash = "332af6ba9cf36e0d61eaf460cd445d68457b98aa66ddaa98363685fe78d2ed89"
+file = "mods/creeper-no-break.pw.toml"
+hash = "f301514844e9317208a1a660a06b415f5b0f118f3b7c7e19151b6a9ca1ad5db4"
 metafile = true
 
 [[files]]
 file = "mods/cristel-lib.pw.toml"
-hash = "f5e003c79747656afdd71f4344c0aef5cd804ad370f2f97194e6a434d28a2835"
+hash = "f3600016104b86f4d973c5a1b3c525c617520674a653d23c0ccc758c4503fa75"
 metafile = true
 
 [[files]]
 file = "mods/crops-love-rain.pw.toml"
-hash = "43fe53c1974bb66ee143007bbc8c6de2604940aa1513045be6712cbf09e518e9"
+hash = "b3a653272a177313794c17bee5f65863d88ef42cf08ff46cbf357b8e24457d73"
 metafile = true
 
 [[files]]
-file = "mods/dnt-stronghold-overhaul-lite-edition.pw.toml"
-hash = "6806d8d11a1504e4c6a6ed8fee36dd485580e438d89f3750bea033c494be5cd2"
+file = "mods/dungeons-and-taverns-stronghold-overhaul.pw.toml"
+hash = "025dd50dcae7c6fb3aa068c768cbddc96772e645b41b085e9215f731a6b3057b"
 metafile = true
 
 [[files]]
@@ -158,13 +146,8 @@ hash = "901014b075016cb4917a33b0eadeefb9480eff0b258c38515e7a0c4f60efa016"
 metafile = true
 
 [[files]]
-file = "mods/explorify.pw.toml"
-hash = "eb53686e058fe3ac3f646c0eab370d279af62f9fb79ae9cd391eb18395a610f5"
-metafile = true
-
-[[files]]
 file = "mods/fabric-api.pw.toml"
-hash = "efd1cf636afe382021ceb236ff813466e0d40158289000af6d4ac6730198f3dc"
+hash = "a09bcba54a5bb4c8716edaecf7afb4b8f913215d5fb252ded96e14328ac3e931"
 metafile = true
 
 [[files]]
@@ -174,102 +157,107 @@ metafile = true
 
 [[files]]
 file = "mods/floodgate.pw.toml"
-hash = "e9520e6bb14b70a4d7c60b25f0c93e2303d0535f64213262f037aa381d56d5b2"
+hash = "013fce3fab2b91e2ff33747f0ff3e22f5e1b1845d88321c7232655f67c57eb93"
 metafile = true
 
 [[files]]
 file = "mods/forge-config-api-port.pw.toml"
-hash = "f6736bea7ee68148b761a747b4e078c6489a22ab2e8a96e1bb6bb8c181f59227"
+hash = "8099f8d9657f3762d4d4ac43101ed4a61d274525642775c0ed813b99e3f539c3"
 metafile = true
 
 [[files]]
 file = "mods/geyser.pw.toml"
-hash = "a3c0592d2ba6bfdf3017d5013f8135750b52bd8e87fce73a3220200289b78ab6"
+hash = "813cd7a6e09e29a36e21ee5d563bff9f794047b66b26c1a48433e7e29b076321"
 metafile = true
 
 [[files]]
 file = "mods/hopo-better-mineshaft.pw.toml"
-hash = "ec47048bfe5e844ae019fe19bb47522ed72e7f5d47dd48ad4f634bd9a839a4f0"
+hash = "2b17627a9132b87d894e305c37468c0c619db032d290507c865b6234385aea0e"
 metafile = true
 
 [[files]]
 file = "mods/justenoughbackups-jeb.pw.toml"
-hash = "dacc71f2a73035af849b2eca9bfe2bdf1b1674075bce21c255ddd5ce10ebde57"
+hash = "bf38664449b4e6415b2b621937e03fa71ddec1e7e2d78eaec4f5c0ac4af6730c"
 metafile = true
 
 [[files]]
 file = "mods/lithium.pw.toml"
-hash = "676405a8c29aeda313604db76783595824ae5ec228e0d596e46785e7492c4abc"
+hash = "91e77ed32040d00df5b75624bfa549386dd88ecb5265aac3e760d84c5de5c469"
 metafile = true
 
 [[files]]
 file = "mods/luckperms.pw.toml"
-hash = "9057bf155ff127a587f21cbad5cac9361bb7f8b5600cbd4a79a81b1e009c9fae"
+hash = "bfffd2accb772b523325abf434798eea0a318650db7d7613d77d3693807f32ab"
 metafile = true
 
 [[files]]
 file = "mods/moogs-structure-lib.pw.toml"
-hash = "f986dffaf8dcca7fc0e63f748087d0faac8e9cb7fd08ebf9a5f3d2f1294b45c5"
+hash = "73c32f24e7837256d073d944c03cf4323879dd8a2b70d6b47c55756dbe4490fe"
 metafile = true
 
 [[files]]
 file = "mods/mos-moogs-ocean-structures.pw.toml"
-hash = "b100b7b33e95640ee846220e384f1d0e65bd7463d21b1f49bc675cb501e5674d"
+hash = "93207b104d3dbb556e5b5fd364db0e6b0e8b409cd0df07ed5594a334b8831ee5"
 metafile = true
 
 [[files]]
 file = "mods/mss-moogs-soaring-structures.pw.toml"
-hash = "4a2ff2c654ac7828b13af858c3bd9751982db5945cdff5068f932c543676b129"
+hash = "fa464b6a91fca151a8a2711ac6dcba048f537670a829e91775bd6f8bfc105f05"
 metafile = true
 
 [[files]]
 file = "mods/naturally-trimmed.pw.toml"
-hash = "eea1f6968372cfe2fd48579cebb57bd2701715b16cd4f029ab6cc1b98c3c12c7"
+hash = "650d0fc2fe36196b9853b5892c5686e901955441de6d927cb50b2a608bfd9728"
 metafile = true
 
 [[files]]
 file = "mods/polymer.pw.toml"
-hash = "97bb50a681a1728633da6cd02009f4ae80fe2eb6c052e5cf5601035628c85dba"
+hash = "0105a44d0d73a28a255c1c36e8347b3b57f853e611febbdd42d8992095e057d4"
 metafile = true
 
 [[files]]
 file = "mods/servercore.pw.toml"
-hash = "9e792c866b7b70cba00aa53a27dab2a28b24c0d8c20960571c084c48cdd230d2"
+hash = "39edae3906c30e570070599dd3830ff06ac466bb428877c5cfe968e8ffa000b0"
 metafile = true
 
 [[files]]
 file = "mods/spark.pw.toml"
-hash = "bbecd4d64ac545d8ed01ef36be25e2206667c197d93baba605f604a5daeefbb8"
+hash = "f61681a676a163851845222fac7278626d044001ddb31ccd9608e364c50c60aa"
 metafile = true
 
 [[files]]
 file = "mods/squaremap.pw.toml"
-hash = "caa0cc2eae0165123914e560b07ae068efbae68ab12ec0140ca81d16c58ddd10"
+hash = "d0294930144bb274ebe38b2cc916a35392c7a39f85a075bfb1273e0080dc7e8e"
 metafile = true
 
 [[files]]
 file = "mods/sswaystones.pw.toml"
-hash = "d978587406a870c82cafdc9bb27779f1f107700ac5906a5e9adc454ebe4428e9"
+hash = "24dd728d0cb12bdc85f368e1ca3bc9b5dd14e826169d0228687262e89d66f1ec"
+metafile = true
+
+[[files]]
+file = "mods/structory.pw.toml"
+hash = "af79b30c111a828867401ed92fab31206881daed77180e3220ed0f82e5cc6aa5"
 metafile = true
 
 [[files]]
 file = "mods/towns-and-towers.pw.toml"
-hash = "1847208530042f9d761fa1ff86dfaafe88523a661d863bdeedc7c4f80e3d2a4c"
+hash = "feae42798598c39aeffa9fbc09fa0bf2870ef6da34cb1bf4593f79e94e9afcff"
 metafile = true
 
 [[files]]
 file = "mods/universal-graves.pw.toml"
-hash = "259b6e987a2e9b5b36b42574efef96ad08e6830c6b1c82dad0271a9015bf6979"
+hash = "bbe6ab59ec8590670233e59ea9627137c335776f2e32f3bb5adfcce0bddeaa7f"
 metafile = true
 
 [[files]]
 file = "mods/villager-names-serilum.pw.toml"
-hash = "92ceedbf99ead131b39d6dfbcc7f93e032866177741e5a6c93c153625d40ba51"
+hash = "05d23bf4c8101f1101718d89772f29083f9fd9d11fc962553dcfb8c2244617d2"
 metafile = true
 
 [[files]]
 file = "mods/villagers-tasks.pw.toml"
-hash = "fb44a3ec0ddecd5b69f6c9288d9a698bc10031bde2c4aaaba920dbb398d72bf2"
+hash = "6e343ca51ad61a9ce8e116fcc93cd01e7cdf732cab99d401780349b471d32a40"
 metafile = true
 
 [[files]]

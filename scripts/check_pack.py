@@ -113,8 +113,8 @@ def load_collection(errors: list[str]) -> tuple[dict[str, str], int, int]:
     collection = load_toml(COLLECTION_PATH)
     if collection.get("schema") != 1:
         errors.append("collection.toml schema must be 1")
-    if collection.get("minecraft") != "26.2" or collection.get("loader") != "fabric":
-        errors.append("collection.toml target must be Fabric / Minecraft 26.2")
+    if collection.get("minecraft") != "26.3" or collection.get("loader") != "fabric":
+        errors.append("collection.toml target must be Fabric / Minecraft 26.3")
     selected = collection.get("selected", [])
     resolved = collection.get("resolved-dependency", [])
     if not isinstance(selected, list) or not isinstance(resolved, list):
@@ -186,8 +186,8 @@ def load_candidates(
 
 def validate_pack(errors: list[str]) -> dict:
     pack = load_toml(ROOT / "pack.toml")
-    if pack.get("versions", {}).get("minecraft") != "26.2":
-        errors.append("pack.toml must target Minecraft 26.2")
+    if pack.get("versions", {}).get("minecraft") != "26.3":
+        errors.append("pack.toml must target Minecraft 26.3")
     if not pack.get("versions", {}).get("fabric"):
         errors.append("pack.toml must pin a Fabric Loader version")
     index_info = pack.get("index", {})

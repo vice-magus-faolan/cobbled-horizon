@@ -4,7 +4,7 @@ Cobbled Horizon treats DatHost's 30 GB filesystem as a shared failure budget for
 
 ## Launch policy
 
-- **JEB is active in the 26.2 baseline.** It is configured conservatively, but it is not production-proven until the acceptance-test restore drill passes.
+- **JEB is active in the 26.3 development candidate.** It is configured conservatively, but it is not production-proven until fresh full and differential restore drills pass against the updated pin. Retained 26.2 evidence does not prove this candidate.
 - **Ledger is not part of the launch baseline.** For a small allowlisted server, the operational cost and unbounded-growth risk are not justified until moderation history or surgical rollback is demonstrably needed.
 - **DatHost's daily backup remains enabled.** JEB is an application-aware recovery layer, not a replacement for the provider's independent backup.[4]
 - Keep an off-host copy before every pack, loader, world-generation, or configuration migration.
@@ -27,7 +27,7 @@ The checked-in `config/justenoughbackups.json` applies this initial policy:
 
 The 6 GB cap limits retained archives; the 8 GB reserve protects operating headroom and can cause backups to fail early rather than fill the volume. JEB's preflight also accounts for the active world and temporary compression needs, so monitor failures and actual world, map, and backup sizes instead of assuming the caps guarantee capacity.[5][6]
 
-JEB 1.2.0.6 resets both schedule timers at server startup and config reload. Restarts less than 24 hours apart can prevent the scheduled full backup from becoming due, so the configured interval alone does not establish daily rotation.[9]
+The previously inspected JEB 1.2.0.6 resets both schedule timers at server startup and config reload. Restarts less than 24 hours apart can prevent the scheduled full backup from becoming due, so the configured interval alone does not establish daily rotation.[9] Recheck these semantics with the candidate's 1.2.0.10+26.3; keep the conservative explicit-full-backup procedure until runtime evidence establishes otherwise.
 
 ### Create full backups across restarts
 

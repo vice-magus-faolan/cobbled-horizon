@@ -2,6 +2,8 @@
 
 Run these against a disposable world before production and again after every mod or loader update.
 
+The 26.3 candidate has no runtime pass. Its Geyser beta and changed structure composition require fresh evidence; historical 26.2 results do not satisfy these gates.
+
 All Minecraft server startup, world-generation, and gameplay tests must run on the designated, adequately resourced Minecraft test host. A control/orchestration machine may perform static validation and export only.
 
 ## Automated gates
@@ -9,12 +11,12 @@ All Minecraft server startup, world-generation, and gameplay tests must run on t
 ```bash
 make test
 make validate
-make export
-python3 scripts/validate_mrpack.py dist/cobbled-horizon-26.2.0.1.0.mrpack --minecraft 26.2
+make release
 ```
 
 ## Server lifecycle
 
+- [ ] Rehearse the stopped-server [deployment reconciliation](deployment.md#upload) on a disposable copy with a verified pack/config/world rollback backup. The active mods set matches the verified 32-project payload with retired and superseded JARs absent; only the three named obsolete config files are removed, while host settings, secrets, Floodgate key, unrelated files and rollback copies are preserved.
 - [ ] Clean server reaches `Done` with no missing dependency or wrong-version error.
 - [ ] A second boot succeeds using the generated world and configs.
 - [ ] `stop` exits cleanly and saves all dimensions.
@@ -23,8 +25,9 @@ python3 scripts/validate_mrpack.py dist/cobbled-horizon-26.2.0.1.0.mrpack --mine
 
 ## Clients and cross-play
 
-- [ ] Unmodded Java 26.2 client joins successfully.
-- [ ] Bedrock client joins through the assigned Geyser UDP port.
+- [ ] Unmodded Java 26.3 client joins successfully.
+- [ ] Geyser `2.12.1-b1281` config migration, actual listeners and advertised addresses match the verified host allocations and [network arrangement](deployment.md#geyser-networking): UDP for NetherNet media plus TCP on the Bedrock port for built-in signaling, distinct from Java's TCP listener, or explicitly configured and verified external signaling with suitable UDP reachability. Authentication/privacy policy is unchanged; no host support or external-service approval is assumed.
+- [ ] A real Bedrock client joins and reconnects through that verified arrangement; successful UDP binding alone is not a pass.
 - [ ] Floodgate player reconnects with the same identity and inventory.
 - [ ] `online-mode=true` and `enforce-secure-profile=false` are applied on the host; both Java and Bedrock players can send and receive chat.
 - [ ] Java and Bedrock chat, inventory, doors, boats, and combat behave acceptably.
@@ -40,7 +43,7 @@ python3 scripts/validate_mrpack.py dist/cobbled-horizon-26.2.0.1.0.mrpack --mine
 - [ ] A survival player cannot pay the configured `2147483647`-level cross-dimension cost. Confirm that creative owner bypass still exists and do not describe this as a hard mod-level disable.
 - [ ] Java and Bedrock players can see, open, and completely recover a grave.
 - [ ] Grave XP recovery and real-time expiry match policy.
-- [ ] Creepers damage entities without breaking blocks; unrelated mob behavior remains normal.
+- [ ] Creeper No Break prevents creeper terrain destruction while preserving entity damage and knockback. Contrast a non-creeper explosion and unrelated mob-griefing behavior; do not disable the global gamerule to manufacture a pass.
 - [ ] Java and Bedrock players see persistent villager names and can trade normally; profession text may differ because the client-side enhancement is optional.
 - [ ] Each Villagers Tasks profession action uses only vanilla-visible entities, items, particles, inventories, and sounds on both Java and Bedrock clients.
 - [ ] Villagers Tasks culling, breeding, healing, resource generation, fishing, and shearing rates are acceptable for balance and occupied-village tick cost.
@@ -59,9 +62,9 @@ Use disposable seeds and `/locate structure` where available.
 - [ ] Confirm vanilla villages and Towns and Towers settlements still generate alongside Epic towns; inspect settlement density, overlap, and loot progression.
 - [ ] Test trading, containers, and village traversal with unmodded Java and Bedrock clients in Epic towns.
 - [ ] Compare chunk-generation cost and occupied-settlement tick time against the baseline without Epic Standalone using the same seed and test area.
-- [ ] Inspect several Explorify structures, including campsite-like structures.
+- [ ] Inspect several Structory structures in fresh chunks; check terrain joins, loot, density and overlap with the other selected packs on Java and Bedrock. Confirm the removed Explorify overrides are not applied to Structory.
 - [ ] Inspect Hopo mineshafts at different depths.
-- [ ] Locate and enter a DnT Lite stronghold; verify portal and loot progression.
+- [ ] Locate and enter standalone DnT strongholds; verify portal access, surface rooms, trades, loot and enchantment progression on Java and Bedrock. Measure first-generation stalls and generation cost before pre-generation; do not assume Lite's balance or config applies.
 - [ ] Inspect several Moog floating structures and confirm rarity feels intentional.
 - [ ] Locate several MOS structures in newly generated ordinary, deep, warm, and cold ocean chunks; include seafloor ruins and surface ships or rafts.
 - [ ] On both unmodded Java and Bedrock, inspect MOS blocks and entities, open every encountered container type, and verify loot and hostile encounters remain usable and balanced.

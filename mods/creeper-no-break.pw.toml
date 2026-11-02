@@ -1,0 +1,14 @@
+name = "Creeper No Break"
+filename = "creeper-no-break-1.2.0.jar"
+side = "server"
+pin = true
+
+[download]
+url = "https://cdn.modrinth.com/data/ujZZZb4P/versions/wdzLurKR/creeper-no-break-1.2.0.jar"
+hash-format = "sha512"
+hash = "00bb5ecfdfd3504f5cf447e34ec7558a7348690fa4f4270050ec73cb6e323224e53f9b4a14ab6c517f89dae63f22b8f0f333ffc954fde38c025bfeebefa7c557"
+
+[update]
+[update.modrinth]
+mod-id = "ujZZZb4P"
+version = "wdzLurKR"
