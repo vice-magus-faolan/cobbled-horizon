@@ -4,7 +4,7 @@ A reproducible, server-side Fabric collection for a Vanilla+ Minecraft world foc
 
 This **development candidate** targets **Minecraft Java 26.3** with **Fabric Loader 0.20.1**. It contains 26 deliberately selected projects plus six resolved dependencies. All 32 exact artifacts have published Fabric 26.3 support; 31 are release-designated and Geyser `2.12.1-b1281` (`MJYV1WUM`) is explicitly pinned as beta. This is not a clean-boot, gameplay, Bedrock, or production-readiness claim. Just Enough Backups (JEB) retains the backup role.
 
-Java players should not need this pack on their clients: every packwiz entry is marked `side = "server"`. Bedrock access is provided by Geyser and Floodgate and still requires a reachable UDP port on the host.
+Java players should not need this pack on their clients: every packwiz entry is marked `side = "server"`. Bedrock access is provided by Geyser and Floodgate. This Geyser build requires UDP for NetherNet media and either TCP on the Bedrock port for built-in signaling, distinct from Java's TCP listener, or an explicitly configured and verified external signaling service. Host support is unverified; see [`Geyser networking`](docs/deployment.md#geyser-networking).
 
 ## Version branches
 
@@ -129,7 +129,7 @@ On the designated Minecraft test host, materialize a clean server tree with:
 make materialize
 ```
 
-Do not upload the `.mrpack` to an undocumented DatHost field. Build and test on the designated Minecraft host, then upload the materialized `mods/`, `config/`, and `squaremap/` directories as described in [`docs/deployment.md`](docs/deployment.md).
+Do not upload the `.mrpack` to an undocumented DatHost field. Build and test on the designated Minecraft host, then follow the stopped-server backup and reconciliation procedure in [`docs/deployment.md`](docs/deployment.md#upload). Overlaying the materialized directories alone does not remove retired host JARs or obsolete config files.
 
 ## GitHub releases
 
@@ -169,15 +169,15 @@ Release automation performs static validation. Complete the designated-host acce
 
 Do not run unreviewed floating updates on `26.2` or `26.3`. Use a topic branch targeting the intended version line, select exact version IDs, regenerate the index and export, then repeat the clean boot and acceptance tests.
 
-To recheck exact-version availability for the 26.3 line:
+To discover upstream project availability for the exact Minecraft target 26.3:
 
 ```bash
 python3 scripts/check_target_readiness.py --minecraft 26.3
 ```
 
-A nonzero exit means at least one baseline project remains unavailable. Staged candidates are reported separately and do not block the baseline. `--release-only` also rejects alpha/beta files; `--baseline-only` suppresses staged reporting.
+A nonzero exit means at least one baseline project has no matching published file or its lookup failed. Staged candidates are reported separately and do not block the baseline. The checker queries all published versions of each project, not the selected lock ID. `--release-only` filters those results to release-designated Fabric files for the target Minecraft version; `--baseline-only` suppresses staged reporting.
 
-The documented Geyser beta is a candidate-specific exception, not a relaxation of `--release-only`; that mode must continue rejecting it. Retained staged pins have not been refreshed or activated for 26.3.
+This is an upgrade-discovery check, not an audit of pinned-pack stability: a later upstream release can make `--release-only` green while this pack still pins the Geyser beta `2.12.1-b1281`. That pin remains explicitly beta and is not deployment-approved. Exact selected artifacts require the separate metadata/hash audit and acceptance gates in [`docs/version-policy.md`](docs/version-policy.md#exact-pins); the candidate-specific beta exception does not relax release-only filtering or permit other prereleases. Retained staged pins have not been refreshed or activated for 26.3.
 
 ## Documentation
 

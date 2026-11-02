@@ -16,6 +16,7 @@ make release
 
 ## Server lifecycle
 
+- [ ] Rehearse the stopped-server [deployment reconciliation](deployment.md#upload) on a disposable copy with a verified pack/config/world rollback backup. The active mods set matches the verified 32-project payload with retired and superseded JARs absent; only the three named obsolete config files are removed, while host settings, secrets, Floodgate key, unrelated files and rollback copies are preserved.
 - [ ] Clean server reaches `Done` with no missing dependency or wrong-version error.
 - [ ] A second boot succeeds using the generated world and configs.
 - [ ] `stop` exits cleanly and saves all dimensions.
@@ -25,7 +26,8 @@ make release
 ## Clients and cross-play
 
 - [ ] Unmodded Java 26.3 client joins successfully.
-- [ ] Bedrock client joins through the assigned Geyser UDP port.
+- [ ] Geyser `2.12.1-b1281` config migration, actual listeners and advertised addresses match the verified host allocations and [network arrangement](deployment.md#geyser-networking): UDP for NetherNet media plus TCP on the Bedrock port for built-in signaling, distinct from Java's TCP listener, or explicitly configured and verified external signaling with suitable UDP reachability. Authentication/privacy policy is unchanged; no host support or external-service approval is assumed.
+- [ ] A real Bedrock client joins and reconnects through that verified arrangement; successful UDP binding alone is not a pass.
 - [ ] Floodgate player reconnects with the same identity and inventory.
 - [ ] `online-mode=true` and `enforce-secure-profile=false` are applied on the host; both Java and Bedrock players can send and receive chat.
 - [ ] Java and Bedrock chat, inventory, doors, boats, and combat behave acceptably.
