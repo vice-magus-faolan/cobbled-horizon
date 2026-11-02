@@ -18,10 +18,13 @@ validate_curseforge = load_script("validate_curseforge")
 
 class ReleaseMetadataTests(unittest.TestCase):
     def test_minecraft_prefixed_release_tag(self) -> None:
-        pack = {"version": "26.2.0.1.0", "versions": {"minecraft": "26.2"}}
-        values = release_metadata.metadata(pack, "v26.2.0.1.0")
-        self.assertEqual("26.2.0.1.0", values["version"])
-        self.assertEqual("cobbled-horizon-26.2.0.1.0", values["basename"])
+        for minecraft in ("26.2", "26.3"):
+            with self.subTest(minecraft=minecraft):
+                version = f"{minecraft}.0.1.0"
+                pack = {"version": version, "versions": {"minecraft": minecraft}}
+                values = release_metadata.metadata(pack, f"v{version}")
+                self.assertEqual(version, values["version"])
+                self.assertEqual(f"cobbled-horizon-{version}", values["basename"])
 
     def test_mismatched_and_malformed_tags_are_rejected(self) -> None:
         pack = {"version": "26.2.0.1.0", "versions": {"minecraft": "26.2"}}

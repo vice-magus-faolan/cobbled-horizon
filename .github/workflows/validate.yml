@@ -2,7 +2,7 @@ name: Build and release pack
 
 on:
   push:
-    branches: [main]
+    branches: ['26.2', '26.3']
     tags: ['v*']
   pull_request:
   workflow_dispatch:
@@ -46,6 +46,7 @@ jobs:
           python3 scripts/release_metadata.py "${args[@]}" >> "$GITHUB_OUTPUT"
 
       - name: Test repository tooling
+        # Pins, validators and exports share one contract: run the full PR suite.
         run: python3 -m unittest discover -s tests -v
 
       - name: Install pinned packwiz revision

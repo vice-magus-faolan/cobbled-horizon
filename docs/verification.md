@@ -1,5 +1,15 @@
 # Verification record
 
+## Fabric 26.3 development candidate
+
+Date: 2026-11-02 UTC
+
+The candidate targets Minecraft 26.3, Fabric Loader 0.20.1 and pack version `26.3.0.1.0`. Exact primary Modrinth version records identify 32 active builds: 31 release-designated versions and the explicitly accepted Geyser beta `2.12.1-b1281` (`MJYV1WUM`). All 32 primary artifacts were downloaded and checked against published sizes and SHA-512 hashes. Required API dependency IDs and recursively inspected embedded Fabric dependency IDs close within the active inventory and nested providers. This does not prove all version-range or runtime compatibility.
+
+Creeper No Break `wdzLurKR`, Structory `GjOkOVW4`, and standalone Dungeons and Taverns Stronghold Overhaul `hNKbQ85c` replace the three retired selections. Creeper's static mixin evidence targets creeper block interaction without replacing the global mob-griefing policy; entity damage/knockback still need gameplay checks. Structory and standalone DnT contain no Java classes or client assets. DnT replaces vanilla stronghold generation and includes enchantment data, with an upstream first-generation-freeze warning. These are favorable packaging observations, not a Java/Bedrock or progression/performance pass.
+
+The five staged pins remain excluded and unchanged; future projects remain future-only. The retained `26.2` version line is separate. All historical results below apply only to their original candidates, not this 26.3 artifact. Exact-head hosted source/index/export checks, clean boot, real Bedrock access, config migration, backup restoration and fresh-chunk worldgen tests remain required at their respective gates.
+
 ## Superseded full-stack smoke test
 
 Date: 2026-09-10 UTC

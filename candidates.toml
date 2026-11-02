@@ -1,10 +1,12 @@
 schema = 1
-minecraft = "26.2"
+minecraft = "26.3"
 loader = "fabric"
 
 # Staged projects retain pinned packwiz metadata outside the active mods/ tree.
 # They are not exported by the baseline pack. Future projects are research
 # candidates only and have no packwiz metadata until deliberately promoted.
+# Retained staged pins are historical inputs, not proof of 26.3 compatibility.
+# Re-select exact target versions before promotion; do not activate them here.
 
 
 [[staged]]

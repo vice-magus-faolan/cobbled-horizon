@@ -4,7 +4,9 @@ DatHost documents Fabric support and manual uploads of mods and configuration fi
 
 ## Preflight
 
-- Confirm DatHost offers Fabric 0.19.5 for Minecraft 26.2 or an equivalent supported Fabric installation path.
+This 26.3 development candidate is not approved for deployment. Complete source/hosted review and the designated-host runtime acceptance first, including the Geyser beta and replacement structure gates. Preserve the 26.2 pack and its world snapshot as a separate rollback line.
+
+- Confirm DatHost offers Fabric 0.20.1 for Minecraft 26.3 or an equivalent supported Fabric installation path.
 - Confirm a reachable UDP allocation for Geyser.
 - Confirm an HTTP port or proxy arrangement for squaremap.
 - Confirm DatHost's daily-backup retention, restore scope, and whether it counts against the 30 GB allocation.
@@ -23,13 +25,13 @@ make validate
 make materialize
 ```
 
-The generated server tree is `build/server/`. Inspect it before upload. It must contain the 25 active baseline project JARs and reviewed config overrides, but no staged/client-only JARs or credentials.
+The generated server tree is `build/server/`. Inspect it before upload. It must contain the 32 active project JARs and reviewed config overrides, but no staged/client-only JARs or credentials. Reconcile generated configs with the retained policy; remove the three obsolete Explorify/Lite files described in [`configuration.md`](configuration.md#structure-generation), without carrying them into the replacement namespaces.
 
 ## Upload
 
 With the DatHost server stopped:
 
-1. Set the server type and version to Fabric / Minecraft 26.2.
+1. Set the server type and version to Fabric / Minecraft 26.3 with the pinned loader.
 2. Upload `build/server/mods/` into DatHost's `/mods`.
 3. Upload `build/server/config/` into `/config`.
 4. Upload `build/server/squaremap/` into `/squaremap`.
@@ -46,9 +48,9 @@ If startup fails, stop the server before making further changes. Restore the pri
 
 ## Backups
 
-JEB replaces Textile Backup in the 26.2 baseline. Its checked-in policy limits retained backups to 6 GB and preserves an 8 GB free-space reserve. Keep DatHost's daily backup enabled as an independent layer and download an off-host snapshot before every pack or loader update.
+JEB remains the backup component in the 26.3 candidate. Its checked-in policy limits retained backups to 6 GB and preserves an 8 GB free-space reserve. Keep DatHost's daily backup enabled as an independent layer and download an off-host snapshot before every pack or loader update.
 
-JEB resets its automatic timers at startup and config reload. Coordinate explicit full backups with the host's restart schedule, and verify completion before each scheduled restart. Follow [`storage-and-recovery.md`](storage-and-recovery.md) for the operating procedure and required full and differential restore drills.
+Previously inspected JEB versions reset automatic timers at startup and config reload; verify that behavior again for the updated pin. Coordinate explicit full backups with the host's restart schedule, and verify completion before each scheduled restart. Follow [`storage-and-recovery.md`](storage-and-recovery.md) for the operating procedure and required full and differential restore drills.
 
 ## Optional Ledger deployment
 

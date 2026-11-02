@@ -77,9 +77,9 @@ class PackSourceTests(unittest.TestCase):
         self.assertIs(False, rain["debug"]["halt_regular_growth"])
 
         expected_pins = {
-            "naturally-trimmed.pw.toml": ("hHVaPgFK", "vnFt7Fhi"),
-            "crops-love-rain.pw.toml": ("cRci7UZp", "YzNJMQVQ"),
-            "forge-config-api-port.pw.toml": ("ohNO6lps", "rSd3GiG8"),
+            "naturally-trimmed.pw.toml": ("hHVaPgFK", "h3K7LsVB"),
+            "crops-love-rain.pw.toml": ("cRci7UZp", "2wR3dP9w"),
+            "forge-config-api-port.pw.toml": ("ohNO6lps", "JpKvrr9J"),
         }
         for filename, (project_id, version_id) in expected_pins.items():
             with self.subTest(filename=filename):
@@ -108,7 +108,23 @@ class PackSourceTests(unittest.TestCase):
         self.assertEqual("server", mos["side"])
         self.assertIs(True, mos["pin"])
         self.assertEqual("ZKBkklMv", mos["update"]["modrinth"]["mod-id"])
-        self.assertEqual("4b7dG23l", mos["update"]["modrinth"]["version"])
+        self.assertEqual("QfMITqh9", mos["update"]["modrinth"]["version"])
+
+    def test_version_line_and_selected_replacements(self) -> None:
+        collection = tomllib.loads((ROOT / "collection.toml").read_text())
+        selected = {entry["project-id"] for entry in collection["selected"]}
+        self.assertTrue({"ujZZZb4P", "aKCwCJlY", "rYocd2LE"} <= selected)
+        self.assertTrue({"ptis34fZ", "HSfsxuTo", "LbGT0kSV"}.isdisjoint(selected))
+        errors = []
+        with patch.object(check_pack, "load_toml", return_value={**collection, "minecraft": "26.2"}):
+            check_pack.load_collection(errors)
+        self.assertIn("collection.toml target must be Fabric / Minecraft 26.3", errors)
+
+        pack = tomllib.loads((ROOT / "pack.toml").read_text())
+        errors = []
+        with patch.object(check_pack, "load_toml", return_value={**pack, "versions": {**pack["versions"], "minecraft": "26.2"}}):
+            check_pack.validate_pack(errors)
+        self.assertIn("pack.toml must target Minecraft 26.3", errors)
 
     def test_safe_relative_paths(self) -> None:
         self.assertTrue(check_pack.safe_relative("mods/lithium.pw.toml"))
@@ -161,7 +177,7 @@ class MrpackTests(unittest.TestCase):
                 for name, contents in overrides.items():
                     archive.writestr(name, contents)
             output = io.StringIO()
-            with patch.object(sys, "argv", ["validate_mrpack.py", str(path), "--minecraft", "26.2"]), contextlib.redirect_stdout(output):
+            with patch.object(sys, "argv", ["validate_mrpack.py", str(path), "--minecraft", "26.3"]), contextlib.redirect_stdout(output):
                 result = validate_mrpack.main()
             return result, output.getvalue()
 
