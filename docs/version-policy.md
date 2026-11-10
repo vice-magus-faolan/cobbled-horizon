@@ -2,9 +2,9 @@
 
 ## Release versions
 
-`pack.toml` is the source of truth for release versions and artifact names. Its `version` is `<Minecraft version>.<pack major>.<pack minor>.<pack patch>`, currently `26.3.0.1.1`. Git tags add a leading `v`, giving `v26.3.0.1.1`. The Minecraft prefix must match `versions.minecraft` exactly. Both exported manifests retain the complete pack version. This numeric candidate identity does not establish runtime readiness or authorize a release.
+`pack.toml` is the source of truth for release versions and artifact names. Its `version` is `<Minecraft version>.<pack major>.<pack minor>.<pack patch>`, currently `26.3.0.1.2`. Git tags add a leading `v`, giving `v26.3.0.1.2`. The Minecraft prefix must match `versions.minecraft` exactly. Both exported manifests retain the complete pack version. This numeric candidate identity does not establish runtime readiness or authorize a release.
 
-This pack-only patch on Minecraft 26.3 uses `26.3.0.1.1`. If Minecraft gains another version component, keep the complete prefix, for example `26.3.1.0.1.0` for Minecraft 26.3.1 and pack revision 0.1.0. Release tags currently accept numeric versions only, without prerelease suffixes.
+The next pack-only patch on Minecraft 26.3 would use `26.3.0.1.3`. If Minecraft gains another version component, keep the complete prefix, for example `26.3.1.0.1.0` for Minecraft 26.3.1 and pack revision 0.1.0. Release tags currently accept numeric versions only, without prerelease suffixes.
 
 Pushing a matching tag builds and publishes the `.mrpack`, server CurseForge-format `.zip`, and `.sha256` file to GitHub Releases. See the [release instructions](../README.md#github-releases). Publication to Modrinth or CurseForge is not configured.
 
@@ -48,6 +48,8 @@ Staged pins retain historical bytes, including 26.2 builds; they are excluded fr
 9. Deploy only after its gates pass, verify, and retain the previous known-good pack and matching world snapshot for rollback.
 
 ## 26.3 candidate readiness
+
+Pack `26.3.0.1.2` changes only Epic's placement policy through the existing Cristel auto-config mechanism: `epic:villages` uses spacing `80`, separation `22`, salt `50387312` and frequency `1.0`. All mod/loader pins and other structure tuning remain unchanged. The 75% reduction is in Epic candidate-grid positions per area, not measured settlements. Verify actual config loading, fixed-seed fresh-chunk density/proximity, generation cost and Java/Bedrock interaction before deployment or pre-generation; existing chunks are not retroactively changed. See [configuration rationale](configuration.md#structure-generation).
 
 Use:
 

@@ -87,7 +87,7 @@ Fabric API is the only explicitly selected platform library. Polymer, Cristel Li
 - Naturally Trimmed uses only vanilla trim materials and patterns. Trimmed equipment remains uncommon: 75% of eligible mobs receive no trims, each remaining armor piece has a 35% chance, loot uses 15%, and level-three-or-higher trades use 10%.
 - Crops Love Rain gives directly rain-exposed crops and cocoa a 1-in-10 extra-stage chance per applicable random tick; slower-growing plants use 1-in-15. Bamboo's rain bonus is disabled because the mod checks global rain rather than direct exposure for bamboo.
 - Moog's spacing is scoped by namespace: Soaring Structures uses `2.0`, while Ocean Structures uses `3.0`. The universal multiplier remains `1.0` so future Moog packs do not inherit either rarity policy.
-- Epic Villages Standalone preserves vanilla villages and initially uses its packaged placement defaults. Settlement density and performance still require acceptance testing before deployment.
+- Epic Villages Standalone preserves vanilla villages. Its Cristel placement override uses spacing `80` and separation `22`, retaining salt `50387312` and frequency `1.0`: 75% fewer Epic candidate-grid positions per area than the shipped `40`/`11` policy, not measured settlement totals or guaranteed cross-mod separation. Existing chunks are unchanged; config loading, fresh-chunk density and performance still require acceptance before deployment.
 - Universal Graves retains 75% of XP, protects graves for one hour, and expires them after 24 real-time hours.
 - squaremap enables only the Overworld, limits zoom, reduces background rendering pressure, and intentionally retains its live player tracker. The tracker becomes public to anyone who can reach the configured map endpoint.
 - JEB uses 24-hour full and three-hour differential intervals, a 6 GB retention cap, an 8 GB free-space reserve, and operator-level-4 commands. Startup resets the timers, so deployment requires an initial full backup and explicit daily full backups coordinated with host restarts. Production launch requires full and differential restore drills.
@@ -120,7 +120,7 @@ Export validation compares the exact mod pins, server/client flags, and configur
 The export lands at:
 
 ```text
-dist/cobbled-horizon-26.3.0.1.1.mrpack
+dist/cobbled-horizon-26.3.0.1.2.mrpack
 ```
 
 On the designated Minecraft test host, materialize a clean server tree with:
@@ -133,7 +133,7 @@ Do not upload the `.mrpack` to an undocumented DatHost field. Build and test on 
 
 ## GitHub releases
 
-Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. This candidate's source version is `26.3.0.1.1`, for Minecraft `26.3` and pack revision `0.1.1`. A matching tag would be `v26.3.0.1.1`; the numeric version is not a production approval. Do not tag this development candidate until separately approved for release.
+Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. This candidate's source version is `26.3.0.1.2`, for Minecraft `26.3` and pack revision `0.1.2`. A matching tag would be `v26.3.0.1.2`; the numeric version is not a production approval. Do not tag this development candidate until separately approved for release.
 
 To build and validate both release formats locally, run:
 
@@ -145,9 +145,9 @@ make release
 The release files are:
 
 ```text
-dist/cobbled-horizon-26.3.0.1.1.mrpack
-dist/cobbled-horizon-26.3.0.1.1.zip
-dist/cobbled-horizon-26.3.0.1.1.sha256
+dist/cobbled-horizon-26.3.0.1.2.mrpack
+dist/cobbled-horizon-26.3.0.1.2.zip
+dist/cobbled-horizon-26.3.0.1.2.sha256
 ```
 
 Both archives describe the server pack. The `.mrpack` preserves the server-only flags and references pinned Modrinth downloads. The CurseForge-format ZIP bundles those mod JARs under `overrides/mods/`, along with the configuration overrides. It is larger and is not a ready-to-run server directory. Java players do not need either archive to join.
@@ -155,8 +155,8 @@ Both archives describe the server pack. The `.mrpack` preserves the server-only 
 Only after source review, passing hosted checks, designated-host acceptance and explicit release approval, create and push the matching tag from the intended version line:
 
 ```bash
-git tag -a v26.3.0.1.1 -m "Cobbled Horizon v26.3.0.1.1"
-git push origin v26.3.0.1.1
+git tag -a v26.3.0.1.2 -m "Cobbled Horizon v26.3.0.1.2"
+git push origin v26.3.0.1.2
 ```
 
 GitHub Actions checks the version, tests the tooling, verifies the source index, and validates both exports. It then creates a GitHub release with both archives, their SHA-256 checksums, and generated release notes. Publishing uses the built-in `GITHUB_TOKEN`; no additional secrets are required. This workflow uploads to GitHub only.
