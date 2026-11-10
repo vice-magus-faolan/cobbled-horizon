@@ -80,10 +80,13 @@ Ledger is not present in `mods/` or the standard export. Its proposed deployment
 
 ## Structure generation
 
+The Epic placement override below was authored after the original runtime capture; it is source policy, not evidence of a new boot or generated-world acceptance.
+
 - Towns and Towers, Explorify, Hopo Better Mineshaft, and DnT Stronghold Lite retain generated defaults.
 - Moog's Structure Lib keeps its universal multiplier at `1.0`. Namespace-specific multipliers preserve Soaring Structures at `mss = 2.0` and make Ocean Structures uncommon at `mos = 3.0`; adding another Moog pack will not silently inherit either setting.
 - MOS 1.1.0 adds vanilla-block ocean ruins, wrecks, ships, temples, rafts, and seafloor oddities. Its static server-only packaging is favorable for unmodded Java and Geyser, but structure visibility, entities, containers, loot, density, and overlap with Towns and Towers remain runtime acceptance items on both Java and Bedrock.
-- Epic Structures: Villages Standalone Edition 1.0.0 adds five village styles without replacing vanilla village templates. Its packaged `epic:villages` structure set retains spacing `40` and separation `11`, with no exclusion zone around other settlements. No placement override is included; inspect density and proximity to Towns and Towers before deployment. These parameters do not guarantee distances between generated towns.
+- Epic Structures: Villages Standalone Edition 1.0.0 adds five village styles without replacing vanilla village templates. The Cristel override at `config/cristellib/mr_epic_structuresvillagesstandaloneedition/structure_placement_config.json5` targets only `epic:villages`: salt `50387312`, spacing `80`, separation `22`, frequency `1.0`. The directory is Epic's owning loader ID, not its `epic` worldgen namespace; this uses Cristel's `structure_placement_config.json5`, not the unrelated BuiltInAPI `placement_structure_config` filename. Plain JSON syntax keeps the policy readable by standard-library tooling.
+- Compared with packaged spacing `40` and separation `11`, doubling spacing gives 75% fewer Epic candidate-grid positions per area. This is not a measured reduction in generated settlements or all structures: biome and terrain eligibility still apply. Salt, frequency, styles and weights remain unchanged; no cross-mod exclusion zone is added. Inspect proximity to vanilla villages and Towns and Towers rather than assuming a guaranteed minimum distance.
 - Structure changes only affect newly generated chunks. Freeze this configuration before Chunky pre-generation.
 
 Spiral Tower Villages 0.0.3 is staged with no configuration override. Its exclusion zones reference the vanilla village set, not `epic:villages`. Promotion requires checking proximity to Epic towns, loot balance, and hidden redstone mechanisms with Alternate Current.

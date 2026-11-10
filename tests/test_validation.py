@@ -110,6 +110,24 @@ class PackSourceTests(unittest.TestCase):
         self.assertEqual("ZKBkklMv", mos["update"]["modrinth"]["mod-id"])
         self.assertEqual("4b7dG23l", mos["update"]["modrinth"]["version"])
 
+    def test_epic_village_placement_policy_is_pinned(self) -> None:
+        relative = (
+            "config/cristellib/mr_epic_structuresvillagesstandaloneedition/"
+            "structure_placement_config.json5"
+        )
+        policy = json.loads((ROOT / relative).read_text(encoding="utf-8"))
+        self.assertEqual(
+            {"epic:villages": {
+                "salt": 50387312,
+                "spacing": 80,
+                "separation": 22,
+                "frequency": 1.0,
+            }},
+            policy,
+        )
+        index = tomllib.loads((ROOT / "index.toml").read_text(encoding="utf-8"))
+        self.assertIn(relative, {entry["file"] for entry in index["files"]})
+
     def test_safe_relative_paths(self) -> None:
         self.assertTrue(check_pack.safe_relative("mods/lithium.pw.toml"))
         self.assertFalse(check_pack.safe_relative("../key.pem"))
