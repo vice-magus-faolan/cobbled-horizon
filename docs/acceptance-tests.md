@@ -16,7 +16,7 @@ make release
 
 ## Server lifecycle
 
-- [ ] Rehearse the stopped-server [deployment reconciliation](deployment.md#upload) on a disposable copy with a verified pack/config/world rollback backup. The active mods set matches the verified 32-project payload with retired and superseded JARs absent; only the three named obsolete config files are removed, while host settings, secrets, Floodgate key, unrelated files and rollback copies are preserved.
+- [ ] Rehearse the stopped-server [deployment reconciliation](deployment.md#upload) on a disposable copy with a verified pack/config/world rollback backup. The active mods set matches the verified 32-project payload, including Explorify v1.6.6 but no Structory or superseded JARs. Remove the retired Lite config and set aside the two named legacy Explorify configs pending generated-schema review; preserve host settings, secrets, Floodgate key, unrelated files and rollback copies.
 - [ ] Clean server reaches `Done` with no missing dependency or wrong-version error.
 - [ ] A second boot succeeds using the generated world and configs.
 - [ ] `stop` exits cleanly and saves all dimensions.
@@ -62,7 +62,8 @@ Use disposable seeds and `/locate structure` where available.
 - [ ] Confirm vanilla villages and Towns and Towers settlements still generate alongside Epic towns; inspect settlement density, overlap, and loot progression.
 - [ ] Test trading, containers, and village traversal with unmodded Java and Bedrock clients in Epic towns.
 - [ ] Compare chunk-generation cost and occupied-settlement tick time against the baseline without Epic Standalone using the same seed and test area.
-- [ ] Inspect several Structory structures in fresh chunks; check terrain joins, loot, density and overlap with the other selected packs on Java and Bedrock. Confirm the removed Explorify overrides are not applied to Structory.
+- [ ] Inspect several Explorify structures in fresh chunks on Java and Bedrock; check terrain joins, loot, density and overlap with the other selected packs. Review generated configs against packaged defaults and the retained 26.2 placement intent without transplanting unverified legacy schemas.
+- [ ] Locate and generate Explorify's Nether Black Spiral on a disposable world; measure generation stalls and tick cost alongside other Nether structures before pre-generation. Keep it enabled during acceptance; older upstream reports are neither a current-runtime failure nor a verified fix.
 - [ ] Inspect Hopo mineshafts at different depths.
 - [ ] Locate and enter standalone DnT strongholds; verify portal access, surface rooms, trades, loot and enchantment progression on Java and Bedrock. Measure first-generation stalls and generation cost before pre-generation; do not assume Lite's balance or config applies.
 - [ ] Inspect several Moog floating structures and confirm rarity feels intentional.

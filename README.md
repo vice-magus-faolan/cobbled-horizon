@@ -50,7 +50,7 @@ See [`docs/version-policy.md`](docs/version-policy.md) for pack update and accep
 - Collective *(dependency of Villager Names)*
 - [Towns and Towers](https://modrinth.com/mod/towns-and-towers)
 - [Epic Structures: Villages Standalone Edition](https://modrinth.com/mod/epic-structures-villages-standalone-edition)
-- [Structory](https://modrinth.com/mod/structory)
+- [Explorify](https://modrinth.com/mod/explorify)
 - [Hopo Better Mineshaft](https://modrinth.com/mod/hopo-better-mineshaft)
 - [Dungeons and Taverns Stronghold Overhaul](https://modrinth.com/mod/dungeons-and-taverns-stronghold-overhaul) *(standalone, not the broad DnT collection)*
 - [Moog's Soaring Structures](https://modrinth.com/mod/mss-moogs-soaring-structures)
@@ -59,7 +59,7 @@ See [`docs/version-policy.md`](docs/version-policy.md) for pack update and accep
 
 Exact baseline project IDs, version IDs, download URLs, and SHA-512 hashes live in `mods/*.pw.toml`. All entries are pinned.
 
-The 26.3 line replaces Creeper No Break Blocks, Explorify, and retired DnT Stronghold Lite with the three entries above; Formations is not added. Obsolete Explorify/Lite overrides are removed, while Towns and Towers and Moog spacing policy remain. New structures affect newly generated chunks, not existing terrain. Standalone DnT changes stronghold progression and includes enchantment data; generation stalls, portal access, loot and Java/Bedrock behavior require testing before pre-generation or migration. See [`docs/configuration.md`](docs/configuration.md#structure-generation).
+The 26.3 line replaces Creeper No Break Blocks and retired DnT Stronghold Lite, and restores Explorify v1.6.6 in place of interim Structory; Formations is not added. Explorify uses packaged defaults, preserving the 26.2 placement policy without reinstating unverified legacy config schemas. Towns and Towers and Moog spacing policy remain unchanged. New structures affect newly generated chunks, not existing terrain. Explorify's Nether Black Spiral generation/performance and standalone DnT's stronghold progression, enchantment data, generation stalls, portal access and loot require Java/Bedrock testing before pre-generation or migration. See [`docs/configuration.md`](docs/configuration.md#structure-generation).
 
 ### Staged and future candidates
 
@@ -76,7 +76,7 @@ This repository keeps the two concerns separate:
 - `mods/*.pw.toml` is the machine-maintained baseline lock layer. It contains the 32 projects exported by the standard pack.
 - `staged/mods/*.pw.toml` retains five pinned candidate records outside packwiz's active index.
 
-Fabric API is the only explicitly selected platform library. Polymer, Cristel Lib, Cloth Config API, Forge Config API Port, Moog's Structure Lib, and Collective close baseline dependencies. ZConfig is staged beside Fast Noise. Cristel Lib demonstrates why dependency chains matter: Towns and Towers requires Cristel Lib, which in turn requires Cloth Config API and Fabric API. Crops Love Rain requires Forge Config API Port and Fabric API. Villager Names requires Collective.
+Fabric API is the only explicitly selected platform library. Polymer, Cristel Lib, Cloth Config API, Forge Config API Port, Moog's Structure Lib, and Collective close baseline dependencies. ZConfig is staged beside Fast Noise. Cristel Lib demonstrates why dependency chains matter: Towns and Towers requires Cristel Lib, which in turn requires Cloth Config API and Fabric API. Explorify requires Fabric API; its Cristel Lib integration is optional. Crops Love Rain requires Forge Config API Port and Fabric API. Villager Names requires Collective.
 
 `scripts/check_pack.py` verifies that both layers agree, so a dependency cannot silently disappear or become an undeclared top-level choice.
 
@@ -120,7 +120,7 @@ Export validation compares the exact mod pins, server/client flags, and configur
 The export lands at:
 
 ```text
-dist/cobbled-horizon-26.3.0.1.0.mrpack
+dist/cobbled-horizon-26.3.0.1.1.mrpack
 ```
 
 On the designated Minecraft test host, materialize a clean server tree with:
@@ -133,7 +133,7 @@ Do not upload the `.mrpack` to an undocumented DatHost field. Build and test on 
 
 ## GitHub releases
 
-Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. This candidate's source version is `26.3.0.1.0`, for Minecraft `26.3` and pack revision `0.1.0`. A matching tag would be `v26.3.0.1.0`; the numeric version is not a production approval. Do not tag this development candidate until separately approved for release.
+Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. This candidate's source version is `26.3.0.1.1`, for Minecraft `26.3` and pack revision `0.1.1`. A matching tag would be `v26.3.0.1.1`; the numeric version is not a production approval. Do not tag this development candidate until separately approved for release.
 
 To build and validate both release formats locally, run:
 
@@ -145,9 +145,9 @@ make release
 The release files are:
 
 ```text
-dist/cobbled-horizon-26.3.0.1.0.mrpack
-dist/cobbled-horizon-26.3.0.1.0.zip
-dist/cobbled-horizon-26.3.0.1.0.sha256
+dist/cobbled-horizon-26.3.0.1.1.mrpack
+dist/cobbled-horizon-26.3.0.1.1.zip
+dist/cobbled-horizon-26.3.0.1.1.sha256
 ```
 
 Both archives describe the server pack. The `.mrpack` preserves the server-only flags and references pinned Modrinth downloads. The CurseForge-format ZIP bundles those mod JARs under `overrides/mods/`, along with the configuration overrides. It is larger and is not a ready-to-run server directory. Java players do not need either archive to join.
@@ -155,8 +155,8 @@ Both archives describe the server pack. The `.mrpack` preserves the server-only 
 Only after source review, passing hosted checks, designated-host acceptance and explicit release approval, create and push the matching tag from the intended version line:
 
 ```bash
-git tag -a v26.3.0.1.0 -m "Cobbled Horizon v26.3.0.1.0"
-git push origin v26.3.0.1.0
+git tag -a v26.3.0.1.1 -m "Cobbled Horizon v26.3.0.1.1"
+git push origin v26.3.0.1.1
 ```
 
 GitHub Actions checks the version, tests the tooling, verifies the source index, and validates both exports. It then creates a GitHub release with both archives, their SHA-256 checksums, and generated release notes. Publishing uses the built-in `GITHUB_TOKEN`; no additional secrets are required. This workflow uploads to GitHub only.
