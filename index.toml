@@ -146,6 +146,11 @@ hash = "901014b075016cb4917a33b0eadeefb9480eff0b258c38515e7a0c4f60efa016"
 metafile = true
 
 [[files]]
+file = "mods/explorify.pw.toml"
+hash = "e2de9f52fa87712f0b9c2354ad29b628e7e0bbac908b68c501857af72bed023d"
+metafile = true
+
+[[files]]
 file = "mods/fabric-api.pw.toml"
 hash = "a09bcba54a5bb4c8716edaecf7afb4b8f913215d5fb252ded96e14328ac3e931"
 metafile = true
@@ -233,11 +238,6 @@ metafile = true
 [[files]]
 file = "mods/sswaystones.pw.toml"
 hash = "24dd728d0cb12bdc85f368e1ca3bc9b5dd14e826169d0228687262e89d66f1ec"
-metafile = true
-
-[[files]]
-file = "mods/structory.pw.toml"
-hash = "af79b30c111a828867401ed92fab31206881daed77180e3220ed0f82e5cc6aa5"
 metafile = true
 
 [[files]]

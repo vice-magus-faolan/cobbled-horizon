@@ -113,8 +113,21 @@ class PackSourceTests(unittest.TestCase):
     def test_version_line_and_selected_replacements(self) -> None:
         collection = tomllib.loads((ROOT / "collection.toml").read_text())
         selected = {entry["project-id"] for entry in collection["selected"]}
-        self.assertTrue({"ujZZZb4P", "aKCwCJlY", "rYocd2LE"} <= selected)
-        self.assertTrue({"ptis34fZ", "HSfsxuTo", "LbGT0kSV"}.isdisjoint(selected))
+        self.assertTrue({"ujZZZb4P", "HSfsxuTo", "rYocd2LE"} <= selected)
+        self.assertTrue({"ptis34fZ", "aKCwCJlY", "LbGT0kSV"}.isdisjoint(selected))
+        self.assertFalse((ROOT / "mods/structory.pw.toml").exists())
+        fabric_api = next(entry for entry in collection["selected"] if entry["project-id"] == "P7dR8mSH")
+        self.assertIn("Explorify", fabric_api["also-required-by"])
+        explorify = tomllib.loads((ROOT / "mods/explorify.pw.toml").read_text())
+        self.assertEqual("Explorify v1.6.6.mod.jar", explorify["filename"])
+        self.assertEqual("server", explorify["side"])
+        self.assertIs(True, explorify["pin"])
+        self.assertEqual({"mod-id": "HSfsxuTo", "version": "oyrAnNG8"}, explorify["update"]["modrinth"])
+        self.assertEqual({
+            "url": "https://cdn.modrinth.com/data/HSfsxuTo/versions/oyrAnNG8/Explorify%20v1.6.6.mod.jar",
+            "hash-format": "sha512",
+            "hash": "d4368c83b493c6fcf9b489cd91b4d1e468d695d099d9df3845a6fcee07ef58dc35074557d0108627b98c9941b1e6a6c0bcdbbcd121e8915514a21b91e9d38530",
+        }, explorify["download"])
         errors = []
         with patch.object(check_pack, "load_toml", return_value={**collection, "minecraft": "26.2"}):
             check_pack.load_collection(errors)
