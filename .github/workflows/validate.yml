@@ -38,10 +38,14 @@ jobs:
       - name: Read version and verify release tag
         id: metadata
         shell: bash
+        env:
+          VERSION_BRANCH: ${{ github.base_ref || github.ref_name }}
         run: |
           args=()
           if [[ "$GITHUB_REF_TYPE" == tag ]]; then
             args+=(--tag "$GITHUB_REF_NAME")
+          else
+            args+=(--expected-minecraft "$VERSION_BRANCH")
           fi
           python3 scripts/release_metadata.py "${args[@]}" >> "$GITHUB_OUTPUT"
 
