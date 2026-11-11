@@ -6,6 +6,25 @@ The current baseline targets **Minecraft Java 26.2** with **Fabric Loader 0.19.5
 
 Java players should not need this pack on their clients: every packwiz entry is marked `side = "server"`. Bedrock access is provided by Geyser and Floodgate and still requires a reachable UDP port on the host.
 
+### Compare active pins offline
+
+With both refs already present locally, run:
+
+```bash
+python3 scripts/branch_delta.py 26.2 26.3
+```
+
+The read-only command freezes both refs to commits and emits complete, deterministic JSON
+`REMOVED`, `ADDED`, `UPDATED` and `UNCHANGED` groups with counts, exact input commits,
+Minecraft/loader versions and before/after pin records. Projects match by Modrinth project
+ID, including resolved libraries. An update means an exact pin-record change, not merely
+a different display name or metadata pathname; a changed version ID or hash still counts
+when the JAR filename stays the same. Display labels and metadata paths remain visible.
+Staged/future candidates and configuration changes are excluded. This is a lock comparison,
+not compatibility evidence or synchronization. It never fetches, checks out, or writes;
+unresolved/option-like refs and malformed, duplicate or missing identities fail without
+partial JSON. Use `--repository PATH` to read another local repository.
+
 ## Included collection
 
 ### Platform and cross-play
@@ -106,6 +125,14 @@ make export
 ```
 
 Export validation compares the exact mod pins, server/client flags, and configuration contents with this source tree. It rejects missing mods, missing or changed configs, and unexpected files, including staged candidates. Validation requires the complete `.mrpack` archive; a standalone manifest cannot prove that configs are included.
+
+Ordinary source validation derives the numeric Minecraft target from `pack.toml` and
+requires `collection.toml` to agree and use Fabric. CI additionally supplies the actual
+pull-request base or push branch to `release_metadata.py --expected-minecraft`, so changing
+both metadata files cannot silently retarget a version-line PR. For an independent local
+line check, run `python3 scripts/release_metadata.py --expected-minecraft 26.2` (use `26.3`
+when checking that line). Manual workflow runs must select the intended version branch;
+tag runs instead retain the exact release-tag check.
 
 The export lands at:
 

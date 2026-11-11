@@ -11,6 +11,8 @@ import tomllib
 from collections.abc import Iterable
 from dataclasses import dataclass
 
+from release_metadata import metadata as release_metadata
+
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 COLLECTION_PATH = ROOT / "collection.toml"
 CANDIDATES_PATH = ROOT / "candidates.toml"
@@ -109,12 +111,12 @@ def collect_projects(
             validate_candidate_entry(entry, name, kind, errors)
 
 
-def load_collection(errors: list[str]) -> tuple[dict[str, str], int, int]:
+def load_collection(errors: list[str], minecraft: str | None) -> tuple[dict[str, str], int, int]:
     collection = load_toml(COLLECTION_PATH)
     if collection.get("schema") != 1:
         errors.append("collection.toml schema must be 1")
-    if collection.get("minecraft") != "26.2" or collection.get("loader") != "fabric":
-        errors.append("collection.toml target must be Fabric / Minecraft 26.2")
+    if minecraft is None or collection.get("minecraft") != minecraft or collection.get("loader") != "fabric":
+        errors.append("collection.toml target must match pack.toml Minecraft version and use Fabric")
     selected = collection.get("selected", [])
     resolved = collection.get("resolved-dependency", [])
     if not isinstance(selected, list) or not isinstance(resolved, list):
@@ -186,9 +188,12 @@ def load_candidates(
 
 def validate_pack(errors: list[str]) -> dict:
     pack = load_toml(ROOT / "pack.toml")
-    if pack.get("versions", {}).get("minecraft") != "26.2":
-        errors.append("pack.toml must target Minecraft 26.2")
-    if not pack.get("versions", {}).get("fabric"):
+    try:
+        release_metadata(pack)
+    except (KeyError, TypeError, ValueError) as exc:
+        errors.append(f"pack.toml: {exc}")
+    versions = pack.get("versions")
+    if not isinstance(versions, dict) or not versions.get("fabric"):
         errors.append("pack.toml must pin a Fabric Loader version")
     index_info = pack.get("index", {})
     index_path = ROOT / str(index_info.get("file", ""))
@@ -374,9 +379,11 @@ def validate_no_secrets(errors: list[str]) -> None:
 
 def validate() -> tuple[list[str], ValidationSummary]:
     errors: list[str] = []
-    active, selected_count, dependency_count = load_collection(errors)
+    pack = validate_pack(errors)
+    versions = pack.get("versions", {})
+    minecraft = versions.get("minecraft") if isinstance(versions, dict) else None
+    active, selected_count, dependency_count = load_collection(errors, minecraft)
     staged, staged_count, staged_dependency_count, future_count = load_candidates(errors, active)
-    validate_pack(errors)
     validate_metadata(errors, active, ROOT / "mods")
     validate_metadata(errors, staged, ROOT / "staged/mods")
     indexed = validate_index(errors)
