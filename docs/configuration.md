@@ -6,7 +6,7 @@ The retained overrides originated in a historical Minecraft 26.2 server boot and
 
 `config/Geyser-Fabric/config.yml` uses `auth-type: floodgate`, disables IP-address logging and metrics, and supplies Cobbled Horizon display text.
 
-Before DatHost deployment:
+Before deployment on the selected host:
 
 1. Verify the exact-build [Geyser network arrangement](deployment.md#geyser-networking): suitable UDP reachability and either TCP on the Bedrock port for built-in signaling, distinct from Java's TCP listener, or an explicitly configured and verified external signaling service. Use verified host allocations, not an assumed `19132` UDP-only setup.
 2. Leave `online-mode=true` in `server.properties`.
@@ -70,7 +70,7 @@ Krypton, Fast Noise with ZConfig, and ScalableLux are not part of the baseline e
 
 Partial, startup, and shutdown backups remain disabled. The operating procedure requires an initial full backup and explicit full backups coordinated with host restarts. See [Create full backups across restarts](storage-and-recovery.md#create-full-backups-across-restarts).
 
-JEB's command permission level is `4`, reserving backup and restore commands for the owner operator or DatHost console. Helpers are deliberately not operators.
+JEB's command permission level is `4`, reserving backup and restore commands for the owner operator or authenticated server console. Helpers are deliberately not operators.
 
 Retention requests two full backups and sixteen differential backups, subject to their dependency chains and the 6,144 MB per-world cap. JEB preserves an 8,192 MB minimum free-space reserve. Strict integrity checking and two worker threads limit backup load.
 
@@ -78,13 +78,13 @@ These are safety limits, not proof that recovery works. Complete the separate-in
 
 ## Ledger (future only)
 
-Ledger is not present in `mods/` or the standard export. Its proposed deployment uses a finite 30-day retention window and DatHost's included MySQL service, with credentials injected only on the live host. Promotion also requires least-privilege permissions, database-aware backups, growth monitoring, and database-outage tests. See [`storage-and-recovery.md`](storage-and-recovery.md) for the proposed configuration and gates.
+Ledger is not present in `mods/` or the standard export. Its proposed deployment uses a finite 30-day retention window and a verified, separately budgeted MySQL service, with credentials injected only on the deployment host. Promotion also requires least-privilege permissions, database-aware backups, growth monitoring, and database-outage tests. See [`storage-and-recovery.md`](storage-and-recovery.md) for the proposed configuration and gates; candidate-provider claims are confined to the [DatHost profile](providers/dathost.md).
 
 ## Structure generation
 
 - Towns and Towers retains its Cristel Lib overrides; Hopo Better Mineshaft retains its packaged defaults. Generic Cristel Lib settings and its Towns and Towers waystone patch remain unchanged.
 - Explorify v1.6.6 replaces interim Structory; Formations is not installed. All 14 packaged placement sets match the former 26.2 placement policy, with structures enabled, so no density override is needed. Fabric API is required; Cristel Lib is optional for Explorify and remains required by Towns and Towers. The legacy `config/cristellib/explorify/structure_placement_config.json5` and `config/cristellib/explorify/structure_toggle_config.json5` are not shipped because their current schema is unverified, not because Explorify is absent. During stopped-server [deployment reconciliation](deployment.md#upload), preserve rollback copies and set aside only these legacy active-host copies before reviewing freshly generated configs against the intended defaults. Do not copy old schemas blindly. Black Spiral remains enabled; measure Nether generation stalls and tick cost explicitly. Older upstream performance reports do not establish a defect or fix on this exact Fabric runtime.
-- Standalone Dungeons and Taverns Stronghold Overhaul replaces retired Lite. The obsolete Lite-only file is `config/cristellib/mr_dnt_strongholdoverhaulliteedition/structure_toggle_config.json5`; remove only its active-host copy through the same reconciliation procedure, and do not copy it to the replacement namespace. This standalone pack replaces vanilla stronghold generation and includes enchantment/progression data, so it is not equivalent to Lite and is not the broad DnT collection. Upstream artifact notes warn about a first-generation freeze: measure generation stalls and verify portals, loot, trades, enchantments and Java/Bedrock interactions before production or Chunky pre-generation.
+- Standalone Dungeons and Taverns Stronghold Overhaul 3.0.1 (`hNKbQ85c`) replaces retired Lite. The obsolete Lite-only file is `config/cristellib/mr_dnt_strongholdoverhaulliteedition/structure_toggle_config.json5`; remove only its active-host copy through the same reconciliation procedure, and do not copy it to the replacement namespace. This standalone pack replaces vanilla stronghold generation; it is not equivalent to Lite and is not the broad DnT collection. The [October 6, 2026 exact-archive investigation in issue #1](https://github.com/vice-magus-faolan/cobbled-horizon/issues/1) found no custom enchantment registry definitions in this exact version. That finding does not rule out vanilla-enchanted loot or prove progression, balance or cross-play compatibility. Upstream artifact notes warn about a first-generation freeze: measure generation stalls and verify Eyes of Ender, portals, loot (including vanilla enchantments), trades and Java/Bedrock interactions before production or Chunky pre-generation.
 - Moog's Structure Lib keeps its universal multiplier at `1.0`. Namespace-specific multipliers preserve Soaring Structures at `mss = 2.0` and make Ocean Structures uncommon at `mos = 3.0`; adding another Moog pack will not silently inherit either setting.
 - MOS 1.1.1 supplies vanilla-block ocean ruins, wrecks, ships, temples, rafts, and seafloor oddities. Its static server-only packaging is favorable for unmodded Java and Geyser, but structure visibility, entities, containers, loot, density, and overlap with Towns and Towers remain runtime acceptance items on both Java and Bedrock.
 - Epic Structures: Villages Standalone Edition 1.0.0 adds five village styles without replacing vanilla village templates. The unchanged JAR ships one `epic:villages` structure set at spacing `40` and separation `11`. The pack overrides only that set to spacing `80` and separation `22` chunks, retaining salt `50387312` and neutral frequency `1.0`. Doubling spacing means 75% fewer Epic candidate-grid positions per area, not a measured reduction in generated settlements or all structures. Biome and terrain checks still apply; there is no cross-mod exclusion zone or guaranteed separation from vanilla villages, Towns and Towers or other settlements.
@@ -105,7 +105,7 @@ The checked-in `squaremap/config.yml`:
 - reduces background chunks processed per interval
 - retains the public live player tracker, including player location, health, armor, and externally fetched player-head images
 
-The live tracker is an explicit friends-and-family policy choice, not an access control. Anyone who can reach the map endpoint can see this information; squaremap provides no built-in login boundary for this configuration. `web-address` and the internal web-server port remain deployment placeholders. Confirm an HTTP port or supported proxy with DatHost before public exposure. Avoid a full pre-generated public render if undiscovered geography is meant to remain part of exploration.
+The live tracker is an explicit friends-and-family policy choice, not an access control. Anyone who can reach the map endpoint can see this information; squaremap provides no built-in login boundary for this configuration. `web-address` and the internal web-server port remain deployment placeholders. Confirm an HTTP port or supported proxy with the selected host before public exposure. Avoid a full pre-generated public render if undiscovered geography is meant to remain part of exploration.
 
 ## Chunky
 

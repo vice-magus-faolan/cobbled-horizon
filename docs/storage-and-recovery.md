@@ -1,12 +1,12 @@
 # Storage, backups, and optional event logging
 
-Cobbled Horizon treats DatHost's 30 GB filesystem as a shared failure budget for the world, pregenerated chunks, squaremap tiles, logs, temporary backup work, and retained backups.[4]
+Cobbled Horizon treats the selected host's verified usable filesystem quota as a shared failure budget for the world, pregenerated chunks, squaremap tiles, logs, temporary backup work, and retained backups. Provider advertisements are not account entitlements; see the [DatHost candidate profile](providers/dathost.md) for its dated offering and unresolved account checks.
 
 ## Launch policy
 
 - **JEB is active in the 26.3 development candidate.** It is configured conservatively, but it is not production-proven until fresh full and differential restore drills pass against the updated pin. Retained 26.2 evidence does not prove this candidate.
 - **Ledger is not part of the launch baseline.** For a small allowlisted server, the operational cost and unbounded-growth risk are not justified until moderation history or surgical rollback is demonstrably needed.
-- **DatHost's daily backup remains enabled.** JEB is an application-aware recovery layer, not a replacement for the provider's independent backup.[4]
+- **Keep an independent daily host/provider backup layer enabled.** Verify its schedule, scope, retention, quota accounting and restore route before launch. JEB is an application-aware recovery layer, not a replacement for that backup.
 - Keep an off-host copy before every pack, loader, world-generation, or configuration migration.
 
 ## JEB configuration
@@ -49,7 +49,7 @@ After an unexpected restart, check the last successful full-backup time. If the 
 
 - Inspect `/jeb next` after startup and after `/jeb config reload`.
 - Alert on backup failures, overdue recovery points during active play, less than 8 GB free space, or unexpected storage growth.
-- Confirm DatHost's backup retention, restore scope, and whether provider backups count against the 30 GB allocation before launch.
+- Confirm the selected host's backup retention, restore scope, quota accounting and off-host access before launch; assign a responsible operator and test restoration rather than assuming the advertised service is sufficient.
 - Do not increase JEB retention without a storage-budget review.
 
 ### Required cold-restore drill
@@ -81,7 +81,7 @@ Do not treat archive creation as proof of recovery. If this drill fails, JEB rem
 
 Ledger logs server-side world changes for inspection, search, and rollback.[1] Its default `autoPurgeDays = -1` means actions are never purged automatically, which is unacceptable on this storage-constrained deployment.[2]
 
-Ledger may be promoted only after its gate in `candidates.toml` passes. The preferred architecture is Ledger plus Ledger Databases using DatHost's included MySQL service, keeping the event store off the 30 GB game filesystem.[3][4] A separate database VM is a fallback only if DatHost's MySQL capacity, latency, backup, or connectivity is insufficient.
+Ledger may be promoted only after its gate in `candidates.toml` passes. The preferred architecture is Ledger plus Ledger Databases using a verified, separately budgeted MySQL service, keeping event-store growth off the game filesystem.[3] This can be a provider-managed service or a separately approved database host; neither is assumed available. Verify compatibility, capacity, latency, backup and connectivity before selection. The [DatHost candidate profile](providers/dathost.md) records its advertised database offer and account questions, not a service guarantee.
 
 Proposed `config/ledger.toml` additions, using runtime-injected values rather than committed credentials:
 
@@ -109,7 +109,7 @@ Ledger Databases documents the MySQL URL, username, password, pool-size, and con
 
 ### Ledger promotion gates
 
-- Confirm DatHost's MySQL quota, backups, network path, and credentials workflow.
+- Confirm the selected MySQL service's compatibility, quota, database-aware backups, network path, access controls and credentials workflow.
 - Keep `autoPurgeDays` finite; begin at 30 days and review measured growth after one week and one month.
 - Limit inspect/search to administrators and grant purge/rollback separately using LuckPerms.
 - Filter high-volume environmental events only after measuring them; retain player-caused block and container activity needed for investigations.
@@ -125,7 +125,6 @@ If Ledger's database fails, gameplay availability and bounded queue behavior mat
 [1] https://modrinth.com/mod/ledger — Ledger — Modrinth
 [2] https://quiltservertools.github.io/Ledger/latest/config — Ledger configuration
 [3] https://modrinth.com/mod/ledger-databases — Ledger Databases — Modrinth
-[4] https://dathost.com/minecraft-server-hosting — DatHost Minecraft hosting
 [5] https://modrinth.com/mod/justenoughbackups-jeb — Just Enough Backups — Modrinth
 [6] https://github.com/frandm16/JustEnoughBackups — Just Enough Backups — source
 [9] https://github.com/frandm16/JustEnoughBackups/blob/2d0f5f0ea91c488cebca7db2ae767e92b1d38ded/src/main/java/com/frandm/justenoughbackups/scheduler/BackupScheduler.java — JEB 1.2.0.6 backup scheduler implementation

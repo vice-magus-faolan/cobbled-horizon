@@ -78,7 +78,7 @@ partial JSON. Use `--repository PATH` to read another local repository.
 
 Exact baseline project IDs, version IDs, download URLs, and SHA-512 hashes live in `mods/*.pw.toml`. All entries are pinned.
 
-The 26.3 line replaces Creeper No Break Blocks and retired DnT Stronghold Lite, and restores Explorify v1.6.6 in place of interim Structory; Formations is not added. Explorify uses packaged defaults, preserving the 26.2 placement policy without reinstating unverified legacy config schemas. Towns and Towers and Moog spacing policy remain unchanged. New structures affect newly generated chunks, not existing terrain. Explorify's Nether Black Spiral generation/performance and standalone DnT's stronghold progression, enchantment data, generation stalls, portal access and loot require Java/Bedrock testing before pre-generation or migration. See [`docs/configuration.md`](docs/configuration.md#structure-generation).
+The 26.3 line replaces Creeper No Break Blocks and retired DnT Stronghold Lite, and restores Explorify v1.6.6 in place of interim Structory; Formations is not added. Explorify uses packaged defaults, preserving the 26.2 placement policy without reinstating unverified legacy config schemas. Towns and Towers and Moog spacing policy remain unchanged. New structures affect newly generated chunks, not existing terrain. The October 6 exact-archive investigation found no custom enchantment registry definitions in standalone DnT 3.0.1 (`hNKbQ85c`); that is distinct from vanilla-enchanted loot and is not a runtime pass. Explorify's Nether Black Spiral generation/performance and DnT's stronghold progression, generation stalls, portal access and loot still require Java/Bedrock testing before pre-generation or migration. See [`docs/configuration.md`](docs/configuration.md#structure-generation) for the evidence and remaining gates.
 
 ### Staged and future candidates
 
@@ -110,7 +110,7 @@ Fabric API is the only explicitly selected platform library. Polymer, Cristel Li
 - Universal Graves retains 75% of XP, protects graves for one hour, and expires them after 24 real-time hours.
 - squaremap enables only the Overworld, limits zoom, reduces background rendering pressure, and intentionally retains its live player tracker. The tracker becomes public to anyone who can reach the configured map endpoint.
 - JEB uses 24-hour full and three-hour differential intervals, a 6 GB retention cap, an 8 GB free-space reserve, and operator-level-4 commands. Startup resets the timers, so deployment requires an initial full backup and explicit daily full backups coordinated with host restarts. Production launch requires full and differential restore drills.
-- Ledger remains future-only. If promoted, it will use bounded retention and preferably DatHost's included MySQL service rather than the 30 GB game filesystem.
+- Ledger remains future-only. If promoted, it will use bounded retention and a verified, separately budgeted MySQL service rather than unbounded growth on the game filesystem; provider availability is not assumed.
 - PvP remains enabled, world spawn has a 16-block protection radius, and only the owner is a Minecraft operator. Helpers inherit the ordinary-player policy without operator status; the baseline grants them no additional nodes, and any future support capability must be added as an explicit LuckPerms node.
 - Same-dimension waystone travel costs two XP levels, has a 30-second PvP/PvE combat lock, and allows ten player-owned waystones per player. Only the owner may create global/server-owned waystones.
 - Server-Side Waystones 1.3.2 has no hard cross-dimension switch or strictly private owner-only mode. Survival cross-dimension travel is made infeasible with the maximum XP cost, while creative-owner bypass and physical discovery of player waystones are documented limitations.
@@ -156,7 +156,7 @@ On the designated Minecraft test host, materialize a clean server tree with:
 make materialize
 ```
 
-Do not upload the `.mrpack` to an undocumented DatHost field. Build and test on the designated Minecraft host, then follow the stopped-server backup and reconciliation procedure in [`docs/deployment.md`](docs/deployment.md#upload). Overlaying the materialized directories alone does not remove retired host JARs or obsolete config files.
+Do not assume a provider imports `.mrpack` files. Build and test on the designated Minecraft host, then follow the provider-neutral stopped-server backup and reconciliation procedure in [`docs/deployment.md`](docs/deployment.md#upload). Overlaying the materialized directories alone does not remove retired host JARs or obsolete config files. [DatHost's candidate-provider profile](docs/providers/dathost.md) holds its advertised offering and unresolved account checks; no hosting decision or allocation is implied.
 
 ## GitHub releases
 
@@ -211,6 +211,7 @@ This is an upgrade-discovery check, not an audit of pinned-pack stability: a lat
 - [`docs/configuration.md`](docs/configuration.md)
 - [`docs/permissions.md`](docs/permissions.md)
 - [`docs/deployment.md`](docs/deployment.md)
+- [`docs/providers/dathost.md`](docs/providers/dathost.md) — candidate provider, not deployment approval
 - [`docs/storage-and-recovery.md`](docs/storage-and-recovery.md)
 - [`docs/acceptance-tests.md`](docs/acceptance-tests.md)
 - [`docs/version-policy.md`](docs/version-policy.md)
