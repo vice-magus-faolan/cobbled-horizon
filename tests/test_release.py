@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
+import contextlib
 import hashlib
+import io
 import json
 import pathlib
+import sys
 import tempfile
 import unittest
 import warnings
 import zipfile
+from unittest.mock import patch
 
 from test_validation import load_script
 
@@ -40,6 +44,31 @@ class ReleaseMetadataTests(unittest.TestCase):
     def test_minecraft_patch_version_is_not_confused_with_pack_version(self) -> None:
         values = release_metadata.metadata({"version": "26.2.1.0.2.0", "versions": {"minecraft": "26.2.1"}})
         self.assertEqual("v26.2.1.0.2.0", values["tag"])
+
+    def test_independent_branch_expectation_rejects_coordinated_retarget(self) -> None:
+        for target, branch in (("26.2", "26.3"), ("26.3", "26.2")):
+            with self.subTest(target=target), tempfile.TemporaryDirectory() as directory:
+                root = pathlib.Path(directory)
+                # Both files agree: only the independently supplied branch can reject this.
+                (root / "pack.toml").write_text(f'version = "{target}.0.1.0"\n[versions]\nminecraft = "{target}"\n')
+                (root / "collection.toml").write_text(f'minecraft = "{target}"\nloader = "fabric"\n')
+                for expected, accepted in ((target, True), (branch, False), ("topic/not-a-version", False)):
+                    output, diagnostic = io.StringIO(), io.StringIO()
+                    with patch.object(release_metadata, "ROOT", root), patch.object(sys, "argv", ["release_metadata.py", "--expected-minecraft", expected]), contextlib.redirect_stdout(output), contextlib.redirect_stderr(diagnostic):
+                        if accepted:
+                            self.assertEqual(0, release_metadata.main())
+                            self.assertIn(f"minecraft={target}", output.getvalue())
+                        else:
+                            with self.assertRaises(SystemExit) as raised:
+                                release_metadata.main()
+                            self.assertEqual(2, raised.exception.code)
+                            self.assertEqual("", output.getvalue())
+                            self.assertIn("must match version branch", diagnostic.getvalue())
+
+    def test_missing_and_malformed_minecraft_targets_are_rejected(self) -> None:
+        for target in (None, "", "26", "26.x", "26.03", "26.3\n", 26):
+            with self.subTest(target=target), self.assertRaises(ValueError):
+                release_metadata.metadata({"version": "26.3.0.1.0", "versions": {"minecraft": target}})
 
 
 class CurseForgeArchiveTests(unittest.TestCase):

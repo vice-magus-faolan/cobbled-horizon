@@ -30,6 +30,7 @@ def load_script(name: str):
     return module
 
 
+release_metadata = load_script("release_metadata")
 check_pack = load_script("check_pack")
 readiness = load_script("check_target_readiness")
 validate_mrpack = load_script("validate_mrpack")
@@ -147,14 +148,55 @@ class PackSourceTests(unittest.TestCase):
         }, explorify["download"])
         errors = []
         with patch.object(check_pack, "load_toml", return_value={**collection, "minecraft": "26.2"}):
-            check_pack.load_collection(errors)
-        self.assertIn("collection.toml target must be Fabric / Minecraft 26.3", errors)
+            check_pack.load_collection(errors, "26.3")
+        self.assertIn("collection.toml target must match pack.toml Minecraft version and use Fabric", errors)
 
         pack = tomllib.loads((ROOT / "pack.toml").read_text())
         errors = []
         with patch.object(check_pack, "load_toml", return_value={**pack, "versions": {**pack["versions"], "minecraft": "26.2"}}):
             check_pack.validate_pack(errors)
-        self.assertIn("pack.toml must target Minecraft 26.3", errors)
+        self.assertIn("pack.toml: pack version must be 26.2.MAJOR.MINOR.PATCH", errors)
+
+    def test_shared_validation_accepts_both_targets_and_rejects_mismatch(self) -> None:
+        original_load = check_pack.load_toml
+        for target, other in (("26.2", "26.3"), ("26.3", "26.2")):
+            for collection_target in (target, other, None, "26.x"):
+                with self.subTest(target=target, collection_target=collection_target):
+                    def load(path):
+                        data = original_load(path)
+                        if path == ROOT / "pack.toml":
+                            return {**data, "version": f"{target}.0.1.0", "versions": {**data["versions"], "minecraft": target}}
+                        if path == check_pack.COLLECTION_PATH:
+                            return {**data, "minecraft": collection_target}
+                        return data
+                    with patch.object(check_pack, "load_toml", side_effect=load):
+                        errors, _ = check_pack.validate()
+                    if collection_target == target:
+                        self.assertEqual([], errors)
+                    else:
+                        self.assertIn("collection.toml target must match pack.toml Minecraft version and use Fabric", errors)
+
+    def test_missing_malformed_target_and_missing_fabric_are_rejected(self) -> None:
+        pack = tomllib.loads((ROOT / "pack.toml").read_text())
+        for target in (None, "26.x", 26, "26.3\n"):
+            versions = {"minecraft": target, "fabric": "0.20.1"}
+            with self.subTest(versions=versions):
+                errors = []
+                with patch.object(check_pack, "load_toml", return_value={**pack, "versions": versions}):
+                    check_pack.validate_pack(errors)
+                self.assertIn("pack.toml: release Minecraft version must contain dotted numbers", errors)
+        errors = []
+        with patch.object(check_pack, "load_toml", return_value={**pack, "versions": {"minecraft": "26.3"}}):
+            check_pack.validate_pack(errors)
+        self.assertIn("pack.toml must pin a Fabric Loader version", errors)
+
+    def test_collection_requires_fabric(self) -> None:
+        collection = tomllib.loads((ROOT / "collection.toml").read_text())
+        for target in ("26.2", "26.3"):
+            errors = []
+            with patch.object(check_pack, "load_toml", return_value={**collection, "minecraft": target, "loader": "neoforge"}):
+                check_pack.load_collection(errors, target)
+            self.assertIn("collection.toml target must match pack.toml Minecraft version and use Fabric", errors)
 
     def test_safe_relative_paths(self) -> None:
         self.assertTrue(check_pack.safe_relative("mods/lithium.pw.toml"))
@@ -177,6 +219,7 @@ class ReadinessTests(unittest.TestCase):
 class MrpackTests(unittest.TestCase):
     def setUp(self) -> None:
         pack = tomllib.loads((ROOT / "pack.toml").read_text())
+        self.minecraft = pack["versions"]["minecraft"]
         self.index = {
             "versionId": pack["version"],
             "formatVersion": 1,
@@ -207,7 +250,7 @@ class MrpackTests(unittest.TestCase):
                 for name, contents in overrides.items():
                     archive.writestr(name, contents)
             output = io.StringIO()
-            with patch.object(sys, "argv", ["validate_mrpack.py", str(path), "--minecraft", "26.3"]), contextlib.redirect_stdout(output):
+            with patch.object(sys, "argv", ["validate_mrpack.py", str(path), "--minecraft", self.minecraft]), contextlib.redirect_stdout(output):
                 result = validate_mrpack.main()
             return result, output.getvalue()
 
