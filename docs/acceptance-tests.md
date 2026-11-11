@@ -58,6 +58,8 @@ make release
 Use disposable seeds and `/locate structure` where available.
 
 - [ ] Inspect several Towns and Towers structures.
+- [ ] Verify Cristel loads `config/cristellib/mr_epic_structuresvillagesstandaloneedition/structure_placement_config.json5` without discovery/schema errors and applies only `epic:villages`: spacing `80`, separation `22`, salt `50387312`, frequency `1.0`. Confirm existing auto-config, Towns and Towers and Moog policies remain intact.
+- [ ] Within Minecraft 26.3, compare fixed-seed fresh-chunk routes with Epic's shipped `40`/`11` baseline and tuned `80`/`22` policy; record Epic counts, nearby settlements, terrain fit and generation cost. The 75% reduction concerns Epic candidate-grid positions per area, not guaranteed settlement counts or cross-mod separation. Existing chunks must remain unchanged.
 - [ ] Locate Epic Standalone's plains, taiga, snowy, desert, and savanna villages in newly generated chunks; inspect terrain joins and villager access to beds and workstations.
 - [ ] Confirm vanilla villages and Towns and Towers settlements still generate alongside Epic towns; inspect settlement density, overlap, and loot progression.
 - [ ] Test trading, containers, and village traversal with unmodded Java and Bedrock clients in Epic towns.

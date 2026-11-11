@@ -1,12 +1,12 @@
 name = "Cobbled Horizon"
 author = "Jimmy McCann and contributors"
-version = "26.3.0.1.1"
+version = "26.3.0.1.2"
 pack-format = "packwiz:1.1.0"
 
 [index]
 file = "index.toml"
 hash-format = "sha256"
-hash = "d603f84c9a239eef9dde139a342e91452b94f5f536d234cf58bded77dbff16f5"
+hash = "6a1710a7a45eea1a14a7b4729815d3d424f7398284a242ea121c3427a5e617f3"
 
 [versions]
 fabric = "0.20.1"
