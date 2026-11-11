@@ -2,9 +2,9 @@
 
 ## Release versions
 
-`pack.toml` is the source of truth for release versions and artifact names. Its `version` is `<Minecraft version>.<pack major>.<pack minor>.<pack patch>`, currently `26.2.0.1.0`. Git tags add a leading `v`, giving `v26.2.0.1.0`. The Minecraft prefix must match `versions.minecraft` exactly. Both exported manifests retain the complete pack version.
+`pack.toml` is the source of truth for release versions and artifact names. Its `version` is `<Minecraft version>.<pack major>.<pack minor>.<pack patch>`, currently `26.2.0.1.1`. Git tags add a leading `v`, giving `v26.2.0.1.1`. The Minecraft prefix must match `versions.minecraft` exactly. Both exported manifests retain the complete pack version.
 
-For a pack-only patch on Minecraft 26.2, use `26.2.0.1.1`. If Minecraft gains another version component, keep the complete prefix, for example `26.2.1.0.1.0` for Minecraft 26.2.1 and pack revision 0.1.0. Release tags currently accept numeric versions only, without prerelease suffixes.
+For the next pack-only patch on Minecraft 26.2, use `26.2.0.1.2`. If Minecraft gains another version component, keep the complete prefix, for example `26.2.1.0.1.0` for Minecraft 26.2.1 and pack revision 0.1.0. Release tags currently accept numeric versions only, without prerelease suffixes.
 
 Pushing a matching tag builds and publishes the `.mrpack`, server CurseForge-format `.zip`, and `.sha256` file to GitHub Releases. See the [release instructions](../README.md#github-releases). Publication to Modrinth or CurseForge is not configured.
 

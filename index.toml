@@ -37,6 +37,10 @@ file = "config/cristellib/mr_dnt_strongholdoverhaulliteedition/structure_toggle_
 hash = "96939569fa5c4f868d16601afa3d63e8f8c69004e217c9a0c3be1b3c789f8fbf"
 
 [[files]]
+file = "config/cristellib/mr_epic_structuresvillagesstandaloneedition/structure_placement_config.json5"
+hash = "0dc1aa51058bf8e6858aea78c37f64d6a283108283ee739181c6cd051fd54bb8"
+
+[[files]]
 file = "config/cristellib/mss/structure_placement_config.json5"
 hash = "77d365f4d9567c319ddddba67b160d83f0876326cd9c50ff5cd2957b17561025"
 

@@ -10,7 +10,7 @@ All Minecraft server startup, world-generation, and gameplay tests must run on t
 make test
 make validate
 make export
-python3 scripts/validate_mrpack.py dist/cobbled-horizon-26.2.0.1.0.mrpack --minecraft 26.2
+python3 scripts/validate_mrpack.py dist/cobbled-horizon-26.2.0.1.1.mrpack --minecraft 26.2
 ```
 
 ## Server lifecycle
@@ -55,6 +55,8 @@ python3 scripts/validate_mrpack.py dist/cobbled-horizon-26.2.0.1.0.mrpack --mine
 Use disposable seeds and `/locate structure` where available.
 
 - [ ] Inspect several Towns and Towers structures.
+- [ ] Confirm Cristel discovers and applies the Epic owning-loader-ID placement file on the designated test host, with only `epic:villages`, salt `50387312`, spacing `80`, separation `22`, and frequency `1.0`; record the effective policy before generation.
+- [ ] On identical disposable seeds and equal fresh areas, compare packaged `40/11` placement with tuned `80/22`; record observed Epic settlement counts, proximity to vanilla and Towns and Towers settlements, and generation cost. The 75% reduction is in candidate-grid positions per area, not an observed settlement-count promise or cross-mod distance guarantee. Existing chunks must remain unchanged.
 - [ ] Locate Epic Standalone's plains, taiga, snowy, desert, and savanna villages in newly generated chunks; inspect terrain joins and villager access to beds and workstations.
 - [ ] Confirm vanilla villages and Towns and Towers settlements still generate alongside Epic towns; inspect settlement density, overlap, and loot progression.
 - [ ] Test trading, containers, and village traversal with unmodded Java and Bedrock clients in Epic towns.

@@ -31,7 +31,7 @@ With the DatHost server stopped:
 
 1. Set the server type and version to Fabric / Minecraft 26.2.
 2. Upload `build/server/mods/` into DatHost's `/mods`.
-3. Upload `build/server/config/` into `/config`.
+3. Upload `build/server/config/` into `/config`. Reconcile any existing Epic Cristel placement file with the reviewed policy rather than keeping a host-generated default: `cristellib/mr_epic_structuresvillagesstandaloneedition/structure_placement_config.json5` must contain only `epic:villages`, with salt `50387312`, spacing `80`, separation `22`, and frequency `1.0`. Preserve unrelated host settings and secrets.
 4. Upload `build/server/squaremap/` into `/squaremap`.
 5. Apply selected values from `server.properties.example`, including `online-mode=true` and `enforce-secure-profile=false`; preserve DatHost-managed ports and secrets.
 6. Start once so Floodgate creates its key.
@@ -39,6 +39,8 @@ With the DatHost server stopped:
 8. Run `/jeb next` and verify the configured schedules and backup directory.
 9. Create and verify the initial full backup before admitting players.
 10. Restart and run the acceptance tests, including Java and Bedrock chat and separate-instance full and differential restore drills.
+
+Confirm the effective Cristel policy and complete the fresh-chunk comparison in [`acceptance-tests.md`](acceptance-tests.md) before final Chunky pre-generation. Existing chunks are not retuned; the setting does not enforce distance from other mods' settlements.
 
 ## Rollback
 

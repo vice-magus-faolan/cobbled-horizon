@@ -1,5 +1,15 @@
 # Verification record
 
+## Epic village placement tuning — 26.2.0.1.1
+
+Date: 2026-11-10 UTC
+
+This pack-only patch adds a plain-JSON Cristel policy at `config/cristellib/mr_epic_structuresvillagesstandaloneedition/structure_placement_config.json5`: only `epic:villages`, with salt `50387312`, spacing `80`, separation `22`, and frequency `1.0`. The owning loader ID selects the directory; the worldgen namespace selects the key. Mod and loader pins and other structure policies remain unchanged.
+
+The source regression asserts the exact path and policy plus index membership. On this 26.2 source, `make refresh validate test` passed: 30 tests and 62 indexed pack files, with baseline 26 selected projects plus six dependencies. Existing archive regressions compare configuration overrides against source; hosted release validation must still verify index freshness and both real exports for this revision. Earlier dated counts and archive identities below describe their original revisions, not this patch.
+
+Doubling packaged spacing `40` to `80` means 75% fewer Epic candidate-grid positions per area, not a measured reduction in settlements or all structures. No runtime config discovery, world generation, cross-mod proximity, generation-cost, Java/Bedrock or deployment acceptance is claimed. Complete the effective-policy and equal-area fresh-chunk checks in [`acceptance-tests.md`](acceptance-tests.md) before deployment or final pre-generation; existing chunks are unchanged.
+
 ## Superseded full-stack smoke test
 
 Date: 2026-09-10 UTC
