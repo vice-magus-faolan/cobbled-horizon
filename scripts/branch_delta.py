@@ -3,6 +3,11 @@
 
 from __future__ import annotations
 
+import sys
+
+# The public read-only command must not persist imported modules beside its source.
+sys.dont_write_bytecode = True
+
 import argparse
 import json
 import os

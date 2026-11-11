@@ -11,7 +11,6 @@ import tempfile
 import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "scripts/branch_delta.py"
 
 
 def mod(identity: str, version: str = "Version1", hash_digit: str = "a", name: str = "Same display") -> str:
@@ -26,7 +25,13 @@ class BranchDeltaTests(unittest.TestCase):
     def setUp(self) -> None:
         temporary = tempfile.TemporaryDirectory(prefix="branch-delta-")
         self.addCleanup(temporary.cleanup)
-        self.repo = pathlib.Path(temporary.name)
+        root = pathlib.Path(temporary.name)
+        self.repo = root / "repository"
+        self.repo.mkdir()
+        self.source = root / "source" / "scripts"
+        self.source.mkdir(parents=True)
+        for name in ("branch_delta.py", "release_metadata.py"):
+            (self.source / name).write_bytes((ROOT / "scripts" / name).read_bytes())
         self.git("init", "--quiet", "--initial-branch=fixture")
         (self.repo / "mods").mkdir()
         self.write_target("26.2")
@@ -73,13 +78,25 @@ class BranchDeltaTests(unittest.TestCase):
         (self.repo / "collection.toml").write_text(text)
 
     def invoke(self, before: str, after: str) -> subprocess.CompletedProcess:
-        return subprocess.run(
-            [sys.executable, str(SCRIPT), "--repository", str(self.repo), before, after],
-            capture_output=True, text=True, env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"},
+        source_files, repository_files = self.files(self.source), self.files()
+        environment = os.environ.copy()
+        # Exercise the ordinary public invocation, not caller-supplied cache controls.
+        environment.pop("PYTHONDONTWRITEBYTECODE", None)
+        environment.pop("PYTHONPYCACHEPREFIX", None)
+        result = subprocess.run(
+            [sys.executable, str(self.source / "branch_delta.py"), "--repository", str(self.repo), before, after],
+            capture_output=True, text=True, env=environment,
         )
+        self.assertEqual(source_files, self.files(self.source), "CLI changed its source location")
+        self.assertEqual(repository_files, self.files(), "CLI changed the compared repository")
+        return result
 
-    def files(self) -> dict[str, bytes]:
-        return {path.relative_to(self.repo).as_posix(): path.read_bytes() for path in self.repo.rglob("*") if path.is_file()}
+    def files(self, root: pathlib.Path | None = None) -> dict[str, bytes | None]:
+        root = self.repo if root is None else root
+        return {
+            path.relative_to(root).as_posix(): path.read_bytes() if path.is_file() else None
+            for path in root.rglob("*")
+        }
 
     def test_complete_identity_groups_exact_pins_and_determinism_without_writes(self) -> None:
         # Dirty/untracked working-tree content is deliberately different from the frozen inputs.
