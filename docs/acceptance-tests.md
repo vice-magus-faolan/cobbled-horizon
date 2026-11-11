@@ -67,7 +67,7 @@ Use disposable seeds and `/locate structure` where available.
 - [ ] Inspect several Explorify structures in fresh chunks on Java and Bedrock; check terrain joins, loot, density and overlap with the other selected packs. Review generated configs against packaged defaults and the retained 26.2 placement intent without transplanting unverified legacy schemas.
 - [ ] Locate and generate Explorify's Nether Black Spiral on a disposable world; measure generation stalls and tick cost alongside other Nether structures before pre-generation. Keep it enabled during acceptance; older upstream reports are neither a current-runtime failure nor a verified fix.
 - [ ] Inspect Hopo mineshafts at different depths.
-- [ ] Locate and enter standalone DnT strongholds; verify portal access, surface rooms, trades, loot and enchantment progression on Java and Bedrock. Measure first-generation stalls and generation cost before pre-generation; do not assume Lite's balance or config applies.
+- [ ] Locate and enter standalone DnT 3.0.1 (`hNKbQ85c`) strongholds; verify Eyes of Ender/locate behavior, functional portal access, surface rooms, trades, loot (including vanilla-enchanted items) and progression on Java and Bedrock. The [historical static absence of custom enchantment registry definitions](configuration.md#structure-generation) does not satisfy these checks. Measure first-generation stalls and generation cost before pre-generation; do not assume Lite's balance or config applies.
 - [ ] Inspect several Moog floating structures and confirm rarity feels intentional.
 - [ ] Locate several MOS structures in newly generated ordinary, deep, warm, and cold ocean chunks; include seafloor ruins and surface ships or rafts.
 - [ ] On both unmodded Java and Bedrock, inspect MOS blocks and entities, open every encountered container type, and verify loot and hostile encounters remain usable and balanced.
@@ -90,13 +90,13 @@ Do not run final Chunky pre-generation until this section passes and the seed is
 - [ ] The daily full-backup operation has an assigned schedule, responsible operator, completion check, and failure notification.
 - [ ] Scheduled restarts wait for full-backup completion; failed or overdue backups produce an alert.
 - [ ] JEB creates a named full backup and a later differential backup without save errors.
-- [ ] JEB backup and restore commands require permission level 4 and are available only to the owner operator or DatHost console.
+- [ ] JEB backup and restore commands require permission level 4 and are available only to the owner operator or authenticated server console.
 - [ ] JEB skips inactive intervals when no player has been online.
 - [ ] Retention never exceeds 6,144 MB and a low-space preflight fails without filling the filesystem.
 - [ ] The named full backup is cold-restored into a separate disposable instance using the exact pack commit.
 - [ ] A differential backup is restored with its base full archive into a fresh disposable instance; changes made after the full backup are present.
 - [ ] Java and Bedrock login, representative chunks, inventory, and a clean shutdown pass after restoration.
 - [ ] The restore result is recorded in `docs/verification.md`; archive creation alone is not a pass.
-- [ ] DatHost's daily-backup retention, quota accounting, and restore scope are confirmed.
+- [ ] The selected host's independent daily backup layer is enabled; schedule, responsible operator, retention, quota accounting, world/config/key scope and off-host access are confirmed, and restoration is tested. Advertised provider backups do not substitute for either JEB restore drill. Resolve any [candidate-provider questions](providers/dathost.md) against the actual selected account.
 
 Ledger is not a launch test because it is not active. If it is later promoted, add tests for database loss/latency, bounded queue shutdown, purge, inspect, rollback, permissions, and database-aware restoration before deployment.

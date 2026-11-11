@@ -1,6 +1,6 @@
 # Permission bootstrap
 
-Use the DatHost console after the first successful production boot. Replace placeholders literally; do not commit player UUIDs unless there is a clear reason.
+Use the selected host's authenticated server console after the first successful, separately approved boot, before admitting ordinary players. Rehearse this bootstrap on the disposable acceptance instance first; console/panel access is a [deployment prerequisite](deployment.md#preflight), not an assumed provider feature. Replace placeholders literally; do not commit player UUIDs unless there is a clear reason.
 
 These commands define a deployment procedure, not source-enforced security. Before applying them, inspect the current operator list, `ops.json`, LuckPerms groups, user memberships, and effective permissions. Remove stale authority deliberately; creating the intended groups does not revoke permissions inherited from old groups or direct user grants. Group-creation commands may report that a group already exists on repeat runs, after which the remaining parent, membership, and permission assignments should converge on the documented state.
 
@@ -20,7 +20,7 @@ lp user <HELPER_USERNAME> parent set helper
 deop <HELPER_USERNAME>
 ```
 
-Do not put ordinary administrators or helpers in `ops.json`. Operator status grants broad vanilla authority and mod commands such as Chunky world generation, configuration reloads, and JEB backup restoration. Use the DatHost console as the break-glass path if the owner account is unavailable.
+Do not put ordinary administrators or helpers in `ops.json`. Operator status grants broad vanilla authority and mod commands such as Chunky world generation, configuration reloads, and JEB backup restoration. Use the authenticated server console as the break-glass path if the owner account is unavailable; verify and restrict access to that console rather than granting helpers operator status.
 
 ## Waystone policy
 
@@ -54,7 +54,7 @@ The mod also has no true cross-dimension disable switch. The checked-in configur
 
 The baseline deliberately grants no additional helper permissions. Add narrowly scoped nodes only when a specific support duty exists, and record the reason here. Never grant `*`, `minecraft.*`, `luckperms.*`, `chunky.*`, `spark.*`, or destructive backup/restore authority for convenience.
 
-JEB's checked-in `commandPermissionLevel` is `4`; use the owner account or DatHost console for backup and restore commands.
+JEB's checked-in `commandPermissionLevel` is `4`; use the owner account or authenticated server console for backup and restore commands.
 
 ## Verification
 
