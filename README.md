@@ -1,5 +1,9 @@
 # Cobbled Horizon
 
+<p align="center">
+  <img src="docs/assets/cobbled-horizon-logo.png" alt="Cobbled Horizon logo" width="420">
+</p>
+
 A reproducible, server-side Fabric collection for a Vanilla+ Minecraft world focused on performance, exploration, and restrained quality-of-life improvements.
 
 This **development candidate** targets **Minecraft Java 26.3** with **Fabric Loader 0.20.1**. It contains 26 deliberately selected projects plus six resolved dependencies. All 32 exact artifacts have published Fabric 26.3 support; 31 are release-designated and Geyser `2.12.1-b1281` (`MJYV1WUM`) is explicitly pinned as beta. This is not a clean-boot, gameplay, Bedrock, or production-readiness claim. Just Enough Backups (JEB) retains the backup role.
