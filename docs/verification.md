@@ -1,5 +1,11 @@
 # Verification record
 
+## Standalone server ZIP — 26.2.0.1.2
+
+This pack-only patch adds `cobbled-horizon-26.2.0.1.2-server.zip` with the complete source-pinned `mods/`, `config/`, and `squaremap/` directories at its root. The native packwiz CurseForge export remains the payload producer; one shared validator checks exact membership and hashes for both ZIP layouts. Mod, loader, Minecraft and configuration pins remain unchanged.
+
+Synthetic regressions exercise valid payload conversion, missing/modified files, duplicate and unsafe entries, private/runtime/staged paths, input preservation, and draft-only publication failure handling. These fixtures are not real downloaded mods or DatHost acceptance. The GitHub Actions build runs `make release` to export and validate all three real archives and uploads those archives with their checksum file. Check the exact revision's successful build before using its artifacts; Minecraft boot, cross-play and restore acceptance remain separate designated-host requirements.
+
 ## Epic village placement tuning — 26.2.0.1.1
 
 Date: 2026-11-10 UTC
