@@ -5,6 +5,7 @@ MINECRAFT_VERSION := $(shell python3 scripts/release_metadata.py --field minecra
 PACK_BASENAME := cobbled-horizon-$(PACK_VERSION)
 MRPACK := dist/$(PACK_BASENAME).mrpack
 CURSEFORGE := dist/$(PACK_BASENAME).zip
+SERVER := dist/$(PACK_BASENAME)-server.zip
 
 .PHONY: validate test refresh export export-curseforge release materialize clean
 
@@ -31,7 +32,8 @@ export-curseforge: refresh validate
 # Run exports sequentially: both packwiz commands refresh the source index.
 release: export
 	$(MAKE) export-curseforge
-	cd dist && sha256sum $(PACK_BASENAME).mrpack $(PACK_BASENAME).zip > $(PACK_BASENAME).sha256
+	python3 scripts/server_pack.py build $(CURSEFORGE) $(SERVER)
+	cd dist && sha256sum $(PACK_BASENAME).mrpack $(PACK_BASENAME).zip $(PACK_BASENAME)-server.zip > $(PACK_BASENAME).sha256
 
 materialize: export
 	mkdir -p build

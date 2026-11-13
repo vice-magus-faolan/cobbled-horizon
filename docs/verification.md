@@ -1,5 +1,11 @@
 # Verification record
 
+## Standalone server archive
+
+Pack `26.3.0.1.3` adds a root-layout `-server.zip` without changing the 26.3 mod pins, configuration bytes or Minecraft/Fabric versions. The existing hosted `Build and release pack` workflow runs `make release`: it checks both native exports, derives the standalone payload from the validated CurseForge ZIP, and validates its exact root membership and source hashes before writing checksums for all three archives. Its downloadable artifact contains those archives and the checksum file. Use the exact revision's successful hosted build and artifacts as full-export evidence, not the synthetic archive fixtures alone.
+
+This packaging path neither launches Minecraft nor verifies DatHost import, Java/Bedrock gameplay or restore behavior. Earlier records below retain their historical pack identities and results; they are not runtime acceptance for this candidate.
+
 ## Fabric 26.3 development candidate
 
 Date: 2026-11-10 UTC
