@@ -60,7 +60,7 @@ jobs:
           packwiz refresh --build
           git diff --exit-code -- pack.toml index.toml
 
-      - name: Export and validate both pack formats
+      - name: Export and validate all three pack archives
         run: |
           make release
           git diff --exit-code -- pack.toml index.toml
@@ -72,6 +72,7 @@ jobs:
           path: |
             dist/cobbled-horizon-${{ steps.metadata.outputs.version }}.mrpack
             dist/cobbled-horizon-${{ steps.metadata.outputs.version }}.zip
+            dist/cobbled-horizon-${{ steps.metadata.outputs.version }}-server.zip
             dist/cobbled-horizon-${{ steps.metadata.outputs.version }}.sha256
           if-no-files-found: error
           retention-days: 14
@@ -99,6 +100,16 @@ jobs:
           RELEASE_VERSION: ${{ needs.validate.outputs.version }}
         run: |
           basename="cobbled-horizon-$RELEASE_VERSION"
+          assets=("$basename.mrpack" "$basename.zip" "$basename-server.zip" "$basename.sha256")
+          for asset in "${assets[@]}"; do
+            test -s "$asset"
+          done
+          shopt -s nullglob dotglob
+          files=(*)
+          if (( ${#files[@]} != ${#assets[@]} )); then
+            echo "Unexpected release file set; refusing publication."
+            exit 1
+          fi
           sha256sum --check "$basename.sha256"
           # Upload into a draft so failed uploads never publish a partial release.
           if draft=$(gh release view "$GITHUB_REF_NAME" --json isDraft --jq .isDraft); then
@@ -110,6 +121,12 @@ jobs:
             gh release create "$GITHUB_REF_NAME" --verify-tag --draft \
               --title "Cobbled Horizon $GITHUB_REF_NAME" --generate-notes
           fi
-          gh release upload "$GITHUB_REF_NAME" \
-            "$basename.mrpack" "$basename.zip" "$basename.sha256" --clobber
+          gh release upload "$GITHUB_REF_NAME" "${assets[@]}" --clobber
+          uploaded=$(gh release view "$GITHUB_REF_NAME" --json assets --jq \
+            'if all(.assets[]; .size > 0) then .assets | map(.name) | sort | .[] else error("empty release asset") end')
+          expected=$(printf '%s\n' "${assets[@]}" | sort)
+          if [[ "$uploaded" != "$expected" ]]; then
+            echo "Uploaded release assets differ; leaving the release in draft."
+            exit 1
+          fi
           gh release edit "$GITHUB_REF_NAME" --draft=false --verify-tag
