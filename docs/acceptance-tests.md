@@ -14,6 +14,14 @@ make validate
 make release
 ```
 
+The hosted `native-acceptance` job consumes the same run's validated server ZIP;
+it does not rebuild or substitute mods. In one disposable non-root Java 25 container
+at a time (4 GB heap, no published ports), the first boot permits public dependency
+bootstrap and the second runs offline. It checks Minecraft readiness, MSS/Hopo and
+Moog policy, fresh group creation, native import/repeat/conflict/roundtrip preservation,
+effective synthetic-account permissions, no startup reapplication, and completed
+all-dimension saves with zero exits. Bounded logs and `summary.json` are Actions artifacts.
+
 ## Server lifecycle
 
 - [ ] Rehearse the stopped-server [deployment reconciliation](deployment.md#upload) on a disposable copy with a verified pack/config/world rollback backup. The active mods set matches the verified 32-project payload, including Explorify v1.6.6 but no Structory or superseded JARs. Remove the retired Lite config and set aside the two named legacy Explorify configs pending generated-schema review; preserve host settings, secrets, Floodgate key, unrelated files and rollback copies.

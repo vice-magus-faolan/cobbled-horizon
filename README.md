@@ -197,7 +197,7 @@ GitHub Actions checks the version, tests the tooling, verifies the source index,
 
 The workflow verifies checksums and the exact four nonempty files, uploads into a draft, and publishes only after the complete nonempty asset set is confirmed. If an upload fails, rerun the failed job to complete the draft. A rerun refuses to replace assets on an already published release. Use a new pack version and tag for a corrected release. Branch, pull request, and manual workflow runs build artifacts without publishing.
 
-Release automation performs static validation. Complete the designated-host acceptance tests before treating a release as production-ready. See [`docs/version-policy.md`](docs/version-policy.md) for the update procedure.
+Release automation also requires the hosted native first-install/restart checks described in [`docs/acceptance-tests.md`](docs/acceptance-tests.md#automated-gates). A green job is not Java/Bedrock client, gameplay, density, backup-restore or production certification; complete the remaining designated-host acceptance tests before production. See [`docs/version-policy.md`](docs/version-policy.md) for the update procedure.
 
 ## Updating
 
