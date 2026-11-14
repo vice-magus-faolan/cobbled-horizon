@@ -86,8 +86,6 @@ jobs:
       contents: read
     env:
       NATIVE_PROJECT: ch-native-${{ github.run_id }}-${{ github.run_attempt }}
-      NATIVE_WORK: ${{ runner.temp }}/ch-native-${{ github.run_id }}-${{ github.run_attempt }}
-      NATIVE_EVIDENCE: ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}
       PYTHONDONTWRITEBYTECODE: "1"
     steps:
       - name: Check out matching source
@@ -115,6 +113,8 @@ jobs:
         timeout-minutes: 13
         env:
           PACK_VERSION: ${{ needs.validate.outputs.version }}
+          NATIVE_WORK: ${{ runner.temp }}/ch-native-${{ github.run_id }}-${{ github.run_attempt }}
+          NATIVE_EVIDENCE: ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}
         run: |
           python3 scripts/native_acceptance.py run --project "$NATIVE_PROJECT" \
             --archive "dist/cobbled-horizon-$PACK_VERSION-server.zip" \
@@ -130,7 +130,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: native-acceptance-${{ needs.validate.outputs.version }}
-          path: ${{ env.NATIVE_EVIDENCE }}
+          path: ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           if-no-files-found: warn
           retention-days: 7
 
