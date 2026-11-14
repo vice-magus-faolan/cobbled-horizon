@@ -31,10 +31,20 @@ def valid_node(node: dict) -> bool:
     return node["type"] == "permission" and isinstance(key, str) and key.startswith("sswaystones.") and "*" not in key
 
 
+def reject_duplicate_members(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    """Reject ambiguity before original policy bytes can enter an import."""
+    members: dict[str, object] = {}
+    for key, value in pairs:
+        if key in members:
+            raise ValueError("seed contains duplicate JSON members")
+        members[key] = value
+    return members
+
+
 def policy_bytes(root: pathlib.Path) -> bytes:
     """Reject private metadata and contextual/temporary or non-policy grants."""
     data = (root / SEED_SOURCE).read_bytes()
-    policy = json.loads(data)
+    policy = json.loads(data, object_pairs_hook=reject_duplicate_members)
     if set(policy) != {"groups", "tracks"} or policy["tracks"] != {}:
         raise ValueError("seed must contain only groups and empty tracks")
     if set(policy["groups"]) != {"default", "owner", "helper"}:

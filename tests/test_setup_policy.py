@@ -44,6 +44,7 @@ class WorldgenPolicyTests(unittest.TestCase):
 class PermissionSeedTests(unittest.TestCase):
     def test_canonical_policy_and_import_payload(self) -> None:
         data = permission_seed.policy_bytes(ROOT)
+        self.assertEqual((ROOT / permission_seed.SEED_SOURCE).read_bytes(), data)
         policy = json.loads(data)
         default = {"sswaystones.create.place": True}
         default.update({"sswaystones." + suffix: False for suffix in (
@@ -84,6 +85,48 @@ class PermissionSeedTests(unittest.TestCase):
         ):
             with self.subTest(node=node):
                 self.assertFalse(permission_seed.valid_node(node))
+
+    def test_duplicate_members_are_rejected_at_every_object_level(self) -> None:
+        data = json.dumps(json.loads((ROOT / permission_seed.SEED_SOURCE).read_bytes()), separators=(",", ":"))
+        variants = (
+            ("{", '{"tracks":{"private":"private canary"},'),
+            ("{", '{"tracks":{},'),
+            ("{", r'{"tr\u0061cks":{},'),
+            ('"default":{', '"default":{"private":"private canary"},"default":{'),
+            ('"nodes":[', '"nodes":["private canary"],"nodes":['),
+            ('"type":"permission"', '"type":"private canary","type":"permission"'),
+            ('"key":"sswaystones.create.place"', '"key":"private canary","key":"sswaystones.create.place"'),
+            ('"value":true', '"value":false,"value":true'),
+        )
+        for original, replacement in variants:
+            with self.subTest(replacement=replacement), tempfile.TemporaryDirectory() as directory:
+                self.assertIn(original, data)
+                root = pathlib.Path(directory)
+                target = root / permission_seed.SEED_SOURCE
+                target.parent.mkdir(parents=True)
+                target.write_text(data.replace(original, replacement, 1))
+                with self.assertRaises(ValueError):
+                    permission_seed.policy_bytes(root)
+
+    def test_shadowed_private_members_cannot_be_checked_or_packaged(self) -> None:
+        data = (ROOT / permission_seed.SEED_SOURCE).read_bytes()
+        data = data.replace(b"{", b'{"tracks":{"private":"private canary"},', 1)
+        for arguments in ([], ["--check"]):
+            with self.subTest(arguments=arguments), tempfile.TemporaryDirectory() as directory:
+                root = pathlib.Path(directory)
+                target = root / permission_seed.SEED_SOURCE
+                target.parent.mkdir(parents=True)
+                target.write_bytes(data)
+                packaged = root / permission_seed.SEED_IMPORT
+                before = permission_seed.import_bytes(data) if arguments else b"existing import canary"
+                packaged.write_bytes(before)
+                output = io.StringIO()
+                with patch.object(permission_seed, "ROOT", root), patch.object(sys, "argv", ["permission_seed.py", *arguments]), contextlib.redirect_stdout(output):
+                    result = permission_seed.main()
+                self.assertEqual(before, packaged.read_bytes())
+                self.assertEqual(1, result)
+                self.assertNotIn("PASS:", output.getvalue())
+                self.assertNotIn("private canary", output.getvalue())
 
     def test_stale_missing_or_corrupt_import_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

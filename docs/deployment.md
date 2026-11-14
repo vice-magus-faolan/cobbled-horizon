@@ -61,6 +61,8 @@ This procedure is operator guidance for a separately approved deployment, not pe
 
 If startup fails, stop the server before making further changes. Restore the prior `/mods`, `/config`, `/squaremap`, and world snapshot together. Do not allow a failed version migration to keep writing into the only world copy.
 
+If the one-time group import was applied, also restore or reconcile the LuckPerms backend from its private pre-import backup through the [separately approved recovery procedure](permissions.md#one-time-group-import). Restoring server files does not revert an external LuckPerms backend.
+
 ## Backups
 
 JEB remains the backup component in the 26.3 candidate. Its checked-in policy limits retained backups to 6,144 MB per world and preserves an 8,192 MB free-space reserve. Keep the independently managed daily host/provider backup layer enabled, verify its scope and restore behavior, and download an off-host snapshot before every pack or loader update. A different advertised storage allocation is not a reason to retune JEB automatically.
