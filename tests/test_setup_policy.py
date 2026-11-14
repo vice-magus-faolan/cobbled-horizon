@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import contextlib
+import copy
 import gzip
 import io
 import json
@@ -50,7 +51,7 @@ class PermissionSeedTests(unittest.TestCase):
         default.update({"sswaystones." + suffix: False for suffix in (
             "create.global", "create.team", "create.server", "command", "manager", "manager.bypass_limit", "showall",
         )})
-        owner = {"group.default": True}
+        owner = {"group.default": True, "weight.100": True}
         owner.update({"sswaystones." + suffix: True for suffix in (
             "create.global", "create.server", "command", "manager", "manager.bypass_limit", "showall",
         )})
@@ -66,6 +67,41 @@ class PermissionSeedTests(unittest.TestCase):
         self.assertEqual(permission_seed.import_bytes(data), permission_seed.import_bytes(data))
         index = tomllib.loads((ROOT / "index.toml").read_text())
         self.assertTrue(permission_seed.SEED_PATHS <= {entry["file"] for entry in index["files"]})
+
+    def test_owner_priority_is_required_and_narrowly_scoped(self) -> None:
+        policy = json.loads((ROOT / permission_seed.SEED_SOURCE).read_bytes())
+        priority = {"type": "weight", "key": "weight.100", "value": True}
+        owner = policy["groups"]["owner"]["nodes"]
+        owner[:] = [node for node in owner if node["type"] != "weight"]
+        owner.append(priority)
+        with tempfile.TemporaryDirectory() as directory:
+            root = pathlib.Path(directory)
+            target = root / permission_seed.SEED_SOURCE
+            target.parent.mkdir(parents=True)
+            data = json.dumps(policy).encode()
+            target.write_bytes(data)
+            self.assertEqual(data, permission_seed.policy_bytes(root))
+            variants = (
+                ("owner", []), ("owner", [priority, priority]),
+                ("default", [priority]), ("helper", [priority]),
+                ("owner", [{**priority, "key": "weight.0"}]),
+                ("owner", [{**priority, "key": "weight.200"}]),
+                ("owner", [{**priority, "value": False}]),
+                ("owner", [{**priority, "value": 1}]),
+                ("owner", [{**priority, "type": "permission"}]),
+                ("owner", [{**priority, "context": {"world": "private canary"}}]),
+                ("owner", [{**priority, "expiry": 1}]),
+                ("owner", [{**priority, "metadata": {"private": "private canary"}}]),
+            )
+            for name, nodes in variants:
+                with self.subTest(name=name, nodes=nodes):
+                    candidate = copy.deepcopy(policy)
+                    group = candidate["groups"][name]["nodes"]
+                    group[:] = [node for node in group if node["type"] != "weight"]
+                    group.extend(nodes)
+                    target.write_text(json.dumps(candidate))
+                    with self.assertRaises(ValueError):
+                        permission_seed.policy_bytes(root)
 
     def test_private_and_elevated_seed_variants_are_rejected(self) -> None:
         policy = json.loads(permission_seed.policy_bytes(ROOT))
@@ -84,7 +120,7 @@ class PermissionSeedTests(unittest.TestCase):
             {"type": "permission", "key": "sswaystones.command", "value": True, "context": {"server": "private canary"}},
         ):
             with self.subTest(node=node):
-                self.assertFalse(permission_seed.valid_node(node))
+                self.assertFalse(permission_seed.valid_node(node, "owner"))
 
     def test_duplicate_members_are_rejected_at_every_object_level(self) -> None:
         data = json.dumps(json.loads((ROOT / permission_seed.SEED_SOURCE).read_bytes()), separators=(",", ":"))

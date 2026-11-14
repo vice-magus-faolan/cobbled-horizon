@@ -22,11 +22,13 @@ def is_pack_override(relative: str) -> bool:
     return relative.startswith(("config/", "squaremap/")) and not relative.startswith("config/luckperms/")
 
 
-def valid_node(node: dict) -> bool:
+def valid_node(node: dict, group: str) -> bool:
     if set(node) != {"type", "key", "value"} or type(node["value"]) is not bool:
         return False
     if node["type"] == "inheritance":
         return node["key"] == "group.default" and node["value"] is True
+    if node["type"] == "weight":
+        return group == "owner" and node["key"] == "weight.100" and node["value"] is True
     key = node["key"]
     return node["type"] == "permission" and isinstance(key, str) and key.startswith("sswaystones.") and "*" not in key
 
@@ -49,11 +51,13 @@ def policy_bytes(root: pathlib.Path) -> bytes:
         raise ValueError("seed must contain only groups and empty tracks")
     if set(policy["groups"]) != {"default", "owner", "helper"}:
         raise ValueError("seed must contain only default, owner and helper")
-    for group in policy["groups"].values():
+    for name, group in policy["groups"].items():
         if set(group) != {"nodes"} or not isinstance(group["nodes"], list):
             raise ValueError("seed groups must contain only a nodes array")
-        if not all(isinstance(node, dict) and valid_node(node) for node in group["nodes"]):
+        if not all(isinstance(node, dict) and valid_node(node, name) for node in group["nodes"]):
             raise ValueError("seed contains an unsupported node or private metadata")
+        if name == "owner" and sum(node["type"] == "weight" for node in group["nodes"]) != 1:
+            raise ValueError("seed owner must contain exactly one permanent weight.100 node")
     return data
 
 

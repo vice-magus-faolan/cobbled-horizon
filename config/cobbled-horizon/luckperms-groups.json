@@ -14,6 +14,7 @@
     },
     "owner": {
       "nodes": [
+        {"type": "weight", "key": "weight.100", "value": true},
         {"type": "inheritance", "key": "group.default", "value": true},
         {"type": "permission", "key": "sswaystones.create.global", "value": true},
         {"type": "permission", "key": "sswaystones.create.server", "value": true},

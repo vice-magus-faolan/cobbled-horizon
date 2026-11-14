@@ -10,11 +10,11 @@ hash = "c7384a22595488f79f3125b22cc175eb729267267807a084479419349797abc8"
 
 [[files]]
 file = "config/cobbled-horizon/luckperms-groups.json"
-hash = "8cc95fba54a8b24d3edb751d8196ff92d9625b3fb37a1f9ad295a05195da950b"
+hash = "b505a39716d90459a891b091a5aea0388d452f1fa2f8381525d93920263bc20b"
 
 [[files]]
 file = "config/cobbled-horizon/luckperms-groups.json.gz"
-hash = "4e165e6928ee8f86a6fcd8281e3fec97bf70c51949e2551b695221650e94bf16"
+hash = "fb9dbc02e0fce4da3eb9ecf4a93712c718a3c5c5e2da6a3eee6a7cdbfb3664f9"
 
 [[files]]
 file = "config/cristellib/auto_config_settings.json5"

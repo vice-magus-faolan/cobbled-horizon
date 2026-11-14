@@ -22,6 +22,8 @@ The default native import merges nodes into the named groups. It preserves unrel
 
 ## Roles and account assignment
 
+The seed stores the native LuckPerms [group weight](https://luckperms.net/wiki/Weight) node `weight.100=true` on `owner` only. On a fresh backend, `default` and `helper` have no weight (effective priority zero). This makes the six owner waystone grants take precedence over ordinary default denies even when `parent add owner` retains default membership; inheritance alone does not establish multi-parent priority. It neither assigns users nor grants OP or direct user permissions. Before importing into an existing backend, inspect stored/configured group weights as well as nodes and memberships: higher/equal custom priorities, direct user grants and contextual rules can change effective results. Group weight orders all conflicting inherited nodes, not just waystones; reconcile private/custom authority deliberately rather than deleting it or replacing parents to force the baseline. For an otherwise fresh account retaining default and owner membership, the six owner account checks below must return `true` and team `false` without OP or direct-user overrides; group listings alone are insufficient.
+
 The seed gives `owner` and `helper` inheritance from `default`. Only the owner is a Minecraft operator; helper has **no additional permission nodes**. Membership and OP changes below are separate, deployment-specific owner decisions, not part of importing the pack:
 
 ```text
@@ -47,6 +49,9 @@ Use the host's operator-management list or read `ops.json` and confirm only the 
 
 ```text
 lp listgroups
+lp group default info
+lp group owner info
+lp group helper info
 lp group default permission info
 lp group owner permission info
 lp group helper permission info
@@ -61,6 +66,14 @@ lp user <OWNER_JAVA_USERNAME> info
 lp user <HELPER_USERNAME> info
 lp user <ORDINARY_JAVA_USERNAME> info
 lp user <FLOODGATE_USERNAME> info
+lp user <OWNER_JAVA_USERNAME> permission check sswaystones.create.global
+lp user <OWNER_JAVA_USERNAME> permission check sswaystones.create.server
+lp user <OWNER_JAVA_USERNAME> permission check sswaystones.command
+lp user <OWNER_JAVA_USERNAME> permission check sswaystones.manager
+lp user <OWNER_JAVA_USERNAME> permission check sswaystones.manager.bypass_limit
+lp user <OWNER_JAVA_USERNAME> permission check sswaystones.showall
+lp user <OWNER_JAVA_USERNAME> permission check sswaystones.create.team
+lp user <HELPER_USERNAME> permission check sswaystones.create.server
 lp user <HELPER_USERNAME> permission check sswaystones.command
 lp user <ORDINARY_JAVA_USERNAME> permission check sswaystones.create.server
 ```

@@ -280,6 +280,17 @@ def check_effective(console: Console) -> None:
     )
     for target, node, value in cases:
         console.permission(target, node, value)
+    # Check inherited account resolution, not just the nodes on the owner group.
+    for suffix in ("create.global", "create.server", "command", "manager", "manager.bypass_limit", "showall"):
+        node = "sswaystones." + suffix
+        console.permission(f"user {OWNER}", node, True)
+        console.permission("group default", node, False)
+        console.permission("group helper", node, False)
+        console.permission(f"user {HELPER}", node, False)
+    console.permission("group owner", "sswaystones.create.team", False)
+    console.permission(f"user {OWNER}", "sswaystones.create.team", False)
+    console.permission(f"user {HELPER}", "sswaystones.create.team", False)
+    console.permission(f"user {OWNER}", "sswaystones.create.place", True)
 
 
 def clean_bootstrap(console: Console, server: Path, seed: dict) -> None:
