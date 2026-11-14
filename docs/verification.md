@@ -1,5 +1,9 @@
 # Verification record
 
+## First-server setup candidate 26.3.0.1.4
+
+This candidate corrects JEB 1.2.0.10 and Tasks 3.1.0 operator guidance, refreshes MSS/Hopo controls against their pinned resources, and ships a readable group-only LuckPerms policy plus an import-ready gzip generated from the same bytes. Mod/runtime pins and Moog rarity inputs are unchanged. Static policy/index/archive regressions do not prove native loading, merge semantics or effective role security. Use this exact revision's successful hosted `Build and release pack` / `validate` build and downloadable three-archive/checksum set for final export evidence. Native config loading and permission-import roundtrip remain pending until independently recorded; wider gameplay, cross-play and restore acceptance remains separate. Historical records below do not certify this candidate.
+
 ## Standalone server archive
 
 Pack `26.3.0.1.3` adds a root-layout `-server.zip` without changing the 26.3 mod pins, configuration bytes or Minecraft/Fabric versions. The existing hosted `Build and release pack` workflow runs `make release`: it checks both native exports, derives the standalone payload from the validated CurseForge ZIP, and validates its exact root membership and source hashes before writing checksums for all three archives. Its downloadable artifact contains those archives and the checksum file. Use the exact revision's successful hosted build and artifacts as full-export evidence, not the synthetic archive fixtures alone.

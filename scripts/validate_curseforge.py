@@ -10,7 +10,10 @@ import pathlib
 import stat
 import tomllib
 import zipfile
+
 from collections.abc import Collection
+
+from permission_seed import is_pack_override
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
@@ -51,7 +54,7 @@ def payload_hashes(source_root: pathlib.Path, errors: list[str]) -> dict[str, st
                 raise ValueError(f"unexpected mod metadata path: {relative}")
             target, digest = mod_payload(source_root, relative, errors)
         else:
-            if not relative.startswith(("config/", "squaremap/")):
+            if not is_pack_override(relative):
                 errors.append(f"unexpected source override: {relative}")
             target = relative
             digest = hashlib.sha512((source_root / relative).read_bytes()).hexdigest()

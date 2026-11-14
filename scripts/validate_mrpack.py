@@ -11,6 +11,8 @@ import re
 import tomllib
 import zipfile
 
+from permission_seed import is_pack_override
+
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 HEX_LENGTHS = {"sha1": 40, "sha512": 128}
 VALID_ENVIRONMENTS = {"required", "optional", "unsupported"}
@@ -112,7 +114,7 @@ def validate_contract(index: dict, archive_files: dict[str, bytes], source_root:
         if entry.get("metafile"):
             continue
         relative = entry["file"]
-        if not safe_relative(relative) or not relative.startswith(("config/", "squaremap/")):
+        if not safe_relative(relative) or not is_pack_override(relative):
             errors.append(f"unexpected source override: {relative}")
             continue
         expected_overrides["overrides/" + relative] = (source_root / relative).read_bytes()

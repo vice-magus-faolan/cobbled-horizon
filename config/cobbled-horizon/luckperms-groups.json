@@ -1,0 +1,31 @@
+{
+  "groups": {
+    "default": {
+      "nodes": [
+        {"type": "permission", "key": "sswaystones.create.place", "value": true},
+        {"type": "permission", "key": "sswaystones.create.global", "value": false},
+        {"type": "permission", "key": "sswaystones.create.team", "value": false},
+        {"type": "permission", "key": "sswaystones.create.server", "value": false},
+        {"type": "permission", "key": "sswaystones.command", "value": false},
+        {"type": "permission", "key": "sswaystones.manager", "value": false},
+        {"type": "permission", "key": "sswaystones.manager.bypass_limit", "value": false},
+        {"type": "permission", "key": "sswaystones.showall", "value": false}
+      ]
+    },
+    "owner": {
+      "nodes": [
+        {"type": "inheritance", "key": "group.default", "value": true},
+        {"type": "permission", "key": "sswaystones.create.global", "value": true},
+        {"type": "permission", "key": "sswaystones.create.server", "value": true},
+        {"type": "permission", "key": "sswaystones.command", "value": true},
+        {"type": "permission", "key": "sswaystones.manager", "value": true},
+        {"type": "permission", "key": "sswaystones.manager.bypass_limit", "value": true},
+        {"type": "permission", "key": "sswaystones.showall", "value": true}
+      ]
+    },
+    "helper": {
+      "nodes": [{"type": "inheritance", "key": "group.default", "value": true}]
+    }
+  },
+  "tracks": {}
+}
