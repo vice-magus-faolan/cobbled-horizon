@@ -1,0 +1,42 @@
+# INERT example, not the runtime credential file. See docs/discord-journal.md.
+# Copy the COMPLETE policy privately before adding credentials; never use defaults.
+[General]
+token = ""
+
+[[Channels.Channel]]
+id = 0
+subscriptions = ["player_advancement"]
+mode = "PLAIN_TEXT"
+silent = true
+
+[Commands]
+slash_command = false
+
+[[Commands.Permission]]
+id = 0
+permission_level = -1
+commands = []
+
+[Features]
+status_channels = false
+account_linking = false
+
+[Account]
+guild_id = 0
+allow_private_messages = false
+rename_discord_member = false
+force_link = false
+
+[[Account.Policy]]
+required_roles_id = []
+roles_id_to_give = []
+
+[Style.Presence]
+message = ""
+update = 0
+
+[Misc]
+relay_bot_messages = false
+allowed_mention = []
+broadcast_commands = []
+verbose_other_mods_messages = false

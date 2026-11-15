@@ -6,7 +6,7 @@
 
 A reproducible, server-side Fabric collection for a Vanilla+ Minecraft world focused on performance, exploration, and restrained quality-of-life improvements.
 
-This **development candidate** targets **Minecraft Java 26.3** with **Fabric Loader 0.20.1**. It contains 26 deliberately selected projects plus six resolved dependencies. All 32 exact artifacts have published Fabric 26.3 support; 31 are release-designated and Geyser `2.12.1-b1281` (`MJYV1WUM`) is explicitly pinned as beta. This is not a clean-boot, gameplay, Bedrock, or production-readiness claim. Just Enough Backups (JEB) retains the backup role.
+This **development candidate** targets **Minecraft Java 26.3** with **Fabric Loader 0.20.1**. It contains 27 deliberately selected projects plus six resolved dependencies. All 33 exact artifacts have published Fabric 26.3 support; 32 are release-designated and Geyser `2.12.1-b1281` (`MJYV1WUM`) is explicitly pinned as beta. This is not a clean-boot, gameplay, Bedrock, or production-readiness claim. Just Enough Backups (JEB) retains the backup role.
 
 Java players should not need this pack on their clients: every packwiz entry is marked `side = "server"`. Bedrock access is provided by Geyser and Floodgate. This Geyser build requires UDP for NetherNet media and either TCP on the Bedrock port for built-in signaling, distinct from Java's TCP listener, or an explicitly configured and verified external signaling service. Host support is unverified; see [`Geyser networking`](docs/deployment.md#geyser-networking).
 
@@ -60,6 +60,7 @@ partial JSON. Use `--repository PATH` to read another local repository.
 - Chunky
 - squaremap
 - Just Enough Backups (JEB)
+- [Mc2Discord](docs/discord-journal.md) — dormant; private advancement-only activation required
 
 ### Quality of life and exploration
 
@@ -94,9 +95,9 @@ Packwiz writes the same `.pw.toml` shape for a project whether it was selected d
 
 This repository keeps the two concerns separate:
 
-- [`collection.toml`](collection.toml) defines the active baseline: 26 selected projects and six resolved dependencies.
+- [`collection.toml`](collection.toml) defines the active baseline: 27 selected projects and six resolved dependencies.
 - [`candidates.toml`](candidates.toml) defines staged and future projects, why they are inactive, and the evidence required to promote them.
-- `mods/*.pw.toml` is the machine-maintained baseline lock layer. It contains the 32 projects exported by the standard pack.
+- `mods/*.pw.toml` is the machine-maintained baseline lock layer. It contains the 33 projects exported by the standard pack.
 - `staged/mods/*.pw.toml` retains five pinned candidate records outside packwiz's active index.
 
 Fabric API is the only explicitly selected platform library. Polymer, Cristel Lib, Cloth Config API, Forge Config API Port, Moog's Structure Lib, and Collective close baseline dependencies. ZConfig is staged beside Fast Noise. Cristel Lib demonstrates why dependency chains matter: Towns and Towers requires Cristel Lib, which in turn requires Cloth Config API and Fabric API. Explorify requires Fabric API; its Cristel Lib integration is optional. Crops Love Rain requires Forge Config API Port and Fabric API. Villager Names requires Collective.
@@ -151,7 +152,7 @@ tag runs instead retain the exact release-tag check.
 The export lands at:
 
 ```text
-dist/cobbled-horizon-26.3.0.1.4.mrpack
+dist/cobbled-horizon-26.3.0.1.5.mrpack
 ```
 
 On the designated Minecraft test host, materialize a clean server tree with:
@@ -164,7 +165,7 @@ Do not assume a provider imports `.mrpack` files. Build and test on the designat
 
 ## GitHub releases
 
-Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. This candidate's source version is `26.3.0.1.4`, for Minecraft `26.3` and pack revision `0.1.4`. A matching tag would be `v26.3.0.1.4`; the numeric version is not a production approval. Do not tag this development candidate until separately approved for release.
+Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. This candidate's source version is `26.3.0.1.5`, for Minecraft `26.3` and pack revision `0.1.5`. A matching tag would be `v26.3.0.1.5`; the numeric version is not a production approval. Do not tag this development candidate until separately approved for release.
 
 To build and validate all three release archives without starting Minecraft, run:
 
@@ -176,21 +177,21 @@ make release
 The release files are:
 
 ```text
-dist/cobbled-horizon-26.3.0.1.4.mrpack
-dist/cobbled-horizon-26.3.0.1.4.zip
-dist/cobbled-horizon-26.3.0.1.4-server.zip
-dist/cobbled-horizon-26.3.0.1.4.sha256
+dist/cobbled-horizon-26.3.0.1.5.mrpack
+dist/cobbled-horizon-26.3.0.1.5.zip
+dist/cobbled-horizon-26.3.0.1.5-server.zip
+dist/cobbled-horizon-26.3.0.1.5.sha256
 ```
 
 The `.mrpack` preserves the server-only flags and references pinned Modrinth downloads. The main CurseForge-format `.zip` has a manifest and bundles those mod JARs under `overrides/mods/`, along with configuration overrides; it is not a server-folder ZIP. The additional `-server.zip` reuses that validated payload, with exactly `mods/`, `config/` and `squaremap/` at its root, without a manifest or `overrides/` wrapper. Its complete membership and SHA-512 payload hashes are checked against source. It contains no Minecraft/Fabric runtime binaries, launch scripts, worlds or secrets: provision the pinned runtime separately. Java players do not need any of these archives to join.
 
-The `.sha256` covers all three archives. Verify a downloaded set with `sha256sum --check cobbled-horizon-26.3.0.1.4.sha256`. To revalidate a standalone archive against this matching source revision, run `python3 scripts/server_pack.py validate dist/cobbled-horizon-26.3.0.1.4-server.zip`. For upload and existing-server reconciliation, see the [deployment runbook](docs/deployment.md#build) and [DatHost's documented import choices](docs/providers/dathost.md#modpack-import-options).
+The `.sha256` covers all three archives. Verify a downloaded set with `sha256sum --check cobbled-horizon-26.3.0.1.5.sha256`. To revalidate a standalone archive against this matching source revision, run `python3 scripts/server_pack.py validate dist/cobbled-horizon-26.3.0.1.5-server.zip`. For upload and existing-server reconciliation, see the [deployment runbook](docs/deployment.md#build) and [DatHost's documented import choices](docs/providers/dathost.md#modpack-import-options).
 
 Only after source review, passing hosted checks, designated-host acceptance and explicit release approval, create and push the matching tag from the intended version line:
 
 ```bash
-git tag -a v26.3.0.1.4 -m "Cobbled Horizon v26.3.0.1.4"
-git push origin v26.3.0.1.4
+git tag -a v26.3.0.1.5 -m "Cobbled Horizon v26.3.0.1.5"
+git push origin v26.3.0.1.5
 ```
 
 GitHub Actions checks the version, tests the tooling, verifies the source index, and validates all three archives. It then creates a GitHub release with the three archives, their SHA-256 checksum file, and generated release notes. Publishing uses the built-in `GITHUB_TOKEN`; no additional secrets are required. This workflow uploads to GitHub only.

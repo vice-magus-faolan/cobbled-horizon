@@ -2,9 +2,9 @@
 
 ## Release versions
 
-`pack.toml` is the source of truth for release versions and artifact names. Its `version` is `<Minecraft version>.<pack major>.<pack minor>.<pack patch>`, currently `26.3.0.1.4`. Git tags add a leading `v`, giving `v26.3.0.1.4`. The Minecraft prefix must match `versions.minecraft` exactly. Both exported manifests retain the complete pack version; the standalone server ZIP carries it in its filename. This numeric candidate identity does not establish runtime readiness or authorize a release.
+`pack.toml` is the source of truth for release versions and artifact names. Its `version` is `<Minecraft version>.<pack major>.<pack minor>.<pack patch>`, currently `26.3.0.1.5`. Git tags add a leading `v`, giving `v26.3.0.1.5`. The Minecraft prefix must match `versions.minecraft` exactly. Both exported manifests retain the complete pack version; the standalone server ZIP carries it in its filename. This numeric candidate identity does not establish runtime readiness or authorize a release.
 
-The next pack-only patch on Minecraft 26.3 would use `26.3.0.1.5`. If Minecraft gains another version component, keep the complete prefix, for example `26.3.1.0.1.0` for Minecraft 26.3.1 and pack revision 0.1.0. Release tags currently accept numeric versions only, without prerelease suffixes.
+The next pack-only patch on Minecraft 26.3 would use `26.3.0.1.6`. If Minecraft gains another version component, keep the complete prefix, for example `26.3.1.0.1.0` for Minecraft 26.3.1 and pack revision 0.1.0. Release tags currently accept numeric versions only, without prerelease suffixes.
 
 Pushing a matching tag builds and publishes the `.mrpack`, server CurseForge-format `.zip`, standalone `-server.zip`, and `.sha256` covering all three archives to GitHub Releases. See the [release instructions](../README.md#github-releases). Publication to Modrinth or CurseForge is not configured.
 
@@ -31,7 +31,7 @@ Every `mods/*.pw.toml` entry must contain:
 
 The Minecraft and Fabric Loader versions are pinned in `pack.toml`. Do not broaden acceptable game versions to force a 26.2 JAR onto 26.3.
 
-The current development candidate uses Fabric Loader `0.20.1` and 32 exact Fabric 26.3 project versions. The sole explicit prerelease exception is Geyser `2.12.1-b1281`, project `wKkoqHrH`, version `MJYV1WUM` (beta). The other 31 versions are release-designated. This is not a global prerelease policy: `--release-only` must still reject beta/alpha records, and other prerelease-only candidates remain inactive. Primary metadata and verified artifact hashes do not establish dependency-range, server-boot, gameplay, or cross-play success.
+The current development candidate uses Fabric Loader `0.20.1` and 33 exact Fabric 26.3 project versions. The sole explicit prerelease exception is Geyser `2.12.1-b1281`, project `wKkoqHrH`, version `MJYV1WUM` (beta). The other 32 versions are release-designated. This is not a global prerelease policy: `--release-only` must still reject beta/alpha records, and other prerelease-only candidates remain inactive. Primary metadata and verified artifact hashes do not establish dependency-range, server-boot, gameplay, or cross-play success.
 
 Staged pins retain historical bytes, including 26.2 builds; they are excluded from active exports and are not certified for 26.3. Promotion requires selecting and verifying exact target-compatible versions as well as passing the existing activation gates. Future projects remain identity/gate entries only.
 
@@ -48,6 +48,8 @@ Staged pins retain historical bytes, including 26.2 builds; they are excluded fr
 9. Deploy only after its gates pass, verify, and retain the previous known-good pack and matching world snapshot for rollback.
 
 ## 26.3 candidate readiness
+
+Pack `26.3.0.1.5` adds stable server-only Mc2Discord 4.4.0 and an inert advancement-only example, with private runtime configuration excluded from source and archives. Existing pins, worldgen, permission policy and 26.2 remain unchanged. See the [private activation guide](discord-journal.md); real pinned-artifact no-token hosted boots and later approved live event delivery are distinct gates.
 
 Pack `26.3.0.1.4` corrects JEB/Tasks operator guidance, refreshes pinned MSS/Hopo schemas and packages a one-time group-only LuckPerms seed with an import-ready gzip. All mod/runtime pins, Moog rarity inputs and the separate 26.2 line are unchanged. Native loader/import verification and exact-head hosted archive checks remain required; source configuration is not runtime acceptance.
 
