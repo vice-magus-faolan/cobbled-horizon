@@ -129,24 +129,28 @@ class Console:
         self.selector = selectors.DefaultSelector()
         self.selector.register(process.stdout, selectors.EVENT_READ)
 
-    def wait(self, pattern: str, start: int = 0, seconds: float = 45) -> str:
+    def wait(self, pattern: str | None, start: int = 0, seconds: float = 45) -> str:
+        """Wait for a pattern, or actual pipe EOF when pattern is None."""
         deadline = min(self.deadline, time.monotonic() + seconds)
+        expected = pattern if pattern is not None else "stdout EOF"
         while time.monotonic() < deadline:
-            match = re.search(pattern, self.output[start:])
+            match = re.search(pattern, self.output[start:]) if pattern is not None else None
             if match:
                 return self.output[start:start + match.end()]
             events = self.selector.select(min(1, max(0, deadline - time.monotonic())))
             if events:
                 chunk = os.read(self.process.stdout.fileno(), 65536)
                 if not chunk:
-                    raise RuntimeError("native process ended before required output: " + pattern)
+                    if pattern is None:
+                        return self.output[start:]
+                    raise RuntimeError("native process ended before required output: " + expected)
                 self.log.write(chunk)
                 self.log.flush()
                 self.output += ANSI.sub("", chunk.decode("utf-8", errors="replace"))
                 require(len(self.output) <= 16 * 1024 * 1024, "native console exceeds evidence bound")
             elif self.process.poll() is not None:
-                raise RuntimeError("native process exited before required output: " + pattern)
-        raise TimeoutError("native deadline waiting for: " + pattern)
+                raise RuntimeError("native process exited before required output: " + expected)
+        raise TimeoutError("native deadline waiting for: " + expected)
 
     def command(self, command: str, pattern: str) -> str:
         start = len(self.output)
@@ -168,14 +172,13 @@ class Console:
         require(result == [str(expected).lower()], f"wrong effective permission: {target} {node}")
 
     def stop(self, name: str) -> None:
-        self.command("stop", r"\[Server thread/INFO\]: Saving worlds")
-        self.wait(r"ThreadedAnvilChunkStorage: All dimensions are saved", seconds=60)
+        start = len(self.output)
+        announcement = self.command("stop", r"\[Server thread/INFO\]: Saving worlds")
+        # Pinned 26.3 logs save starts, not the legacy storage-completion text.
+        # Only shutdown-slice dimensions plus EOF AND zero exits prove completion.
         # Drain to EOF so attach cannot block on a full output pipe during save.
-        try:
-            self.wait(r"(?!)", seconds=60)
-        except RuntimeError:
-            pass
-        check_saved_dimensions(self.output)
+        shutdown = self.wait(None, start + len(announcement), seconds=60)
+        check_saved_dimensions(shutdown)
         code = self.process.wait(timeout=max(1, min(10, self.deadline - time.monotonic())))
         require(code == 0, f"native attach exit {code}")
         state = json.loads(docker("inspect", "--format", "{{json .State}}", name))
@@ -190,12 +193,12 @@ class Console:
 
 
 def check_saved_dimensions(output: str) -> None:
-    """Require completed storage saves, not an early shutdown announcement."""
-    for dimension in ("world", "DIM-1", "DIM1"):
-        require(f"ThreadedAnvilChunkStorage ({dimension}): All chunks are saved" in output,
-                f"native save incomplete for {dimension}")
-    require("ThreadedAnvilChunkStorage: All dimensions are saved" in output,
-            "native all-dimensions save incomplete")
+    """Require pinned save-start lines; stop also requires EOF and clean exits."""
+    for dimension in ("overworld", "the_nether", "the_end"):
+        pattern = (r"\[Server thread/INFO\]: Saving chunks for level "
+                   rf"\x27ServerLevel\[world\]\x27/minecraft:{dimension}\r?$")
+        require(re.search(pattern, output, re.MULTILINE) is not None,
+                f"native shutdown save missing for {dimension}")
 
 
 def create_container(project: str, phase: str, server: Path, command: list[str], offline: bool) -> str:

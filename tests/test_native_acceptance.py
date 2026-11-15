@@ -20,16 +20,21 @@ from test_validation import ROOT, load_script, permission_seed
 native = load_script("native_acceptance")
 READY_LINE = "[12:00:00] [Server thread/INFO]: Done (1.2s)! For help, type \"help\"\n"
 SAVED = "\n".join(
-    f"ThreadedAnvilChunkStorage ({name}): All chunks are saved"
-    for name in ("world", "DIM-1", "DIM1")
-) + "\nThreadedAnvilChunkStorage: All dimensions are saved\n"
+    f"[09:23:07] [Server thread/INFO]: Saving chunks for level \x27ServerLevel[world]\x27/minecraft:{name}"
+    for name in ("overworld", "the_nether", "the_end")
+) + "\n"
+STOPPED = "[09:23:07] [Server thread/INFO]: Saving worlds\n" + SAVED
+CLEAN_EXIT = {"Status": "exited", "ExitCode": 0, "OOMKilled": False}
 
 
 class NativeAcceptanceTests(unittest.TestCase):
-    def console(self, root: Path, output: str, deadline: float | None = None):
+    def console(self, root: Path, output: str, deadline: float | None = None, *, eof: bool = True):
         reader, writer = os.pipe()
         os.write(writer, output.encode())
-        os.close(writer)
+        if eof:
+            os.close(writer)
+        else:
+            self.addCleanup(os.close, writer)
         process = Mock()
         process.stdout = os.fdopen(reader, "rb")
         process.stdin = io.BytesIO()
@@ -59,30 +64,62 @@ class NativeAcceptanceTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 console.wait(native.READY)
 
-    def test_save_requires_each_completed_dimension_and_zero_exit(self):
+    def test_save_requires_each_shutdown_dimension_and_zero_exit(self):
         native.check_saved_dimensions(SAVED)
-        for name in ("world", "DIM-1", "DIM1"):
-            with self.subTest(name=name), self.assertRaises(ValueError):
-                native.check_saved_dimensions(SAVED.replace(f"({name}): All chunks are saved", "incomplete"))
-        with self.assertRaises(ValueError):
-            native.check_saved_dimensions("[Server thread/INFO]: Saving worlds\n")
+        for output in ("", "[Server thread/INFO]: Saving worlds\n",
+                       SAVED + "[Server thread/INFO]: Saving worlds\n",
+                       *(STOPPED.replace(line, "") for line in SAVED.splitlines(keepends=True)),
+                       STOPPED.replace("[Server thread/INFO]: Saving chunks", "[Worker-Main/INFO]: Saving chunks")):
+            with self.subTest(output=output), tempfile.TemporaryDirectory() as directory:
+                console = self.console(Path(directory), output)
+                with patch.object(native, "docker") as docker:
+                    with self.assertRaises((ValueError, RuntimeError)):
+                        console.stop("owned")
+                console.process.wait.assert_not_called()
+                docker.assert_not_called()
         with tempfile.TemporaryDirectory() as directory:
-            console = self.console(Path(directory), "[Server thread/INFO]: Saving worlds\n" + SAVED)
+            console = self.console(Path(directory), STOPPED)
             console.process.wait.return_value = 1
             with self.assertRaisesRegex(ValueError, "attach exit 1"), patch.object(native, "docker") as docker:
                 console.stop("owned")
             docker.assert_not_called()
-        for state in ({"Status": "exited", "ExitCode": 0, "OOMKilled": False},
-                      {"Status": "exited", "ExitCode": 1, "OOMKilled": False},
-                      {"Status": "exited", "ExitCode": 0, "OOMKilled": True}):
+        for state in (CLEAN_EXIT, {**CLEAN_EXIT, "Status": "running"},
+                      {**CLEAN_EXIT, "ExitCode": 1}, {**CLEAN_EXIT, "OOMKilled": True}):
             with self.subTest(state=state), tempfile.TemporaryDirectory() as directory:
-                console = self.console(Path(directory), "[Server thread/INFO]: Saving worlds\n" + SAVED)
-                with patch.object(native, "docker", return_value=json.dumps(state)):
-                    if state["ExitCode"] or state["OOMKilled"]:
+                console = self.console(Path(directory), STOPPED)
+                with patch.object(native, "docker", return_value=json.dumps(state)) as docker:
+                    if state != CLEAN_EXIT:
                         with self.assertRaises(ValueError):
                             console.stop("owned")
                     else:
                         console.stop("owned")
+                        self.assertEqual(b"stop\n", console.process.stdin.getvalue())
+                        self.assertEqual(STOPPED, console.output)
+                        self.assertEqual(STOPPED.encode(), (Path(directory) / "console.log").read_bytes())
+                    console.process.wait.assert_called_once()
+                    docker.assert_called_once_with("inspect", "--format", "{{json .State}}", "owned")
+
+    def test_save_requires_bounded_pipe_eof_not_just_process_exit(self):
+        for poll, error in ((None, TimeoutError), (0, RuntimeError)):
+            with self.subTest(poll=poll), tempfile.TemporaryDirectory() as directory:
+                console = self.console(Path(directory), STOPPED, time.monotonic() + 0.05, eof=False)
+                console.process.poll.return_value = poll
+                with patch.object(native, "docker") as docker:
+                    with self.assertRaises(error):
+                        console.stop("owned")
+                self.assertEqual(STOPPED, console.output)
+                console.process.wait.assert_not_called()
+                docker.assert_not_called()
+
+    def test_save_propagates_drain_failure_instead_of_treating_it_as_eof(self):
+        with tempfile.TemporaryDirectory() as directory:
+            console = self.console(Path(directory), STOPPED)
+            with patch.object(console, "wait", side_effect=["Saving worlds", RuntimeError("drain failed")]), \
+                 patch.object(native, "docker") as docker:
+                with self.assertRaisesRegex(RuntimeError, "drain failed"):
+                    console.stop("owned")
+            console.process.wait.assert_not_called()
+            docker.assert_not_called()
 
     def test_default_only_import_must_really_create_both_groups(self):
         before = {"groups": {"default": {"nodes": []}}, "users": {}, "tracks": {}}
