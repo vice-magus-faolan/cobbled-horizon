@@ -151,7 +151,7 @@ tag runs instead retain the exact release-tag check.
 The export lands at:
 
 ```text
-dist/cobbled-horizon-26.3.0.1.3.mrpack
+dist/cobbled-horizon-26.3.0.1.4.mrpack
 ```
 
 On the designated Minecraft test host, materialize a clean server tree with:
@@ -164,7 +164,7 @@ Do not assume a provider imports `.mrpack` files. Build and test on the designat
 
 ## GitHub releases
 
-Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. This candidate's source version is `26.3.0.1.3`, for Minecraft `26.3` and pack revision `0.1.3`. A matching tag would be `v26.3.0.1.3`; the numeric version is not a production approval. Do not tag this development candidate until separately approved for release.
+Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. This candidate's source version is `26.3.0.1.4`, for Minecraft `26.3` and pack revision `0.1.4`. A matching tag would be `v26.3.0.1.4`; the numeric version is not a production approval. Do not tag this development candidate until separately approved for release.
 
 To build and validate all three release archives without starting Minecraft, run:
 
@@ -176,28 +176,28 @@ make release
 The release files are:
 
 ```text
-dist/cobbled-horizon-26.3.0.1.3.mrpack
-dist/cobbled-horizon-26.3.0.1.3.zip
-dist/cobbled-horizon-26.3.0.1.3-server.zip
-dist/cobbled-horizon-26.3.0.1.3.sha256
+dist/cobbled-horizon-26.3.0.1.4.mrpack
+dist/cobbled-horizon-26.3.0.1.4.zip
+dist/cobbled-horizon-26.3.0.1.4-server.zip
+dist/cobbled-horizon-26.3.0.1.4.sha256
 ```
 
 The `.mrpack` preserves the server-only flags and references pinned Modrinth downloads. The main CurseForge-format `.zip` has a manifest and bundles those mod JARs under `overrides/mods/`, along with configuration overrides; it is not a server-folder ZIP. The additional `-server.zip` reuses that validated payload, with exactly `mods/`, `config/` and `squaremap/` at its root, without a manifest or `overrides/` wrapper. Its complete membership and SHA-512 payload hashes are checked against source. It contains no Minecraft/Fabric runtime binaries, launch scripts, worlds or secrets: provision the pinned runtime separately. Java players do not need any of these archives to join.
 
-The `.sha256` covers all three archives. Verify a downloaded set with `sha256sum --check cobbled-horizon-26.3.0.1.3.sha256`. To revalidate a standalone archive against this matching source revision, run `python3 scripts/server_pack.py validate dist/cobbled-horizon-26.3.0.1.3-server.zip`. For upload and existing-server reconciliation, see the [deployment runbook](docs/deployment.md#build) and [DatHost's documented import choices](docs/providers/dathost.md#modpack-import-options).
+The `.sha256` covers all three archives. Verify a downloaded set with `sha256sum --check cobbled-horizon-26.3.0.1.4.sha256`. To revalidate a standalone archive against this matching source revision, run `python3 scripts/server_pack.py validate dist/cobbled-horizon-26.3.0.1.4-server.zip`. For upload and existing-server reconciliation, see the [deployment runbook](docs/deployment.md#build) and [DatHost's documented import choices](docs/providers/dathost.md#modpack-import-options).
 
 Only after source review, passing hosted checks, designated-host acceptance and explicit release approval, create and push the matching tag from the intended version line:
 
 ```bash
-git tag -a v26.3.0.1.3 -m "Cobbled Horizon v26.3.0.1.3"
-git push origin v26.3.0.1.3
+git tag -a v26.3.0.1.4 -m "Cobbled Horizon v26.3.0.1.4"
+git push origin v26.3.0.1.4
 ```
 
 GitHub Actions checks the version, tests the tooling, verifies the source index, and validates all three archives. It then creates a GitHub release with the three archives, their SHA-256 checksum file, and generated release notes. Publishing uses the built-in `GITHUB_TOKEN`; no additional secrets are required. This workflow uploads to GitHub only.
 
 The workflow verifies checksums and the exact four nonempty files, uploads into a draft, and publishes only after the complete nonempty asset set is confirmed. If an upload fails, rerun the failed job to complete the draft. A rerun refuses to replace assets on an already published release. Use a new pack version and tag for a corrected release. Branch, pull request, and manual workflow runs build artifacts without publishing.
 
-Release automation performs static validation. Complete the designated-host acceptance tests before treating a release as production-ready. See [`docs/version-policy.md`](docs/version-policy.md) for the update procedure.
+Release automation also requires the hosted native first-install/restart checks described in [`docs/acceptance-tests.md`](docs/acceptance-tests.md#automated-gates). A green job is not Java/Bedrock client, gameplay, density, backup-restore or production certification; complete the remaining designated-host acceptance tests before production. See [`docs/version-policy.md`](docs/version-policy.md) for the update procedure.
 
 ## Updating
 

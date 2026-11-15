@@ -16,7 +16,7 @@ import warnings
 import zipfile
 
 import test_release
-from test_validation import load_script
+from test_validation import ROOT, load_script, permission_seed
 
 server_pack = load_script("server_pack")
 
@@ -33,6 +33,13 @@ class ServerPackTests(unittest.TestCase):
         with (self.root / "index.toml").open("a") as index:
             index.write('[[files]]\nfile = "squaremap/config.yml"\n')
         self.fixture.files["overrides/squaremap/config.yml"] = b"enabled: true\n"
+        for relative in sorted(permission_seed.SEED_PATHS):
+            target = self.root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes((ROOT / relative).read_bytes())
+            with (self.root / "index.toml").open("a") as index:
+                index.write(f"[[files]]\nfile = {json.dumps(relative)}\n")
+            self.fixture.files["overrides/" + relative] = target.read_bytes()
         self.assertEqual([], self.fixture.validate())
         self.source = self.root / "test.zip"
         self.output = self.root / "server.zip"
@@ -102,6 +109,8 @@ class ServerPackTests(unittest.TestCase):
         for name in (
             "manifest.json", "modlist.html", "overrides/mods/test.jar",
             "server/mods/test.jar", "mods/staged.jar", "mods/client.jar",
+            "mods/luckperms/config.yml", "mods/luckperms/users.json",
+            "config/luckperms/users.json", "config/cobbled-horizon/extra.json",
             "config/floodgate/key.pem", "logs/latest.log", "world/level.dat",
             "server.jar", "../escape", "/absolute", "mods\\escape.jar",
             "mods/../escape.jar", "mods//test.jar",

@@ -1,0 +1,295 @@
+{
+  "mss": {
+    "artifact_sha512": "1460cbb932e8f39c00bc7f980322696107c965094e00b9a05aa6b4ce6bc9babff5c3444b2135b8a6e7b88285dabbe3426cc4780fd1e3a8b64cc1b2cd8adb9dca",
+    "placement": {
+      "arena": {
+        "salt": 982034754,
+        "spacing": 158,
+        "separation": 92
+      },
+      "birch_river": {
+        "salt": 33165454,
+        "spacing": 96,
+        "separation": 34
+      },
+      "calcite_house": {
+        "frequency": 0.6,
+        "salt": 898754145,
+        "spacing": 68,
+        "separation": 27
+      },
+      "castle_ruin": {
+        "frequency": 0.6,
+        "salt": 213548795,
+        "spacing": 107,
+        "separation": 56
+      },
+      "castle_tower": {
+        "frequency": 0.6,
+        "salt": 333265012,
+        "spacing": 114,
+        "separation": 52
+      },
+      "cherry_river": {
+        "salt": 969875642,
+        "spacing": 53,
+        "separation": 17
+      },
+      "desert_pyramid": {
+        "salt": 669695487,
+        "spacing": 80,
+        "separation": 42
+      },
+      "desert_well": {
+        "salt": 336251454,
+        "spacing": 66,
+        "separation": 15
+      },
+      "diorite_house": {
+        "salt": 555222325,
+        "spacing": 156,
+        "separation": 97
+      },
+      "frozen_pond": {
+        "salt": 336255419,
+        "spacing": 94,
+        "separation": 31
+      },
+      "jungle": {
+        "salt": 1074494077,
+        "spacing": 72,
+        "separation": 36
+      },
+      "large_tower": {
+        "salt": 996503632,
+        "spacing": 140,
+        "separation": 96
+      },
+      "leaf_hollow": {
+        "frequency": 0.6,
+        "salt": 889896532,
+        "spacing": 104,
+        "separation": 62
+      },
+      "mangrove": {
+        "salt": 111136452,
+        "spacing": 68,
+        "separation": 32
+      },
+      "muddy_water_hole": {
+        "salt": 995843475,
+        "spacing": 132,
+        "separation": 72
+      },
+      "mushroom": {
+        "salt": 1070384379,
+        "spacing": 124,
+        "separation": 48
+      },
+      "nether_portal": {
+        "frequency": 0.6,
+        "salt": 889985412,
+        "spacing": 99,
+        "separation": 52
+      },
+      "palm_island": {
+        "salt": 998651362,
+        "spacing": 102,
+        "separation": 46
+      },
+      "red_sand": {
+        "salt": 887444382,
+        "spacing": 142,
+        "separation": 72
+      },
+      "small_deepslate_house": {
+        "salt": 976656987,
+        "spacing": 124,
+        "separation": 36
+      },
+      "small_oak_house": {
+        "frequency": 0.6,
+        "salt": 226898754,
+        "spacing": 105,
+        "separation": 35
+      },
+      "small_pond": {
+        "frequency": 0.6,
+        "salt": 889574325,
+        "spacing": 92,
+        "separation": 18
+      },
+      "small_tower": {
+        "frequency": 0.6,
+        "salt": 266989875,
+        "spacing": 108,
+        "separation": 46
+      },
+      "spruce_huts": {
+        "salt": 225114645,
+        "spacing": 134,
+        "separation": 48
+      },
+      "taiga": {
+        "salt": 336556874,
+        "spacing": 95,
+        "separation": 42
+      },
+      "trees": {
+        "frequency": 0.6,
+        "salt": 731846205,
+        "spacing": 58,
+        "separation": 29
+      },
+      "volcano": {
+        "salt": 689865874,
+        "spacing": 158,
+        "separation": 78
+      },
+      "white_house": {
+        "salt": 665411587,
+        "spacing": 145,
+        "separation": 92
+      }
+    },
+    "toggles": {
+      "arena": {
+        "arena": true
+      },
+      "birch_river": {
+        "birch_river": true
+      },
+      "calcite_house": {
+        "calcite_house": true
+      },
+      "castle_ruin": {
+        "castle_ruin": true
+      },
+      "castle_tower": {
+        "castle_tower": true
+      },
+      "cherry_river": {
+        "cherry_river": true
+      },
+      "desert_pyramid": {
+        "desert_pyramid": true
+      },
+      "desert_well": {
+        "desert_well": true
+      },
+      "diorite_house": {
+        "diorite_house": true
+      },
+      "frozen_pond": {
+        "frozen_pond": true
+      },
+      "jungle": {
+        "jungle": true
+      },
+      "large_tower": {
+        "large_tower": true
+      },
+      "leaf_hollow": {
+        "leaf_hollow": true
+      },
+      "mangrove": {
+        "mangrove": true
+      },
+      "muddy_water_hole": {
+        "muddy_water_hole": true
+      },
+      "mushroom": {
+        "mushroom": true
+      },
+      "nether_portal": {
+        "nether_portal": true
+      },
+      "palm_island": {
+        "palm_island": true
+      },
+      "red_sand": {
+        "red_sand": true
+      },
+      "small_deepslate_house": {
+        "small_deepslate_house": true
+      },
+      "small_oak_house": {
+        "small_oak_house": true
+      },
+      "small_pond": {
+        "small_pond": true
+      },
+      "small_tower": {
+        "small_tower": true
+      },
+      "spruce_huts": {
+        "spruce_huts": true
+      },
+      "taiga": {
+        "taiga": true
+      },
+      "trees": {
+        "tree_1": true,
+        "tree_2": true,
+        "tree_3": true,
+        "tree_4": true,
+        "tree_5": true,
+        "tree_6": true,
+        "tree_7": true,
+        "tree_8": true
+      },
+      "volcano": {
+        "volcano": true
+      },
+      "white_house": {
+        "white_house": true
+      }
+    }
+  },
+  "hopo": {
+    "artifact_sha512": "8a4b5d79a7c05ef6990d7cc08bee0c1c537ff80a1300a30ffc30a8e5580a40177c71b388f36be803461813ed9b845d1ac85969da5037f2d766975442a5dca20e",
+    "placement": {
+      "mineshafts": {
+        "salt": 10110111,
+        "spacing": 26,
+        "separation": 7
+      },
+      "mineshafts_biomes": {
+        "salt": 86589344,
+        "spacing": 17,
+        "separation": 1
+      }
+    },
+    "toggles": {
+      "mineshafts": {
+        "mineshaft": {
+          "acacia_mineshaft": true,
+          "bamboo_mineshaft": true,
+          "birch_mineshaft": true,
+          "cherry_mineshaft": true,
+          "dark_oak_mineshaft": true,
+          "jungle_mineshaft": true,
+          "pale_mineshaft": true,
+          "oak_mineshaft": true,
+          "poplar_mineshaft": true,
+          "spruce_mineshaft": true,
+          "mangrove_mineshaft": true,
+          "mud_mineshaft": true,
+          "stone_mineshaft": true,
+          "biomes": {
+            "sulfur_mineshaft": true
+          },
+          "deepslate_mineshaft": true
+        }
+      },
+      "mineshafts_biomes": {
+        "mineshaft": {
+          "biomes": {
+            "lush_mineshaft": true,
+            "dripstone_mineshaft": true
+          }
+        }
+      }
+    }
+  }
+}

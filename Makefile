@@ -10,6 +10,7 @@ SERVER := dist/$(PACK_BASENAME)-server.zip
 .PHONY: validate test refresh export export-curseforge release materialize clean
 
 validate:
+	python3 scripts/permission_seed.py --check
 	python3 scripts/release_metadata.py
 	python3 scripts/check_pack.py
 
@@ -17,6 +18,7 @@ test:
 	python3 -m unittest discover -s tests -v
 
 refresh:
+	python3 scripts/permission_seed.py
 	$(PACKWIZ) refresh --build
 
 export: refresh validate

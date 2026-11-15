@@ -49,12 +49,12 @@ jobs:
           fi
           python3 scripts/release_metadata.py "${args[@]}" >> "$GITHUB_OUTPUT"
 
+      - name: Install pinned packwiz revision
+        run: go install github.com/packwiz/packwiz@ef87d964f8cbd52b3b13ea42453ef322290e2b9e
+
       - name: Test repository tooling
         # Pins, validators and exports share one contract: run the full PR suite.
         run: python3 -m unittest discover -s tests -v
-
-      - name: Install pinned packwiz revision
-        run: go install github.com/packwiz/packwiz@ef87d964f8cbd52b3b13ea42453ef322290e2b9e
 
       - name: Verify packwiz index is current
         run: |
@@ -78,9 +78,65 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  native-acceptance:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      NATIVE_PROJECT: ch-native-${{ github.run_id }}-${{ github.run_attempt }}
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - name: Check out matching source
+        id: source
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Download this run validated release files
+        uses: actions/download-artifact@v8
+        with:
+          name: cobbled-horizon-${{ needs.validate.outputs.version }}
+          path: dist
+
+      - name: Pull pinned Java 25 runtime
+        timeout-minutes: 2
+        run: docker pull eclipse-temurin:25-jdk@sha256:b8705e936964c228dfce359e63dbf08f6c69cb380ed1d576b1f6b1064f15567d
+
+      - name: Verify native first-install and restart acceptance
+        timeout-minutes: 13
+        env:
+          PACK_VERSION: ${{ needs.validate.outputs.version }}
+          NATIVE_WORK: ${{ runner.temp }}/ch-native-${{ github.run_id }}-${{ github.run_attempt }}
+          NATIVE_EVIDENCE: ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          python3 scripts/native_acceptance.py run --project "$NATIVE_PROJECT" \
+            --archive "dist/cobbled-horizon-$PACK_VERSION-server.zip" \
+            --work "$NATIVE_WORK" --evidence "$NATIVE_EVIDENCE"
+
+      - name: Remove and verify absence of owned resources
+        if: always() && steps.source.outcome == 'success'
+        timeout-minutes: 2
+        run: python3 scripts/native_acceptance.py cleanup --project "$NATIVE_PROJECT"
+
+      - name: Upload bounded native acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: native-acceptance-${{ needs.validate.outputs.version }}
+          path: ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          retention-days: 7
+
   publish:
     if: github.event_name == 'push' && github.ref_type == 'tag'
-    needs: validate
+    needs: [validate, native-acceptance]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

@@ -33,6 +33,7 @@ def load_script(name: str):
 release_metadata = load_script("release_metadata")
 check_pack = load_script("check_pack")
 readiness = load_script("check_target_readiness")
+permission_seed = load_script("permission_seed")
 validate_mrpack = load_script("validate_mrpack")
 
 
@@ -275,6 +276,39 @@ class MrpackTests(unittest.TestCase):
         ):
             with self.subTest(label=label):
                 self.assert_archive_rejected(self.index, overrides, "configuration override")
+
+    def test_setup_overrides_are_required_byte_for_byte(self) -> None:
+        relatives = [
+            *sorted(permission_seed.SEED_PATHS),
+            "config/cristellib/mss/structure_placement_config.json5",
+            "config/cristellib/mss/structure_toggle_config.json5",
+            "config/cristellib/hopobettermineshaft/structure_toggle_config.json5",
+        ]
+        for relative in relatives:
+            key = "overrides/" + relative
+            self.assertIn(key, self.overrides)
+            for contents in (None, b"changed"):
+                with self.subTest(relative=relative, contents=contents):
+                    overrides = dict(self.overrides)
+                    if contents is None:
+                        del overrides[key]
+                    else:
+                        overrides[key] = contents
+                    self.assert_archive_rejected(self.index, overrides, "configuration override")
+
+    def test_indexed_runtime_policy_is_rejected(self) -> None:
+        for relative in ("config/luckperms/users.json", "config/cobbled-horizon/extra.json", "mods/luckperms/luckperms-h2.mv.db"):
+            with self.subTest(relative=relative), tempfile.TemporaryDirectory() as directory:
+                root = pathlib.Path(directory)
+                (root / "pack.toml").write_bytes((ROOT / "pack.toml").read_bytes())
+                (root / "collection.toml").write_text("selected = []\nresolved-dependency = []\n")
+                (root / "index.toml").write_text(f"[[files]]\nfile = {json.dumps(relative)}\n")
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(b"private canary")
+                errors = []
+                validate_mrpack.validate_contract({**self.index, "files": []}, {"overrides/" + relative: b"private canary"}, root, errors)
+                self.assertIn("unexpected source override: " + relative, errors)
 
     def test_incorrect_environment_is_rejected(self) -> None:
         for env in (None, {}, [], {"server": "optional", "client": "unsupported"}, {"server": "unsupported", "client": "required"}, {"server": "required", "client": "required"}):

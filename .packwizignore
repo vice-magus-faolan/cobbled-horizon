@@ -24,6 +24,10 @@ config/floodgate/key.pem
 config/Geyser-Fabric/key.pem
 config/Geyser-Fabric/saved-refresh-tokens.json
 config/luckperms/
+config/cobbled-horizon/*
+!config/cobbled-horizon/luckperms-groups.json
+!config/cobbled-horizon/luckperms-groups.json.gz
+mods/luckperms/
 world/
 logs/
 backups/

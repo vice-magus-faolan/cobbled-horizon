@@ -120,6 +120,36 @@ class CurseForgeArchiveTests(unittest.TestCase):
     def test_complete_server_export_passes(self) -> None:
         self.assertEqual([], self.validate())
 
+    def test_setup_payload_and_indexed_private_state(self) -> None:
+        from test_validation import permission_seed
+        for relative in sorted(permission_seed.SEED_PATHS):
+            source = self.root / relative
+            source.parent.mkdir(parents=True, exist_ok=True)
+            source.write_bytes((pathlib.Path(__file__).resolve().parents[1] / relative).read_bytes())
+            with (self.root / "index.toml").open("a") as handle:
+                handle.write(f"[[files]]\nfile = {json.dumps(relative)}\n")
+            self.files["overrides/" + relative] = source.read_bytes()
+        self.assertEqual([], self.validate())
+        for relative in sorted(permission_seed.SEED_PATHS):
+            key = "overrides/" + relative
+            original = self.files.pop(key)
+            self.assertIn("missing exported file: " + key, self.validate())
+            self.files[key] = b"changed"
+            self.assertIn("exported file hash differs from source: " + key, self.validate())
+            self.files[key] = original
+        for relative in ("config/luckperms/users.json", "config/cobbled-horizon/extra.json", "mods/luckperms/luckperms-h2.mv.db"):
+            with self.subTest(relative=relative):
+                target = self.root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(b"private canary")
+                original = (self.root / "index.toml").read_text()
+                (self.root / "index.toml").write_text(original + f"[[files]]\nfile = {json.dumps(relative)}\n")
+                self.files["overrides/" + relative] = b"private canary"
+                self.assertIn("unexpected source override: " + relative, self.validate())
+                (self.root / "index.toml").write_text(original)
+                del self.files["overrides/" + relative]
+                target.unlink()
+
     def test_client_export_missing_server_mod_is_rejected(self) -> None:
         del self.files["overrides/mods/test.jar"]
         self.assertIn("missing exported file: overrides/mods/test.jar", self.validate())

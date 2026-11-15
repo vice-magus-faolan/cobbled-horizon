@@ -14,6 +14,14 @@ make validate
 make release
 ```
 
+The hosted `native-acceptance` job consumes the same run's validated server ZIP;
+it does not rebuild or substitute mods. In one disposable non-root Java 25 container
+at a time (4 GB heap, no published ports), the first boot permits public dependency
+bootstrap and the second runs offline. It checks Minecraft readiness, MSS/Hopo and
+Moog policy, fresh group creation, native import/repeat/conflict/roundtrip preservation,
+effective synthetic-account permissions, no startup reapplication, and completed
+all-dimension saves with zero exits. Bounded logs and `summary.json` are Actions artifacts.
+
 ## Server lifecycle
 
 - [ ] Rehearse the stopped-server [deployment reconciliation](deployment.md#upload) on a disposable copy with a verified pack/config/world rollback backup. The active mods set matches the verified 32-project payload, including Explorify v1.6.6 but no Structory or superseded JARs. Remove the retired Lite config and set aside the two named legacy Explorify configs pending generated-schema review; preserve host settings, secrets, Floodgate key, unrelated files and rollback copies.
@@ -45,6 +53,7 @@ make release
 - [ ] Grave XP recovery and real-time expiry match policy.
 - [ ] Creeper No Break prevents creeper terrain destruction while preserving entity damage and knockback. Contrast a non-creeper explosion and unrelated mob-griefing behavior; do not disable the global gamerule to manufacture a pass.
 - [ ] Java and Bedrock players see persistent villager names and can trade normally; profession text may differ because the client-side enhancement is optional.
+- [ ] Rehearse the pinned [Tasks controls](configuration.md#villagers-tasks-310): inspect a profession, disable just it, observe no future actions on already loaded existing villagers, restore its recorded value and observe actions resume. Test farmer breeding and butcher culling with eligible animals; player-context status works without granting helper OP.
 - [ ] Each Villagers Tasks profession action uses only vanilla-visible entities, items, particles, inventories, and sounds on both Java and Bedrock clients.
 - [ ] Villagers Tasks culling, breeding, healing, resource generation, fishing, and shearing rates are acceptable for balance and occupied-village tick cost.
 - [ ] On unmodded Java and Bedrock clients, vanilla trim materials and patterns render correctly on representative naturally equipped mobs, generated loot, and level-three-or-higher trade equipment.
@@ -66,6 +75,7 @@ Use disposable seeds and `/locate structure` where available.
 - [ ] Compare chunk-generation cost and occupied-settlement tick time against the baseline without Epic Standalone using the same seed and test area.
 - [ ] Inspect several Explorify structures in fresh chunks on Java and Bedrock; check terrain joins, loot, density and overlap with the other selected packs. Review generated configs against packaged defaults and the retained 26.2 placement intent without transplanting unverified legacy schemas.
 - [ ] Locate and generate Explorify's Nether Black Spiral on a disposable world; measure generation stalls and tick cost alongside other Nether structures before pre-generation. Keep it enabled during acceptance; older upstream reports are neither a current-runtime failure nor a verified fix.
+- [ ] MSS and Hopo configs load without missing-set recovery or new `-had-error` files. MSS retains 28 placement sets, all 35 structures/eight tree variants and nine packaged `0.6` frequencies; Hopo retains poplar and sulfur members under the correct set. Native/generated values match the shipped controls; Moog namespace migration retains MSS `0.25` and MOS `0.111111`, independent of placement-level frequencies.
 - [ ] Inspect Hopo mineshafts at different depths.
 - [ ] Locate and enter standalone DnT 3.0.1 (`hNKbQ85c`) strongholds; verify Eyes of Ender/locate behavior, functional portal access, surface rooms, trades, loot (including vanilla-enchanted items) and progression on Java and Bedrock. The [historical static absence of custom enchantment registry definitions](configuration.md#structure-generation) does not satisfy these checks. Measure first-generation stalls and generation cost before pre-generation; do not assume Lite's balance or config applies.
 - [ ] Inspect several Moog floating structures and confirm rarity feels intentional.
@@ -81,9 +91,11 @@ Do not run final Chunky pre-generation until this section passes and the seed is
 
 - [ ] spark profile captures idle and active baselines.
 - [ ] squaremap renders only the Overworld and uses the assigned HTTP endpoint; its public tracker visibly reports player position, health, and armor as intentionally configured.
+- [ ] Rehearse the native [one-time group import](permissions.md#one-time-group-import) from the supplied gzip using file access and console only. Native export/readback shows only the intended policy changes; unrelated group/user data, memberships, custom/contextual nodes and backend remain preserved. Contrast a pre-existing conflicting node, repeat the import deliberately and record actual merge behavior; there is no startup reapplication. Keep synthetic identities/private exports out of the pack.
 - [ ] LuckPerms contains the intended default, helper, and owner groups; only the owner is present in `ops.json`.
 - [ ] Ordinary and helper accounts cannot run `/sswaystones`, Chunky operations, creative-mode commands, or JEB commands.
 - [ ] The owner can run the required administrative commands without a wildcard LuckPerms grant.
+- [ ] Confirm the pinned JEB legacy flags migrate only when `automaticSchedule` is absent, not as a master disable for the shipped schedule. Console `jeb list` lists archives separately from schedule status; verify successful completion and recovery independently.
 - [ ] `/jeb next` reports the 24-hour full and three-hour differential intervals.
 - [ ] Startup and config reload reset the timers as expected; the host's full-backup procedure still completes across scheduled restarts.
 - [ ] The initial full backup completes and is recorded before players are admitted.
