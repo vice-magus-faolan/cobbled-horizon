@@ -20,6 +20,7 @@ jobs:
     timeout-minutes: 30
     outputs:
       version: ${{ steps.metadata.outputs.version }}
+      cleared: ${{ steps.rights.outputs.cleared }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
@@ -52,21 +53,55 @@ jobs:
       - name: Install pinned packwiz revision
         run: go install github.com/packwiz/packwiz@ef87d964f8cbd52b3b13ea42453ef322290e2b9e
 
-      - name: Test repository tooling
+      - name: Validate source and test repository tooling
         # Pins, validators and exports share one contract: run the full PR suite.
-        run: python3 -m unittest discover -s tests -v
+        run: make validate test
 
       - name: Verify packwiz index is current
         run: |
           packwiz refresh --build
           git diff --exit-code -- pack.toml index.toml
 
-      - name: Export and validate all three pack archives
+      - name: Export and validate metadata-only pack
         run: |
-          make release
+          make export check-metadata
+          git diff --exit-code -- pack.toml index.toml
+
+      - name: Upload validated no-JAR metadata pack
+        uses: actions/upload-artifact@v7
+        with:
+          name: cobbled-horizon-metadata-${{ steps.metadata.outputs.version }}
+          path: |
+            dist/cobbled-horizon-${{ steps.metadata.outputs.version }}.mrpack
+            dist/cobbled-horizon-${{ steps.metadata.outputs.version }}.mrpack.sha256
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Evaluate public distribution clearance
+        id: rights
+        shell: bash
+        run: |
+          python3 scripts/distribution.py status
+          if make public-check; then
+            echo 'cleared=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'cleared=false' >> "$GITHUB_OUTPUT"
+            echo '::notice::Source checks are usable; public archives are withheld until exact-pin distribution obligations are resolved.'
+            if [[ "$GITHUB_REF_TYPE" == tag ]]; then
+              echo '::error::Refusing an uncleared tagged release.'
+              exit 1
+            fi
+          fi
+
+      - name: Export and validate all three pack archives
+        if: steps.rights.outputs.cleared == 'true'
+        run: |
+          make release CHANNEL=github
+          make check-upload
           git diff --exit-code -- pack.toml index.toml
 
       - name: Upload validated release files
+        if: steps.rights.outputs.cleared == 'true'
         uses: actions/upload-artifact@v7
         with:
           name: cobbled-horizon-${{ steps.metadata.outputs.version }}
@@ -81,7 +116,7 @@ jobs:
   native-acceptance:
     needs: validate
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     permissions:
       contents: read
     env:
@@ -99,11 +134,23 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Download this run validated release files
-        uses: actions/download-artifact@v8
+      - name: Set up Go
+        uses: actions/setup-go@v7
         with:
-          name: cobbled-horizon-${{ needs.validate.outputs.version }}
-          path: dist
+          go-version: '1.25.x'
+          cache: false
+
+      - name: Install pinned packwiz revision
+        run: go install github.com/packwiz/packwiz@ef87d964f8cbd52b3b13ea42453ef322290e2b9e
+
+      - name: Build and validate all selected pins for ephemeral verification
+        timeout-minutes: 15
+        env:
+          TMPDIR: ${{ runner.temp }}
+        # No Actions artifact/cache bridge for uncleared JARs. Build and boot here.
+        run: |
+          make verify-archives
+          git diff --exit-code -- pack.toml index.toml
 
       - name: Pull pinned Java 25 runtime
         timeout-minutes: 2
@@ -130,23 +177,40 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: native-acceptance-${{ needs.validate.outputs.version }}
-          path: ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/summary.json
+            ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/installer.log
+            ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/first-boot.log
+            ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/offline-second-boot.log
           if-no-files-found: warn
           retention-days: 7
 
   publish:
-    if: github.event_name == 'push' && github.ref_type == 'tag'
+    if: github.event_name == 'push' && github.ref_type == 'tag' && needs.validate.outputs.cleared == 'true'
     needs: [validate, native-acceptance]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: write
     steps:
+      - name: Check out exact source for public revalidation
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
       - name: Download validated release files
         uses: actions/download-artifact@v8
         with:
           name: cobbled-horizon-${{ needs.validate.outputs.version }}
           path: dist
+
+      - name: Revalidate public rights and all downloaded archives
+        run: make check-upload
 
       - name: Create and publish GitHub release
         working-directory: dist

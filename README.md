@@ -148,7 +148,7 @@ line check, run `python3 scripts/release_metadata.py --expected-minecraft 26.3` 
 when checking that line). Manual workflow runs must select the intended version branch;
 tag runs instead retain the exact release-tag check.
 
-The export lands at:
+`make export check-metadata` produces and validates a metadata-only archive, independently of JAR redistribution clearance. It contains exact download references, approved configuration overrides and finite recipient notices, never bundled JARs or private runtime files. The archive and its separate `.mrpack.sha256` checksum land at:
 
 ```text
 dist/cobbled-horizon-26.3.0.1.4.mrpack
@@ -182,9 +182,9 @@ dist/cobbled-horizon-26.3.0.1.4-server.zip
 dist/cobbled-horizon-26.3.0.1.4.sha256
 ```
 
-The `.mrpack` preserves the server-only flags and references pinned Modrinth downloads. The main CurseForge-format `.zip` has a manifest and bundles those mod JARs under `overrides/mods/`, along with configuration overrides; it is not a server-folder ZIP. The additional `-server.zip` reuses that validated payload, with exactly `mods/`, `config/` and `squaremap/` at its root, without a manifest or `overrides/` wrapper. Its complete membership and SHA-512 payload hashes are checked against source. It contains no Minecraft/Fabric runtime binaries, launch scripts, worlds or secrets: provision the pinned runtime separately. Java players do not need any of these archives to join.
+The `.mrpack` preserves server-only flags and exact Modrinth downloads. The primary CurseForge-format `.zip` partitions exact verified hosted references in its manifest from approved non-hosted JARs in `overrides/mods/`; it is not a server-folder ZIP. The additional `-server.zip` contains every selected JAR at `mods/`, including hosted-reference JARs materialized from the validated Modrinth download plan, plus all indexed `config/` and `squaremap/` files. Both layouts include deterministic `CREDITS.md`, `SOURCES.md` and required `LICENSES/<hash>.txt` members. Complete membership and SHA-512 hashes are checked against source. No Minecraft/Fabric runtime, launch scripts, worlds or secrets are included: provision the pinned runtime separately. Java players do not need these archives to join.
 
-The `.sha256` covers all three archives. Verify a downloaded set with `sha256sum --check cobbled-horizon-26.3.0.1.4.sha256`. To revalidate a standalone archive against this matching source revision, run `python3 scripts/server_pack.py validate dist/cobbled-horizon-26.3.0.1.4-server.zip`. For upload and existing-server reconciliation, see the [deployment runbook](docs/deployment.md#build) and [DatHost's documented import choices](docs/providers/dathost.md#modpack-import-options).
+The `.sha256` covers all three archives. Verify a downloaded set with `sha256sum --check cobbled-horizon-26.3.0.1.4.sha256`. Against matching source, `make check-upload` rechecks public rights, all three archive contracts and checksums. A standalone server check is `python3 scripts/server_pack.py --channel github validate dist/cobbled-horizon-26.3.0.1.4-server.zip`. For upload and existing-server reconciliation, see the [deployment runbook](docs/deployment.md#build) and [DatHost's documented import choices](docs/providers/dathost.md#modpack-import-options).
 
 Only after source review, passing hosted checks, designated-host acceptance and explicit release approval, create and push the matching tag from the intended version line:
 
@@ -193,9 +193,9 @@ git tag -a v26.3.0.1.4 -m "Cobbled Horizon v26.3.0.1.4"
 git push origin v26.3.0.1.4
 ```
 
-GitHub Actions checks the version, tests the tooling, verifies the source index, and validates all three archives. It then creates a GitHub release with the three archives, their SHA-256 checksum file, and generated release notes. Publishing uses the built-in `GITHUB_TOKEN`; no additional secrets are required. This workflow uploads to GitHub only.
+GitHub Actions checks source/schema, versions, tests and the index independently of unresolved distribution rights. The `validate` job uploads a separately validated no-JAR `.mrpack` and its metadata-only checksum. On ordinary PR/branch runs, `native-acceptance` builds and validates the real all-pin CurseForge and complete server ZIPs, then boots and restarts that server inside its own ephemeral hosted job. It does not transfer uncleared JARs through artifacts or caches; only bounded allowlisted runtime evidence leaves that job. Public binary artifacts and release publication still require exact-pin public clearance. Uncleared tags fail before release publication. Publishing uses the built-in `GITHUB_TOKEN`; this workflow uploads to GitHub only and grants no CurseForge moderation approval.
 
-The workflow verifies checksums and the exact four nonempty files, uploads into a draft, and publishes only after the complete nonempty asset set is confirmed. If an upload fails, rerun the failed job to complete the draft. A rerun refuses to replace assets on an already published release. Use a new pack version and tag for a corrected release. Branch, pull request, and manual workflow runs build artifacts without publishing.
+The workflow revalidates public rights and complete archives, verifies checksums and the exact four nonempty files, uploads into a draft, and publishes only after the complete nonempty asset set is confirmed. If an upload fails, rerun the failed job to complete the draft. A rerun refuses to replace assets on an already published release. Use a new pack version and tag for a corrected release. Cleared branch, pull request and manual runs upload artifacts but do not create releases.
 
 Release automation also requires the hosted native first-install/restart checks described in [`docs/acceptance-tests.md`](docs/acceptance-tests.md#automated-gates). A green job is not Java/Bedrock client, gameplay, density, backup-restore or production certification; complete the remaining designated-host acceptance tests before production. See [`docs/version-policy.md`](docs/version-policy.md) for the update procedure.
 
@@ -226,6 +226,12 @@ This is an upgrade-discovery check, not an audit of pinned-pack stability: a lat
 
 ## Ownership and licensing
 
+Distribution decisions live in `distribution/permissions.toml`: exact project/version/SHA-512 plus the original metafile digest bind URLs, side and pins. Unknown and conditional are not approval. `python3 scripts/distribution.py status` reports current state; `make validate test` and the no-JAR `make export check-metadata` remain usable while binary rights are unresolved. `make release` defaults to the public `github` channel. An explicit `CHANNEL=private` requests a separately assessed preparation channel, never an upload bypass: `make public-check` and binary upload/publish boundaries always require `github` clearance. Hosted `make verify-archives` and `server_pack.py verify-build` check integrity without publication authority; their JAR-bearing outputs must stay inside ephemeral verification. Provider transfer requires its own applicable permission; DatHost Custom upload needs the complete server ZIP, not the primary manifest ZIP or a renamed `.mrpack`.
+
+Current records intentionally retain unresolved exact-version grants, nested/shaded coverage and covered-source delivery. Curated external texts include full GPL/LGPL terms, missing FerriteCore/JEB notices, the current Creeper MIT text, exact Cristel/Towns and Towers/Hopo author terms and known Guice/Jakarta/Mc2Discord dependency notices. Original embedded licenses and copyrights remain inside the unchanged, hash-validated JARs; external copies supplement rather than replace them. Full-text provenance records bind primary URLs and, for embedded texts, exact version/member identities. This is not complete dependency/source clearance or a cleared full-pack export. Exact source candidates are labeled as held until completeness and equivalent access are established; a source tag/homepage alone is not Corresponding Source. Generated notices cannot manufacture absent permission or relicense the whole pack. Existing public assets are not corrected by this source change alone.
+
 Jimmy McCann ([@jabez007](https://github.com/jabez007)) directs the project. See [`CONTRIBUTORS.md`](CONTRIBUTORS.md).
 
 The repository-authored tooling and documentation are MIT licensed. Referenced mods and Minecraft remain under their own licenses and terms.
+
+Archive validation checks contents, not redistribution permission. Public JAR-bearing ZIPs and CI artifacts also require permission for the exact component versions and distribution channel, required license/credit/NOTICE preservation, and applicable source delivery. Until those obligations are resolved, generated JAR-bearing ZIPs are not cleared for public redistribution. A structurally valid CurseForge-format ZIP is not proof of CurseForge submission eligibility; neither a successful build nor server startup supplies that approval.

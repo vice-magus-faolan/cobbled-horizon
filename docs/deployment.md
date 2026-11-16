@@ -4,7 +4,7 @@ These requirements apply to any selected host. Build and test a materialized ser
 
 ## Preflight
 
-This 26.3 development candidate is not approved for deployment. Complete source/hosted review and the designated-host runtime acceptance first, including the Geyser beta and replacement structure gates. Preserve the 26.2 pack and its world snapshot as a separate rollback line.
+This 26.3 development candidate is not approved for deployment. Complete source/hosted review and the designated-host runtime acceptance first, including the Geyser beta and replacement structure gates. Preserve the 26.2 pack and its world snapshot as a separate rollback line. Also resolve the exact-pin [distribution and source-delivery obligations](../README.md#ownership-and-licensing) for the intended preparation/provider-transfer channel; archive integrity alone does not authorize sharing.
 
 - Confirm Java 25 and Fabric 0.20.1 for Minecraft 26.3, or an equivalent supported installation path for those pinned versions.
 - Confirm a suitable Geyser UDP allocation and signaling arrangement as described in [Geyser networking](#geyser-networking); UDP alone is insufficient for this build.
@@ -29,14 +29,16 @@ Run server materialization on the designated Minecraft test host, not on a light
 ```bash
 make test
 make validate
-make materialize
+make materialize CHANNEL=private
 ```
+
+The explicit `private` channel is assessed separately and currently remains conditional; it is not a bypass or permission to transfer files to a provider. Source validation/tests and the independently validated no-JAR `make export check-metadata` can pass while binary materialization/transfer remains refused. The hosted native job alone uses `make verify-archives` for real all-pin export/boot in an ephemeral environment without uploading uncleared JARs. Resolve the recorded obligations before provider transfer. Public binary builds use the default `github` channel and must also pass `make check-upload` before publication.
 
 The generated server tree is `build/server/`. Inspect it before upload. It must contain the 32 active project JARs, including Explorify v1.6.6 rather than Structory, and reviewed config overrides, but no staged/client-only JARs or credentials. For pack `26.3.0.1.4`, verify the Epic override at `config/cristellib/mr_epic_structuresvillagesstandaloneedition/structure_placement_config.json5` is included with only `epic:villages` at spacing `80`, separation `22`, salt `50387312` and frequency `1.0`. Reconcile generated configs with the retained policy; distinguish the retired Lite file from the two legacy Explorify files awaiting schema review as described in [`configuration.md`](configuration.md#structure-generation).
 
-Alternatively, `make release` builds `dist/cobbled-horizon-26.3.0.1.4-server.zip` directly from the validated native CurseForge export without materializing or launching Minecraft. It contains only the exact source-pinned `mods/`, `config/` and `squaremap/` payload at its root. Verify the release checksum file before extraction and use this matching source revision's `python3 scripts/server_pack.py validate dist/cobbled-horizon-26.3.0.1.4-server.zip` to check membership and payload hashes. Provision Minecraft 26.3, Fabric 0.20.1 and Java 25 separately: the ZIP intentionally has no runtime binaries, launch scripts, EULA, world or host secrets. The main manifest-format `.zip` and `.mrpack` are not this server-folder artifact.
+Alternatively, when the requested channel is cleared, `make release CHANNEL=private` builds `dist/cobbled-horizon-26.3.0.1.4-server.zip` from the validated native CurseForge export plus the exact Modrinth download plan, without materializing or launching Minecraft. The primary ZIP can omit hosted JARs in favor of exact manifest references; the server builder verifies and materializes those original pinned bytes rather than dropping them. The complete server ZIP contains every source-pinned JAR, `config/`, `squaremap/`, `CREDITS.md`, `SOURCES.md` and required `LICENSES/<hash>.txt` at its root. Verify the release checksum file before extraction and use the matching source revision's `python3 scripts/server_pack.py --channel private validate dist/cobbled-horizon-26.3.0.1.4-server.zip` to check channel clearance, membership and payload hashes. Provision Minecraft 26.3, Fabric 0.20.1 and Java 25 separately: the ZIP intentionally has no runtime binaries, launch scripts, EULA, world or host secrets. The main manifest-format `.zip` and `.mrpack` are not this server-folder artifact.
 
-For this route, extract to a fresh inspection directory on the designated test host and use that payload root in place of `build/server/` below. Complete the same runtime acceptance and stopped-server reconciliation; a ZIP overlay does not remove retired JARs or protect existing host configuration. Provider import choices remain in the [candidate-provider profile](providers/dathost.md#modpack-import-options).
+For this route, extract to a fresh inspection directory on the designated test host and use that payload root in place of `build/server/` below. Retain the recipient credits/licenses/source directions. Complete the same runtime acceptance and stopped-server reconciliation; a ZIP overlay does not remove retired JARs or protect existing host configuration. Provider import choices remain in the [candidate-provider profile](providers/dathost.md#modpack-import-options).
 
 The 26.3.0.1.4 payload also includes the reviewed MSS/Hopo controls and the canonical/import-ready permission seed under `config/cobbled-horizon/`. Verify these exact bytes through the matching archive validator; do not copy a live LuckPerms directory into an export.
 

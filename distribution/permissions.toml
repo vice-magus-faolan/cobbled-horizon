@@ -1,0 +1,326 @@
+# Exact observed pins, not project-wide or future-version grants.
+# metafile_sha256 binds the original URL, filename, side, pin and updater fields.
+# Conditional/unknown are deliberately NOT upload permission. These records do
+# not resolve the historical public copies or CurseForge platform admission.
+schema = 1
+components = [
+{ project="fALzjamp", version="4Eotm6ov", sha512="b83bfe7b218d0aa6232af977ae741dc1f82b10e50cd12bb759f65cf416b8b62beccb543e587ef0b9670abe03815660f8e091bc6823624d65cf07300571573516", metafile_sha256="7f10502751db064cc56f710f5248da5481dea54166ed2ca37a2d18a6b05fa6b0", lines=["26.2","26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="HSfsxuTo", version="oyrAnNG8", sha512="d4368c83b493c6fcf9b489cd91b4d1e468d695d099d9df3845a6fcee07ef58dc35074557d0108627b98c9941b1e6a6c0bcdbbcd121e8915514a21b91e9d38530", metafile_sha256="e2de9f52fa87712f0b9c2354ad29b628e7e0bbac908b68c501857af72bed023d", lines=["26.3"], channels={github="unknown",curseforge="unknown",private="conditional"} },
+{ project="bWrNNfkb", version="m9eO07Zi", sha512="9185fc96c0f301ee0867d83065c210277062ad3d1536e9d4231263fa32ed3223d008268c48de9e00f0e9a2240a2c45c438934d01efa40b1b523b0d072eb322d5", metafile_sha256="013fce3fab2b91e2ff33747f0ff3e22f5e1b1845d88321c7232655f67c57eb93", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="ohNO6lps", version="JpKvrr9J", sha512="b9339c21e14beec2eae0ca215317284bcaacef72e1d1dee8b3dfbe2de0eefaa758a172446df85419b6534557c479abe972d7d21f4ec194f2d436f9ed4329cb9f", metafile_sha256="8099f8d9657f3762d4d4ac43101ed4a61d274525642775c0ed813b99e3f539c3", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="wKkoqHrH", version="MJYV1WUM", sha512="63cd327f7f09f0e8557e74af4767b37d814c3406ec089364c4cf1fd444f8d296e4945189c5088e095cf0a5b72a7c4a028191c4b9c7d557243db3572c3f1a03fa", metafile_sha256="813cd7a6e09e29a36e21ee5d563bff9f794047b66b26c1a48433e7e29b076321", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="9IxCUYAP", version="avIdkeZp", sha512="8a4b5d79a7c05ef6990d7cc08bee0c1c537ff80a1300a30ffc30a8e5580a40177c71b388f36be803461813ed9b845d1ac85969da5037f2d766975442a5dca20e", metafile_sha256="2b17627a9132b87d894e305c37468c0c619db032d290507c865b6234385aea0e", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="Vebnzrzj", version="DzQPkkXY", sha512="37de9e16272b6bbf82f422ddf012fa810d32c617c5621919157b662b4edfe956a870c5bc3ca4b05f32c90d7135f0ac2580ea16cd7c481c26a04778f639c3f89c", metafile_sha256="bfffd2accb772b523325abf434798eea0a318650db7d7613d77d3693807f32ab", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="ZKBkklMv", version="QfMITqh9", sha512="62c209637f8fad6588caf39ce2357672b3fffdd0d12afdbf75e2ab77654073f773d386e8271666774d08134e6ae617d65581df7fa1695c298c91eb8831bda961", metafile_sha256="93207b104d3dbb556e5b5fd364db0e6b0e8b409cd0df07ed5594a334b8831ee5", lines=["26.3"], channels={github="unknown",curseforge="unknown",private="conditional"}, note="Exact source tag 06374d60de6afc98e623f57ee176c6e7a7b88d9f retains proprietary structure exclusion." },
+{ project="RJCLIx7k", version="O20bIWkj", sha512="1460cbb932e8f39c00bc7f980322696107c965094e00b9a05aa6b4ce6bc9babff5c3444b2135b8a6e7b88285dabbe3426cc4780fd1e3a8b64cc1b2cd8adb9dca", metafile_sha256="fa464b6a91fca151a8a2711ac6dcba048f537670a829e91775bd6f8bfc105f05", lines=["26.3"], channels={github="unknown",curseforge="unknown",private="conditional"}, note="Exact LGPL source tag 998a6e153767b3cd68125700d835fa8c28e4fe22; current project GPL discrepancy retained." },
+{ project="1oUDhxuy", version="SkD4H9XM", sha512="2ebd787cfd2ba0622c44ab853b8daeae7039f1e73d4872218e536ea969e06503cae84351f037a1d007892ee4b4971f98770f7a1d68fa69ae4e164c59ad29bac9", metafile_sha256="73c32f24e7837256d073d944c03cf4323879dd8a2b70d6b47c55756dbe4490fe", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="r0v8vy1s", version="nSBWPz6x", sha512="347fa8d0338a7e113c0cde70306d05037dbf9fc1e33c476159b4f5cf7b4fce8d3798d820ebf0e0dedd8450417802cb3a030bdcbecaf509961a83b2e43a469ad5", metafile_sha256="e95c32a64d8c8d48755a2c483231c711a10ce8d78aeb272b3181ebd45f0cc9ce", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="9s6osm5g", version="fg2uyxOW", sha512="8924e19d41845096724fa10f3717bc51964a0edbbbcad0ff1e6c6187a398b08f356e49579a657c2dc44a7f92e3850771f3ca70bf8c1f654de60425163b91dbb1", metafile_sha256="8f560afc71838b7f50fb40513913b2467a158675c8367c70a5d8e93a57a73e2e", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="e0M1UDsY", version="vsRFdH1j", sha512="cb214086985fb9fa108b0795cc6f52f4f8b454152f179c2114bdbf57bc43e9ccc8bcb9416b8d9d13e390bca2883a72de30a5b566fc4adad739fe3e8051393ec3", metafile_sha256="d147550d4e0d203ddacd0600da57d11866e21bc590dac66d18eb1254bd6a6dcd", lines=["26.3"], channels={github="unknown",curseforge="unknown",private="conditional"}, note="8.73 has no own embedded license text; historical 8.39 CC0 is not silently applied." },
+{ project="ujZZZb4P", version="wdzLurKR", sha512="00bb5ecfdfd3504f5cf447e34ec7558a7348690fa4f4270050ec73cb6e323224e53f9b4a14ab6c517f89dae63f22b8f0f333ffc954fde38c025bfeebefa7c557", metafile_sha256="f301514844e9317208a1a660a06b415f5b0f118f3b7c7e19151b6a9ca1ad5db4", lines=["26.3"], channels={github="unknown",curseforge="unknown",private="conditional"} },
+{ project="cl223EMc", version="rWxmPrGC", sha512="96198dfc067ce7003cad9b211286e58e36efcaa29729af3c09c643d3e8bd8a54e5814eb8d88680a38caf9e6328a541151b6c6b1bd9ac117d9c7278d93d6de88c", metafile_sha256="f3600016104b86f4d973c5a1b3c525c617520674a653d23c0ccc758c4503fa75", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="cRci7UZp", version="2wR3dP9w", sha512="0301e70e7323080a1ee063460ae83c3f376490fb58234baae47350a4be880148ee4be7f35b6d9ed6c53165308025471259a21cbb526e1dcb241806ad8a0f0ba5", metafile_sha256="b3a653272a177313794c17bee5f65863d88ef42cf08ff46cbf357b8e24457d73", lines=["26.3"], channels={github="unknown",curseforge="unknown",private="conditional"} },
+{ project="rYocd2LE", version="hNKbQ85c", sha512="f4afe3fc8a21a1eeba458813603eb3fd51783759699d8d6a2728389c9a66bdcd5dac02a2baae59a7142f071f21046cf2711bb7d2aa4f6a28179d0cf02802237d", metafile_sha256="025dd50dcae7c6fb3aa068c768cbddc96772e645b41b085e9215f731a6b3057b", lines=["26.3"], channels={github="unknown",curseforge="unknown",private="conditional"} },
+{ project="3PvUBn3u", version="OD6SDuW4", sha512="63664edea835da127a9e5aad0761ef5dd8cfc8b48a0a1340c175d82bad125e36bd8e90b2a1bfbd86391a1567af898a24ea96e51cdde0d87555d4148bfd34cac6", metafile_sha256="901014b075016cb4917a33b0eadeefb9480eff0b258c38515e7a0c4f60efa016", lines=["26.2","26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="P7dR8mSH", version="EQKgpeKu", sha512="0a4b8a14e847b71567b557b43d906c2167fa263eeeef37454a821ba286996e3da1616dc2d9647736d28a250d5ecf400541cae808359b29a62324a8a6f2ad5e30", metafile_sha256="ceaabcc1b7bcfacf4bfe22b0d29a76e8b29695e2ea8c493995c147fdf1db80b8", hosted={project-id=306612,file-id=9295874}, hosted_evidence={url="https://www.curseforge.com/api/v1/mods/306612/files/9295874/download",sha256="18442e2ad466d6ef41c37dbb4cb68495e6ca6658b1f1ee9be76143d155ef2c88",sha512="0a4b8a14e847b71567b557b43d906c2167fa263eeeef37454a821ba286996e3da1616dc2d9647736d28a250d5ecf400541cae808359b29a62324a8a6f2ad5e30",at="2026-11-16"}, lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"}, note="CF project306612/file9295874 download hash matches this exact binary; not platform clearance for other mods." },
+{ project="uXXizFIs", version="d5ddUdiB", sha512="d81fa97e11784c19d42f89c2f433831d007603dd7193cee45fa177e4a6a9c52b384b198586e04a0f7f63cd996fed713322578bde9a8db57e1188854ae5cbe584", metafile_sha256="d062e6231f1561df8d03afe731788d85e1a35a542b23f43d87fd515cbb17963d", lines=["26.2","26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="yn9u3ypm", version="r9hY06vQ", sha512="0a1e8bf88d66f0ba5cfdf3d7544b73d373f283c0b75ddb627fb8841825e58af7925f6eb3e8aa437f3739771396e4b32207192500062761bcdac7efcc3ff5cc03", metafile_sha256="bbe6ab59ec8590670233e59ea9627137c335776f2e32f3bb5adfcce0bddeaa7f", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"}, note="Source candidate 7f7508e019b1dd845b54ff56e0cd140e150ddd93 is not verified full Corresponding Source." },
+{ project="ctV8T1ZK", version="Ey4Hgz4y", sha512="2b169b1fc05065e1d67deea29080847a2bc23f9aa24738a93919bfe425dfd0ad804af6e30eebe37da50b5ada5dacda5de82e02c0ffbfd02e52ecff596d6ead4e", metafile_sha256="bf38664449b4e6415b2b621937e03fa71ddec1e7e2d78eaec4f5c0ac4af6730c", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"}, note="1.2.0.10 source tag1da38a569dcafda9cd5a0f3c2c48e443a9fcab59;33 immediate nested JARs independently assessed, not inherited clearance." },
+{ project="gvQqBUqZ", version="fWv5bnZk", sha512="2ca92fb530135d2baddf0ba4cc4f93976234876a38c4aa02b487b2552400f005afcfbeebf5373fb4396fe2020537a42d7597b8da5a52b904355ef51d5fef07ad", metafile_sha256="91e77ed32040d00df5b75624bfa549386dd88ecb5265aac3e760d84c5de5c469", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"}, note="Source candidate383d29973601ada19c70bde32f9172792a769fe7 is not verified full Corresponding Source." },
+{ project="hHVaPgFK", version="h3K7LsVB", sha512="fc6aea242d919658a735f8a34c1cbf5e3ffdc8fb86b534ebef8672262b92589bd3a09bc35d6ae70956884a4b53d0c00ece97e892ec554d96ceb76c6337641697", metafile_sha256="650d0fc2fe36196b9853b5892c5686e901955441de6d927cb50b2a608bfd9728", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="xGdtZczs", version="agXT61FE", sha512="dcc5f8b4f5bb347aae58a26397e8c66ed2e5e26046dcfd976435d9757f3e0ad3a18241b606bf53cd752ee770857c504597c4ffab8765ecf248ea08c15eced6cd", metafile_sha256="0105a44d0d73a28a255c1c36e8347b3b57f853e611febbdd42d8992095e057d4", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"}, note="Source candidate6d5108cb9bef4b07939fb579b5fc0b5e2589bb02 does not automatically cover older nested Polymer/SGUI versions." },
+{ project="4WWQxlQP", version="LCG1Bm84", sha512="abe1f806ea587971faf7de826e18b07314a4a9e690f64a4c3a54e7f61c3e6f4792633b13a917252bd8de154cec39da6619110d83799cf533450c5b4cac7a8448", metafile_sha256="39edae3906c30e570070599dd3830ff06ac466bb428877c5cfe968e8ffa000b0", lines=["26.3"], channels={github="unknown",curseforge="unknown",private="conditional"} },
+{ project="l6YH9Als", version="e3hsPc1o", sha512="c74bf5d5a16b2445ec6ea717eac756412b272a8015e91f91a7bf5a27e6f2f99c4a11878d434510f941f37b0344b3a7d1ba0dd6c34e80642762c48fb6e9a93894", metafile_sha256="f61681a676a163851845222fac7278626d044001ddb31ccd9608e364c50c60aa", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="PFb7ZqK6", version="YPMtDS9D", sha512="c20e76d91a1c3a26d1985240c4199b6955180a6fbaf2f13bef25e06dd9c2c01df22d51a845f4bd2d36aa953559c29532ec8c3390432fb3faa34e73bff00d8533", metafile_sha256="d0294930144bb274ebe38b2cc916a35392c7a39f85a075bfb1273e0080dc7e8e", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="BzV6ulv0", version="9bAijkyf", sha512="04815c0a9d841b66ffc01c47fbb2d1aa47d02eb0878760d30ef848f80420227c1a9de058908c64f84c653b75ed196aa236d646ddd68c3f6f0dd9e5097770af59", metafile_sha256="24dd728d0cb12bdc85f368e1ca3bc9b5dd14e826169d0228687262e89d66f1ec", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="DjLobEOy", version="vHZIKy6e", sha512="bd0469d23a80d1bbbb0a3696b3c1a62f90cc5ad16e4cc58fe9e0e08e7453c3015ff7619b1d429106a034279b46fe909a0962b6dc9e970920f717fc518d9e292d", metafile_sha256="feae42798598c39aeffa9fbc09fa0bf2870ef6da34cb1bf4593f79e94e9afcff", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="gqRXDo8B", version="QxLRvQUU", sha512="95683297677d32e64339b26664778808defe109978990d891ca0ac028f155b686ad834d90eea0e29ab0484ccc1042b87c67288801002ec182855e6d11ee3a221", metafile_sha256="05d23bf4c8101f1101718d89772f29083f9fd9d11fc962553dcfb8c2244617d2", lines=["26.3"], channels={github="unknown",curseforge="unknown",private="conditional"}, note="8.9 lacks own license text; historical8.6 CC0 not silently applied." },
+{ project="nq8iJtT5", version="QKHo3Otn", sha512="b8289a3a6f901189c07e9ce9ca8839fd796e02bf6201e1bab686b8f2f7ed0ca8989d548b840c1d48dd30c80e44b39d71fa9c7f18c9ef39a8e33a0b3899e4573a", metafile_sha256="6e343ca51ad61a9ce8e116fcc93cd01e7cdf732cab99d401780349b471d32a40", lines=["26.3"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="HSfsxuTo", version="CuBdAr31", sha512="9b22adeb1952ec25856e160b93aaa41934fd41e8d1aef985317cb2c9d64aae1012e134e23f52ba39fac3a98b3309b60f0b55b98a4db4de1731960b998117c83e", metafile_sha256="eb53686e058fe3ac3f646c0eab370d279af62f9fb79ae9cd391eb18395a610f5", lines=["26.2"], channels={github="unknown",curseforge="unknown",private="conditional"} },
+{ project="bWrNNfkb", version="urOFTrVX", sha512="d6ecacfbf1c31171317792783754c4f58414508a8fd1aa23b9e3da5da9fe450a6e6e882e39e862cb5f1df38d2d97be8465a39857fe4b78c1cf89934230a71205", metafile_sha256="e9520e6bb14b70a4d7c60b25f0c93e2303d0535f64213262f037aa381d56d5b2", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="ohNO6lps", version="rSd3GiG8", sha512="948b8d83de61a11aad2fc0bb0744a8b4848c9b2f0663c9aa015389d9560b3fa78518e609c44ec90278de0e159a92ebd721ccbdebb453aa455c353e5cd19413bf", metafile_sha256="f6736bea7ee68148b761a747b4e078c6489a22ab2e8a96e1bb6bb8c181f59227", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="wKkoqHrH", version="WGtIQbdQ", sha512="b52209d5f152a61ced3b0015d0b10c595ed82ed32d06d6ce30fcd869d509655ee709dfa89322ebeae3ae5c8378078b08a07f210b44bfa97c98f41c4ce81abda8", metafile_sha256="a3c0592d2ba6bfdf3017d5013f8135750b52bd8e87fce73a3220200289b78ab6", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="9IxCUYAP", version="N5xm7QNb", sha512="90bd66e485902a4fddf13d925fa2c6ddcf698e9d947bd31ed7c394d291accccceb7928d6b885bec8af26b5a4cc520033ebc78291fc7291f65dc7bbe79f4dc2d7", metafile_sha256="ec47048bfe5e844ae019fe19bb47522ed72e7f5d47dd48ad4f634bd9a839a4f0", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="Vebnzrzj", version="UHUghDkV", sha512="6fedf31ff4d17710394463b7bfc97f2beba90eaa0327d6e718aab3195ec748bfba2835a9af804593fc1788e256dba79534da7f249411c8daec47b6e1e70e6f42", metafile_sha256="9057bf155ff127a587f21cbad5cac9361bb7f8b5600cbd4a79a81b1e009c9fae", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="ZKBkklMv", version="4b7dG23l", sha512="08227ce0a5acf5a6da8c2eba901ac30397ed56cf19249e4d0158998f7b8dbc0b45c6ed92590c80304e48804f7f5457062cbbfd1e9ca1febd4723a0f4267ae9e1", metafile_sha256="b100b7b33e95640ee846220e384f1d0e65bd7463d21b1f49bc675cb501e5674d", lines=["26.2"], channels={github="unknown",curseforge="unknown",private="conditional"}, note="Exact source tag7fbc6a264f086520878ea678c10bf5ee3400cd39 retains proprietary structure exclusion." },
+{ project="RJCLIx7k", version="i1RQPVjQ", sha512="85e13d55a2f191e0dc88c5e84927cfe0a48878673a6c42badb67ab7189c76112ecfa9ac3d68b2c015f7208086e2873ae69fa029f4a3d31c3bc5170568bf33e56", metafile_sha256="4a2ff2c654ac7828b13af858c3bd9751982db5945cdff5068f932c543676b129", lines=["26.2"], channels={github="unknown",curseforge="unknown",private="conditional"}, note="Exact LGPL source tag8b92537772289ec26c866ca5aee8489fa0f9ace5; current GPL discrepancy remains." },
+{ project="1oUDhxuy", version="Yq4BpOe2", sha512="ce7659f226feda769ee4ca49ebb4051697149e20e163d24d2dcf40769dc9e0c0a2b3e1760aad8d124104db517b1788a5f06c176eac39eb908f576be9c2a0ac94", metafile_sha256="f986dffaf8dcca7fc0e63f748087d0faac8e9cb7fd08ebf9a5f3d2f1294b45c5", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="r0v8vy1s", version="blSBYnpw", sha512="319e99db7650ef315ba5b5aa7d1a0bafdaeb07b1d72bd4c14489f4eb450c76c648fe53e3f8a2643ef7e59a8291b3314ded8da7fc4c2468b4c762b8554414b14f", metafile_sha256="5b0893fdba5b227d36a4cd0c2deb6cd2b5c1620210b16d0363105b299f62d8cd", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="9s6osm5g", version="Nv3xnWXd", sha512="37b1e402f0df5a383656e21a38ee18cdd15cb4ba3fb62fbeba82ef4b959a4479fc32718ac0d9d154a7d9104c5f7315bfa67dbeced0b8ff240b8039d4848d5df1", metafile_sha256="ebb5edb3af62967147f1b4fcf78510bd99cf2f97cfa62eae286eeb5b9bb7e8f6", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="e0M1UDsY", version="M75JwjyS", sha512="e27620080ae53460b00cabacaff409a960e0d6c6811b7e3519d5461cb62654e0016161eed914352171af56191b70a97c79320b3ef29c0636b74a0471c2398055", metafile_sha256="25860e74a5b285d67d9af40bf3cc48fdbfd4997b340657e6f6579ca29f1f9978", lines=["26.2"], channels={github="unknown",curseforge="unknown",private="conditional"}, note="Embedded CC0 text a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499 conflicts with ARR declaration; preserved, not chosen away." },
+{ project="cl223EMc", version="9p2TokHI", sha512="77f448cb2c8d37374bc4c6fadfa4c7dba6393fcd9340a3228b2de6fc6f8c73eb6418e6e16c5c9bdbb42a65479e938810d690697894a9d79ce363c9c741fa9419", metafile_sha256="f5e003c79747656afdd71f4344c0aef5cd804ad370f2f97194e6a434d28a2835", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="cRci7UZp", version="YzNJMQVQ", sha512="e898a09072a7cd4cf2c8c2b4dbe14dde4811de68bbbdf3879ddb08cddf8233ed0fc5248a543d665b95107e6a94c64ef27c2a3762bbd84f305d380f84c1dae732", metafile_sha256="43fe53c1974bb66ee143007bbc8c6de2604940aa1513045be6712cbf09e518e9", lines=["26.2"], channels={github="unknown",curseforge="unknown",private="conditional"} },
+{ project="LbGT0kSV", version="YW7Gy3sh", sha512="79bacc71a999d39712ca2c94288ad6a488fdec987fc315138a294d57892852344380dd45b3eba9ae8bf49644ccc919d9b1f13d8a7db965aa8ac411a1421ead48", metafile_sha256="6806d8d11a1504e4c6a6ed8fee36dd485580e438d89f3750bea033c494be5cd2", lines=["26.2"], channels={github="unknown",curseforge="unknown",private="conditional"} },
+{ project="P7dR8mSH", version="UWwhUX3k", sha512="1a08b68b2c2c90f6005ef441ab71b65f464be964005b9c0d18e6fc6c5ec53fe346e7dd76189c4f09ade59ef9bc3b836376a2cc71d4ce6e9be47122477d1bbd1e", metafile_sha256="efd1cf636afe382021ceb236ff813466e0d40158289000af6d4ac6730198f3dc", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="yn9u3ypm", version="BZfhXd0q", sha512="499f52b063b1313351d7128fc94f46ac0e256684ebd7d39206a6d331a74c7fb276364448ddb4563a8bc08f8ca3c948a2f7f065e70b23b10cf24686f69e8b3013", metafile_sha256="259b6e987a2e9b5b36b42574efef96ad08e6830c6b1c82dad0271a9015bf6979", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"}, note="Source candidateb691be79054e097a88b87686e3aa50628eec3046 not verified full Corresponding Source." },
+{ project="ctV8T1ZK", version="n1Jc09sK", sha512="92935e860dc5bb5f47229fcfb96b808f22f2e2e7be330e22b7a5802284cca82bdebdafc645a17fa50bd8d70c059f276cc1b75faccfb285ecae5714e607eae70f", metafile_sha256="dacc71f2a73035af849b2eca9bfe2bdf1b1674075bce21c255ddd5ce10ebde57", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"}, note="Source tag2d0f5f0ea91c488cebca7db2ae767e92b1d38ded; one immediate nested JAR not evidence for26.3 dependencies." },
+{ project="gvQqBUqZ", version="f7vZ0VWU", sha512="148b638f3c6229fbaf487120a2344a0af5e411a5aa6533d5db9d75da0a8c0d8304f63eb4cca13f4d03b2c9b4c23d559dd74c1d832422ef8a3087bd005e62a8bd", metafile_sha256="676405a8c29aeda313604db76783595824ae5ec228e0d596e46785e7492c4abc", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"}, note="Source candidatec42972b6e9d21c8ff45559df6b271802050a22e2 not verified full Corresponding Source." },
+{ project="hHVaPgFK", version="vnFt7Fhi", sha512="7dae05d706ffc52729cdd1a3d86dee23cb5b88bb306f4acc0564867d846f966980c7bcfb6ac7892c00a26a19b21429b9b94ff2d474d0191a3fe28b90767f9ad0", metafile_sha256="eea1f6968372cfe2fd48579cebb57bd2701715b16cd4f029ab6cc1b98c3c12c7", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="ptis34fZ", version="HY2jTtzV", sha512="ab06c9f0b6af06b04c7ebefe7b7b701b9b0b640c7e32bf28d5dfed03b376e616acbf65d7f4d9a184af879e392463d87e56d597a3e782db48fc60f40a7cc9c0e2", metafile_sha256="332af6ba9cf36e0d61eaf460cd445d68457b98aa66ddaa98363685fe78d2ed89", lines=["26.2"], channels={github="unknown",curseforge="unknown",private="conditional"} },
+{ project="xGdtZczs", version="561YnR5f", sha512="bcf72922fba4a6a94cdce10c55018e616831be9d780345ddd010e0de35c6aa7e1e5863ac7afbb9738514b3a4ea4702779631c465e19c390c754b941687b42bcb", metafile_sha256="97bb50a681a1728633da6cd02009f4ae80fe2eb6c052e5cf5601035628c85dba", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"}, note="Source candidate9a3e815018b6796a8cc1438323b8effca875eb21 not verified complete closure." },
+{ project="4WWQxlQP", version="edrtnY9v", sha512="aa4cfc93f8e02172910302444330e37713dfcf2047d28e55eb7323a3cd5d51493374a0959aa3e626ec2bf43fc707a755508b83454bb34b6d57d65c069929074b", metafile_sha256="9e792c866b7b70cba00aa53a27dab2a28b24c0d8c20960571c084c48cdd230d2", lines=["26.2"], channels={github="unknown",curseforge="unknown",private="conditional"} },
+{ project="l6YH9Als", version="iYFOl6lQ", sha512="1dcbf2b76ceacf07523afaeaf63d3625b0318077cc6ce588bb701aea4a494bc2a5179fd2ca5aeda9513c6a2248c2ec590387e8aec6ac9fd8e3d01760bbc3dbfb", metafile_sha256="bbecd4d64ac545d8ed01ef36be25e2206667c197d93baba605f604a5daeefbb8", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="PFb7ZqK6", version="QoKeDHFP", sha512="45fec38bac275bb80dd044a2c07f98fba4744ead7d8cc4aa99147c0ae4f4575e35c71437bf1e27cf3d026b555b4c33362c73623ae5c2de55713cf2c426a63e85", metafile_sha256="caa0cc2eae0165123914e560b07ae068efbae68ab12ec0140ca81d16c58ddd10", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="BzV6ulv0", version="vvOv5HeB", sha512="525eaab33db1b03bc46e96343eda991bcc4d60a0cec7d5fe0cdc57a378bf871feeca8ebfc277f869ecf1ea0d4f413fd71623d7e4f159c9934f90a7fe453800db", metafile_sha256="d978587406a870c82cafdc9bb27779f1f107700ac5906a5e9adc454ebe4428e9", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="DjLobEOy", version="eN3WLQ3P", sha512="e318ec6ea4c15b456c188fdaec3447b8ae875efa21961be5fc365a50aacf4bd7b6b939950a48707a20764a78c42eea37e19052e3cc55c843e147dfb788c2e959", metafile_sha256="1847208530042f9d761fa1ff86dfaafe88523a661d863bdeedc7c4f80e3d2a4c", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="gqRXDo8B", version="D78qWxUx", sha512="d41d260b3464253bfb6302227634f9234b674f27ef941b5efd2c284963afa1ca4d80d06b97096e4121a98aca74f50589aa029e84e60c92810d4cad925eff6367", metafile_sha256="92ceedbf99ead131b39d6dfbcc7f93e032866177741e5a6c93c153625d40ba51", lines=["26.2"], channels={github="unknown",curseforge="unknown",private="conditional"}, note="EmbeddedCC0 a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499 conflicts with ARR; applicability not chosen away." },
+{ project="nq8iJtT5", version="iagZx4K4", sha512="e8cbc7d6b06430d52855965639ac8fa2a2ece9b699982a3fbfb7da76af7302eb5d234565a3317f034e68748cf37c5153205145c82fe75c78ba9ab8a3d9f09189", metafile_sha256="fb44a3ec0ddecd5b69f6c9288d9a698bc10031bde2c4aaaba920dbb398d72bf2", lines=["26.2"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+{ project="Cfbcv7uF", version="GaUQd96e", sha512="3ccff50aaf112b5a8ef1d94a918c09d45eab6e5008d4a7e341975bd8ee1c0ecbae2e02b2626c30bb1882dedc3eb34f31087dd92731eae8c9ad37eb1995b02562", metafile_sha256="1d7be5118b07e3688740ba28558ccaba613272b39112e7c7dca5156f0712afb4", lines=["prospective"], channels={github="conditional",curseforge="conditional",private="conditional"} },
+]
+
+# Shared unresolved duties are evidence limitations, never inherited permission.
+[obligations]
+side = "server"
+platform = "unknown"
+nested = "unknown"
+texts = []
+pending = ["Exact-version applicability, complete notices and any covered-source delivery in the component conditions remain unresolved; nested/shaded coverage is not complete. Private preparation does not authorize provider transfer."]
+source = { status="unknown", basis="See component conditions and exact revision candidates; source completeness/equivalent access not verified." }
+
+[rules.fALzjamp]
+texts=["3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"]
+text_provenance=[{url="https://www.gnu.org/licenses/gpl-3.0.txt",sha256="3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",at="2026-11-15"}]
+name="Chunky"
+license="GPLv3"
+credit="pop4959; https://modrinth.com/project/fALzjamp"
+conditions="GPL3-only: preserve license/notices and complete exact Corresponding Source under GPL6. Captured1.5.0 tag does not bind selected1.5.3."
+evidence=[{url="https://api.modrinth.com/v2/project/fALzjamp",sha256="8f0e07f126c1bd24aac798b1397df9ddab3e8056f71186ca26621284c0476096",at="2026-11-15T22:26:44.809528+00:00"}]
+[rules.HSfsxuTo]
+name="Explorify"
+license="ARR"
+credit="bebebea_loste; https://modrinth.com/project/HSfsxuTo"
+conditions="Exact1.6.5/1.6.6 JAR metadata ARR. Captured official project/version evidence contains no written redistribution grant; not an exhaustive author-policy search."
+evidence=[{url="https://api.modrinth.com/v2/project/HSfsxuTo",sha256="5601f2a23e1e8cfa95675767e808fa06623a7510666f01b2a4ce4a1bee24d984",at="2026-11-15T22:26:44.218093+00:00"}]
+[rules.bWrNNfkb]
+texts=["bf04d0cc75e3f442e443f7310f9ad3a3850db9ad427e9ba4faab977105347370"]
+text_provenance=[{url="https://api.modrinth.com/v2/version/m9eO07Zi",member="META-INF/NOTICE",sha256="bf04d0cc75e3f442e443f7310f9ad3a3850db9ad427e9ba4faab977105347370",at="2026-11-15"},{url="https://api.modrinth.com/v2/version/urOFTrVX",member="META-INF/NOTICE",sha256="bf04d0cc75e3f442e443f7310f9ad3a3850db9ad427e9ba4faab977105347370",at="2026-11-15"}]
+name="Floodgate"
+license="MIT"
+credit="GeyserMC; https://modrinth.com/project/bWrNNfkb"
+conditions="Preserve copyright2021 GeyserMC MIT text and bundled Guice Apache LICENSE/NOTICE. MIT does not settle nested duties or CurseForge admission. Exact hosted/non-hosted approval remains unverified."
+evidence=[{url="https://api.modrinth.com/v2/project/bWrNNfkb",sha256="94213bae9c3bf32788762bd5bc9db055b02d5cd4ad760d4fccdbbce0024a94a5",at="2026-11-15T22:26:44.473774+00:00"}]
+[rules.ohNO6lps]
+name="Forge Config API Port"
+license="MPL-2.0"
+credit="Fuzs; https://modrinth.com/project/ohNO6lps"
+conditions="Preserve MPL2, distinct ARR asset/Forge/night-config notices; MPL2 section3.2 requires exact covered Source Code Form and recipient access notice. No blanket whole-pack MPL claim."
+evidence=[{url="https://api.modrinth.com/v2/project/ohNO6lps",sha256="853121c4c015c1d83aa0b27bf3a30dde196c2f842b934d3863a38f7944a3a1de",at="2026-11-15T22:26:45.156757+00:00"}]
+[rules.wKkoqHrH]
+name="Geyser"
+license="MIT"
+credit="GeyserMC; https://modrinth.com/project/wKkoqHrH"
+conditions="Preserve own and mappings MIT copyright2019-2026 GeyserMC. MinecraftAuth5.0.0 is independently LGPL3; outer MIT is not dependency clearance or CurseForge admission."
+evidence=[{url="https://api.modrinth.com/v2/project/wKkoqHrH",sha256="e1bed125914deb40f519bb368aa5d2ac4af32440049ebcc968adbdba9b035e83",at="2026-11-15T22:26:45.438982+00:00"}]
+[rules.9IxCUYAP]
+texts=["c4650aa76fd4b85b4bf715e874edd08466b7a7eebbcd12c27d6b4bb4ae8d256c","3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986","e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"]
+text_provenance=[{url="https://api.modrinth.com/v2/version/avIdkeZp",member="LICENSE",sha256="c4650aa76fd4b85b4bf715e874edd08466b7a7eebbcd12c27d6b4bb4ae8d256c",captured_sha256="ddafaf9a942656a2a0dcf58fa8e3cf3e724ab775c88fbf3c2f290c14fb739ab9",normalization="CRLF to LF only; complete wording unchanged",at="2026-11-15"},{url="https://api.modrinth.com/v2/version/N5xm7QNb",member="LICENSE",sha256="c4650aa76fd4b85b4bf715e874edd08466b7a7eebbcd12c27d6b4bb4ae8d256c",captured_sha256="ddafaf9a942656a2a0dcf58fa8e3cf3e724ab775c88fbf3c2f290c14fb739ab9",normalization="CRLF to LF only; complete wording unchanged",at="2026-11-15"},{url="https://www.gnu.org/licenses/gpl-3.0.txt",sha256="3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",at="2026-11-15"},{url="https://www.gnu.org/licenses/lgpl-3.0.txt",sha256="e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",at="2026-11-15"}]
+name="Hopo Better Mineshaft"
+license="LGPL-3.0-or-later and embedded author exception"
+credit="Hoponopono; https://modrinth.com/project/9IxCUYAP"
+conditions="Embedded author terms permit unmodified public modpack use and personal purposes. Preserve actual exception plus LGPL/GPL duties; current primary project lacks source URL. Generic homepage cannot satisfy Corresponding Source."
+evidence=[{url="https://api.modrinth.com/v2/project/9IxCUYAP",sha256="3b3bce7cf3c7ade4845ad30bc30963020424f53ffd66ed52b9c9bb9a9347636c",at="2026-11-15T22:26:43.605218+00:00"}]
+[rules.Vebnzrzj]
+name="LuckPerms"
+license="MIT"
+credit="Luck and contributors; https://modrinth.com/project/Vebnzrzj"
+conditions="Preserve binary-bound lucko/contributors copyright and complete MIT permission text, plus independent nested/shaded notices. No MIT source-delivery duty for own code."
+evidence=[{url="https://api.modrinth.com/v2/project/Vebnzrzj",sha256="f615dce1ce8ed239d5471657a07e7be255787ad9707ed0ac1a3a54a296671a63",at="2026-11-15T22:26:44.450447+00:00"}]
+[rules.ZKBkklMv]
+name="MOS - Moog's Ocean Structures"
+license="JAR LGPL3; exact-tag proprietary structure exclusion"
+credit="FinnDog; https://modrinth.com/project/ZKBkklMv"
+conditions="Matching1.1.0/1.1.1 source LICENSE excludes structure NBT as ARR and prohibits pack redistribution absent written permission. Binary/source equality not proved; reconcile unmodified whole-mod applicability rather than ignore or invent permission."
+evidence=[{url="https://api.modrinth.com/v2/project/ZKBkklMv",sha256="dc3794878d90e30b88afdab5dd4d8689d64f080b5aa6b2f345784ab2d129f8b4",at="2026-11-15T22:26:44.528756+00:00"}]
+[rules.RJCLIx7k]
+name="MSS - Moog's Soaring Structures"
+license="Exact binary/tag LGPL3; current project GPL3-only"
+credit="FinnDog; https://modrinth.com/project/RJCLIx7k"
+conditions="Historical/current license discrepancy remains unresolved. Preserve exact-tag evidence; complete covered source/access required, not silent choice of stronger/current terms."
+evidence=[{url="https://api.modrinth.com/v2/project/RJCLIx7k",sha256="1149ccb5655dc7e810339140a9bcd866289b58dd72d99a0b00055cc6cc65aef7",at="2026-11-15T22:26:44.511561+00:00"}]
+[rules.1oUDhxuy]
+texts=["3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986","e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"]
+text_provenance=[{url="https://www.gnu.org/licenses/gpl-3.0.txt",sha256="3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",at="2026-11-15"},{url="https://www.gnu.org/licenses/lgpl-3.0.txt",sha256="e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",at="2026-11-15"}]
+name="Moog's Structure Lib"
+license="LGPL3"
+credit="FinnDog; https://modrinth.com/project/1oUDhxuy"
+conditions="Preserve embedded LGPL3 and GPL texts/notices, exact covered source and dependency duties. Captured tags do not bind selected3.4.2/3.2.0 builds."
+evidence=[{url="https://api.modrinth.com/v2/project/1oUDhxuy",sha256="adf2e6108469d35080d909cec7a1936eeae07aed394748bf41a31ac89d7760c9",at="2026-11-15T22:26:43.601905+00:00"}]
+[rules.r0v8vy1s]
+name="Alternate Current"
+license="MIT"
+credit="Space Walker; https://modrinth.com/project/r0v8vy1s"
+conditions="Preserve copyright2022 Space Walker and complete MIT permission text. Own code has no source-delivery duty; matching1.9.0 version strings on the two lines are not binary identity."
+evidence=[{url="https://api.modrinth.com/v2/project/r0v8vy1s",sha256="aac2c13a401706323047ab2383696d67e3f289cabcc0406dcdc360cf4e0b8395",at="2026-11-15T22:26:45.235480+00:00"}]
+[rules.9s6osm5g]
+texts=["3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986","e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"]
+text_provenance=[{url="https://www.gnu.org/licenses/gpl-3.0.txt",sha256="3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",at="2026-11-15"},{url="https://www.gnu.org/licenses/lgpl-3.0.txt",sha256="e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",at="2026-11-15"}]
+name="Cloth Config API"
+license="LGPLv3"
+credit="shedaniel; https://modrinth.com/project/9s6osm5g"
+conditions="Preserve LGPL/GPL texts, complete Corresponding Source and applicable replacement/relink rights. Account separately for TOML/SnakeYAML and nested basic-math."
+evidence=[{url="https://api.modrinth.com/v2/project/9s6osm5g",sha256="037e9fbde074fa7d64463a935cbc4cd7e4379e9b8a9b869e2d2d7e0db39ad570",at="2026-11-15T22:26:43.904068+00:00"}]
+[rules.e0M1UDsY]
+name="Collective"
+license="ARR; historical CC0 conflict"
+credit="Serilum; https://modrinth.com/project/e0M1UDsY"
+conditions="Author grants modpack use only while downloads remain hosted within CurseForge/Modrinth ecosystem. No GitHub/Actions grant established. Historical8.39 embeds CC0 while metadata says ARR; no retrospective waiver/revocation decision."
+evidence=[{url="https://api.modrinth.com/v2/project/e0M1UDsY",sha256="65d7ed057db9cc3db1aa1a3633d354cc2d27905b069ceeba532a72e217fc7988",at="2026-11-15T22:26:44.799792+00:00"}]
+[rules.ujZZZb4P]
+texts=["3d0941c68779f622e3423652f0c186bfae3bc5487dda3fe225d54b858417055b"]
+text_provenance=[{url="https://raw.githubusercontent.com/lyuwenhan/minecraft-java-edition-mods/3a487949b476673a39928d36dc53a513fb5ed483/creeper-no-break/LICENSE",sha256="3d0941c68779f622e3423652f0c186bfae3bc5487dda3fe225d54b858417055b",at="2026-11-15"}]
+name="Creeper No Break"
+license="No embedded declaration; official MIT evidence"
+credit="Wenhan / lyuwenhan; https://modrinth.com/project/ujZZZb4P"
+conditions="Current official project and linked source LICENSE are MIT, copyright2026 lyuwenhan. Revision3a487949b476673a39928d36dc53a513fb5ed483 does not establish exact1.2.0 correspondence. Missing JAR label is not absence of permission."
+evidence=[{url="https://api.modrinth.com/v2/project/ujZZZb4P",sha256="975f940b84235cfe4279f4a38663f2074e208af7d445d03e5e1e492a584b6b7c",at="2026-11-15T22:26:45.491694+00:00"}]
+[rules.cl223EMc]
+texts=["471f8c825e19bd0b5e4953f0fb34cff817fe29b2b82e0db31b9c26802b7074fc"]
+text_provenance=[{url="https://api.modrinth.com/v2/version/rWxmPrGC",member="LICENSE_Cristel Lib",sha256="471f8c825e19bd0b5e4953f0fb34cff817fe29b2b82e0db31b9c26802b7074fc",at="2026-11-15"},{url="https://api.modrinth.com/v2/version/9p2TokHI",member="LICENSE_Cristel Lib",sha256="471f8c825e19bd0b5e4953f0fb34cff817fe29b2b82e0db31b9c26802b7074fc",at="2026-11-15"}]
+name="Cristel Lib"
+license="CC-BY-NC-ND-4.0 with explicit modpack exception"
+credit="Cristelknight; https://modrinth.com/project/cl223EMc"
+conditions="Linked creator/page credit, unchanged mod except config and all other terms required: https://creativecommons.org/licenses/by-nc-nd/4.0/ . Paid hosting alone does not settle NC; monetization/account applicability unresolved."
+evidence=[{url="https://api.modrinth.com/v2/project/cl223EMc",sha256="ed26dba7fb4cc5ed538d4eb6da1790d1e89760a3dd019071b76aa7b916820e84",at="2026-11-15T22:26:44.659162+00:00"}]
+[rules.cRci7UZp]
+name="Crops Love Rain"
+license="MIT"
+credit="ThePoultryMan; https://modrinth.com/project/cRci7UZp"
+conditions="Exact JAR/current project MIT; missing complete own copyright/permission text and exact-version applicability binding. Not a no-license determination."
+evidence=[{url="https://api.modrinth.com/v2/project/cRci7UZp",sha256="399d59ea3e890942f96ab6b35603e9033134248d640aea3153ada458e8568b1a",at="2026-11-15T22:26:44.631803+00:00"}]
+[rules.rYocd2LE]
+name="Dungeons and Taverns Stronghold Overhaul"
+license="LicenseRef-All-Rights-Reserved"
+credit="Konci, MiziraGamez, NovaWostra; https://modrinth.com/project/rYocd2LE"
+conditions="Exact metadata ARR; no written redistribution grant in captured official project/version evidence. No assumption that hosting on a download site grants mirroring."
+evidence=[{url="https://api.modrinth.com/v2/project/rYocd2LE",sha256="8e28e9edb4e0ab68c159de245675bed13a9a5e7195df3f752ee0d1d8012676d2",at="2026-11-15T22:26:45.276582+00:00"}]
+[rules.3PvUBn3u]
+name="Epic Structures: Villages Standalone Edition"
+license="LicenseRef-Unknown / current ARR with positive modpack grant"
+credit="HardWater and ATi; https://modrinth.com/project/3PvUBn3u"
+conditions="Author says FEEL FREE TO ADD TO ANY MODPACK. Retain positive permission and modpack scope; not general standalone mirror permission. Exact1.0.0 applicability still conditional."
+evidence=[{url="https://api.modrinth.com/v2/project/3PvUBn3u",sha256="595c18ab11e2d2a4590908abdd9168211d4304a6c01692e701e067abb06705cc",at="2026-11-15T22:26:43.603676+00:00"}]
+[rules.P7dR8mSH]
+name="Fabric API"
+license="Apache-2.0"
+credit="FabricMC; https://modrinth.com/project/P7dR8mSH"
+conditions="Preserve complete Apache2 text/relevant notices/attribution and independent API-module duties. Apache has no general source-delivery duty; no dependent-component waiver."
+evidence=[{url="https://api.modrinth.com/v2/project/P7dR8mSH",sha256="4ae0681688bfbd5aeb8140cb15bfebd9aa4892880b8cd1b0e144fce1c2594133",at="2026-11-15T22:26:44.226293+00:00"}]
+[rules.uXXizFIs]
+texts=["68ce5c5cd4969030dbba6b6fc922af8e50cbe5494ed641737b9db9d7c43f8cb1"]
+text_provenance=[{url="https://raw.githubusercontent.com/malte0811/FerriteCore/0cef1f2add1f1329aa6e690e8e292acd625c5c6d/LICENSE",sha256="68ce5c5cd4969030dbba6b6fc922af8e50cbe5494ed641737b9db9d7c43f8cb1",at="2026-11-15T22:29:43.608077+00:00"}]
+name="FerriteCore"
+license="MIT"
+credit="malte0811; https://modrinth.com/project/uXXizFIs"
+conditions="Matching build-9.0.0 source0cef1f2add1f1329aa6e690e8e292acd625c5c6d supplies copyright/permission text absent in JAR. Include it; version-tag match is not reproducible-build proof."
+evidence=[{url="https://api.modrinth.com/v2/project/uXXizFIs",sha256="104271a08d433f313d6c7b544dc0310cf0618862d8111c86242e901251e97075",at="2026-11-15T22:26:45.395005+00:00"}]
+[rules.yn9u3ypm]
+texts=["3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986","e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"]
+text_provenance=[{url="https://www.gnu.org/licenses/gpl-3.0.txt",sha256="3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",at="2026-11-15"},{url="https://www.gnu.org/licenses/lgpl-3.0.txt",sha256="e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",at="2026-11-15"}]
+source={status="unknown",basis="Matching source tags are candidates, not complete Corresponding Source or equivalent-access proof.",directions="HOLD: Graves3.13.0+26.3 candidate https://github.com/Patbox/UniversalGraves/archive/7f7508e019b1dd845b54ff56e0cd140e150ddd93.zip ; Graves3.12.0+26.2 candidate https://github.com/Patbox/UniversalGraves/archive/b691be79054e097a88b87686e3aa50628eec3046.zip . Exact source completeness, build/dependency inputs, continuing availability and equivalent access remain unverified; these links do not satisfy the delivery gate."}
+name="Universal Graves"
+license="LGPLv3"
+credit="Patbox; https://modrinth.com/project/yn9u3ypm"
+conditions="Preserve GPL/LGPL texts/notices and exact covered source/access. Matching source tags are candidates, not source-completeness or dependency-version clearance."
+evidence=[{url="https://api.modrinth.com/v2/project/yn9u3ypm",sha256="3a02ee3fbfb79ffbfa598ebd65e8b3567ce5156589c621d24c8a8e81c4b32634",at="2026-11-15T22:26:45.588839+00:00"}]
+[rules.ctV8T1ZK]
+texts=["fa44b6f28eb9a2ed2bc304356b73c0ba2040c934857158a204dc3af767b06ede"]
+text_provenance=[{url="https://raw.githubusercontent.com/frandm16/JustEnoughBackups/1da38a569dcafda9cd5a0f3c2c48e443a9fcab59/LICENSE",sha256="fa44b6f28eb9a2ed2bc304356b73c0ba2040c934857158a204dc3af767b06ede",at="2026-11-15T22:29:43.617609+00:00"},{url="https://raw.githubusercontent.com/frandm16/JustEnoughBackups/2d0f5f0ea91c488cebca7db2ae767e92b1d38ded/LICENSE",sha256="fa44b6f28eb9a2ed2bc304356b73c0ba2040c934857158a204dc3af767b06ede",at="2026-11-15T22:29:43.844902+00:00"}]
+name="Just Enough Backups (JEB)"
+license="MIT"
+credit="frandm16 / Fran Dorado; https://modrinth.com/project/ctV8T1ZK"
+conditions="Matching1.2.0.10/1.2.0.6 source-tag licenses supply full Fran Dorado copyright/permission absent from JAR. Nested/shaded dependencies retain independent duties."
+evidence=[{url="https://api.modrinth.com/v2/project/ctV8T1ZK",sha256="fad919abc549b2efc53f45d73d82385264817aaad650632b5ef0d63c7294881c",at="2026-11-15T22:26:44.756823+00:00"}]
+[rules.gvQqBUqZ]
+texts=["3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986","e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"]
+text_provenance=[{url="https://www.gnu.org/licenses/gpl-3.0.txt",sha256="3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",at="2026-11-15"},{url="https://www.gnu.org/licenses/lgpl-3.0.txt",sha256="e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",at="2026-11-15"}]
+source={status="unknown",basis="Exact source-tag candidates exist; complete Corresponding Source/access remains unverified.",directions="HOLD:26.3 candidate https://github.com/CaffeineMC/lithium/archive/383d29973601ada19c70bde32f9172792a769fe7.zip ;26.2 candidate https://github.com/CaffeineMC/lithium/archive/c42972b6e9d21c8ff45559df6b271802050a22e2.zip . Verify complete build/dependency inputs and equivalent ongoing source access before binary redistribution. No source/binary reproducibility claim."}
+name="Lithium"
+license="LGPL-3.0-only"
+credit="JellySquid and 2No2Name; https://modrinth.com/project/gvQqBUqZ"
+conditions="Preserve GPL/LGPL texts/notices, exact covered source and replacement/relink rights as applicable. Source tags do not alone establish equivalent delivery or completeness."
+evidence=[{url="https://api.modrinth.com/v2/project/gvQqBUqZ",sha256="5371dfa211ba3172c7c772cf0498026417235f3937ce51424f9e7eeec031ec81",at="2026-11-15T22:26:44.916929+00:00"}]
+[rules.hHVaPgFK]
+texts=["3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986","e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"]
+text_provenance=[{url="https://www.gnu.org/licenses/gpl-3.0.txt",sha256="3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",at="2026-11-15"},{url="https://www.gnu.org/licenses/lgpl-3.0.txt",sha256="e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",at="2026-11-15"}]
+name="Naturally Trimmed"
+license="LGPL-3.0-only"
+credit="majo24; https://modrinth.com/project/hHVaPgFK"
+conditions="Preserve full GPL/LGPL text/notices and covered source/access. Independently bind nested placeholder/predicate API versions; no inherited top-level clearance."
+evidence=[{url="https://api.modrinth.com/v2/project/hHVaPgFK",sha256="ac44463be6eb0abad38defc2658ac2034ab02102de444264d8541a6756278135",at="2026-11-15T22:26:45.031272+00:00"}]
+[rules.xGdtZczs]
+texts=["3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986","e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"]
+text_provenance=[{url="https://www.gnu.org/licenses/gpl-3.0.txt",sha256="3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",at="2026-11-15"},{url="https://www.gnu.org/licenses/lgpl-3.0.txt",sha256="e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",at="2026-11-15"}]
+source={status="unknown",basis="Exact parent tags do not cover older nested Polymer/SGUI/placeholder/predicate versions.",directions="HOLD:26.3 parent candidate https://github.com/Patbox/polymer/archive/6d5108cb9bef4b07939fb579b5fc0b5e2589bb02.zip ;26.2 parent candidate https://github.com/Patbox/polymer/archive/9a3e815018b6796a8cc1438323b8effca875eb21.zip . Independently bind every bundled module's exact covered source, build inputs and replacement/relink rights; complete equivalent access remains unverified."}
+name="Polymer"
+license="LGPLv3"
+credit="Patbox; https://modrinth.com/project/xGdtZczs"
+conditions="Preserve complete GPL/LGPL texts/notices and source. Recursively bundled Polymer/SGUI and older nested versions require their own exact covered-source bindings."
+evidence=[{url="https://api.modrinth.com/v2/project/xGdtZczs",sha256="7cec0f2e3ddaa56a78418fe413b607388e1bdcc2ee6e472fdf3d7300faba2a5f",at="2026-11-15T22:26:45.497166+00:00"}]
+[rules.4WWQxlQP]
+name="ServerCore"
+license="MIT"
+credit="Wesley1808; https://modrinth.com/project/4WWQxlQP"
+conditions="Own MIT declaration exists; complete copyright/permission text and exact-version applicability remain unbound. Nested obligations independent."
+evidence=[{url="https://api.modrinth.com/v2/project/4WWQxlQP",sha256="f2f2cc5bf21f841c7fa1ff1d0d02d0d736def9dca2cf0aa5ac9b364b730b1cac",at="2026-11-15T22:26:43.600421+00:00"}]
+[rules.l6YH9Als]
+texts=["3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"]
+text_provenance=[{url="https://www.gnu.org/licenses/gpl-3.0.txt",sha256="3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",at="2026-11-15"}]
+name="spark"
+license="GPLv3"
+credit="Luck; https://modrinth.com/project/l6YH9Als"
+conditions="Preserve GPL text/notices and complete exact Corresponding Source. Captured generic v1.10 tag does not bind selected1.10.187/1.10.173."
+evidence=[{url="https://api.modrinth.com/v2/project/l6YH9Als",sha256="954c0cbf538c055d047e119c5080207c145201bdd3d4cc196cffc95940f30a98",at="2026-11-15T22:26:45.006459+00:00"}]
+[rules.PFb7ZqK6]
+texts=["234b518d98a40671e14dae700dcb8b45eebb61f5a3d294201418e1d15b5166ce","992ed62dd3ee17d73ce6a4a5e02dd0fed9eb326bf386aa5304e6a512214df540"]
+text_provenance=[{url="https://api.modrinth.com/v2/version/YPMtDS9D",member="META-INF/NOTICE",sha256="234b518d98a40671e14dae700dcb8b45eebb61f5a3d294201418e1d15b5166ce",at="2026-11-15"},{url="https://api.modrinth.com/v2/version/QoKeDHFP",member="META-INF/NOTICE",sha256="234b518d98a40671e14dae700dcb8b45eebb61f5a3d294201418e1d15b5166ce",at="2026-11-15"},{url="https://api.modrinth.com/v2/version/YPMtDS9D",member="META-INF/NOTICE.md",sha256="992ed62dd3ee17d73ce6a4a5e02dd0fed9eb326bf386aa5304e6a512214df540",at="2026-11-15"},{url="https://api.modrinth.com/v2/version/QoKeDHFP",member="META-INF/NOTICE.md",sha256="992ed62dd3ee17d73ce6a4a5e02dd0fed9eb326bf386aa5304e6a512214df540",at="2026-11-15"}]
+name="squaremap"
+license="MIT"
+credit="Jason Penilla, William Blake Galbreath and contributors; https://modrinth.com/project/PFb7ZqK6"
+conditions="Preserve own MIT copyrights/permission, Guice/Jakarta notices, Undertow/OWASP/JBoss/Wildfly obligations. Exact hosted or official non-hosted CurseForge admission remains unverified."
+evidence=[{url="https://api.modrinth.com/v2/project/PFb7ZqK6",sha256="c89b4f1d6e4c11705f85b1998f14a8cc093b6586711a3899d1aff2cd221e1c39",at="2026-11-15T22:26:44.227160+00:00"}]
+[rules.BzV6ulv0]
+name="Server-Side Waystones"
+license="MIT"
+credit="sylvxa; https://modrinth.com/project/BzV6ulv0"
+conditions="Preserve copyright2024 sylvxa and full MIT text. Nested Polymer components retain independent LGPL/source duties. Same1.3.2 string does not identify equal binaries across lines."
+evidence=[{url="https://api.modrinth.com/v2/project/BzV6ulv0",sha256="27d0fda3ecbb26769d1f523dc932800b5fb7f057e98eebcbd00d46fdfa7592e4",at="2026-11-15T22:26:43.908888+00:00"}]
+[rules.DjLobEOy]
+texts=["471f8c825e19bd0b5e4953f0fb34cff817fe29b2b82e0db31b9c26802b7074fc"]
+text_provenance=[{url="https://api.modrinth.com/v2/version/vHZIKy6e",member="LICENSE_Towns_and_Towers",sha256="471f8c825e19bd0b5e4953f0fb34cff817fe29b2b82e0db31b9c26802b7074fc",captured_sha256="ea15fa22e277abd4aba2c7054e1beec71ed127cc8e4f6507ecf97a1ccca70fd2",normalization="CRLF to LF only; complete wording unchanged",at="2026-11-15"},{url="https://api.modrinth.com/v2/version/eN3WLQ3P",member="LICENSE_Towns and Towers",sha256="471f8c825e19bd0b5e4953f0fb34cff817fe29b2b82e0db31b9c26802b7074fc",captured_sha256="ea15fa22e277abd4aba2c7054e1beec71ed127cc8e4f6507ecf97a1ccca70fd2",normalization="CRLF to LF only; complete wording unchanged",at="2026-11-15"}]
+name="Towns and Towers"
+license="Exact JAR CC-BY-NC-ND-4.0 with modpack exception; current CC-BY-NC-SA conflict"
+credit="Kubek, Biban_Auriu, Cristelknight999; https://modrinth.com/project/DjLobEOy"
+conditions="Linked credit and unchanged/config-only exception retains all CC-BY-NC-ND4 terms: https://creativecommons.org/licenses/by-nc-nd/4.0/ . Do not replace historical ND with current SA. NC account/monetization applicability unresolved."
+evidence=[{url="https://api.modrinth.com/v2/project/DjLobEOy",sha256="49f729f474b2df046f31d398dbb83cb0e7c0f5dd9ff2b36870432dd8538222e7",at="2026-11-15T22:26:43.838744+00:00"}]
+[rules.gqRXDo8B]
+name="Villager Names"
+license="ARR; historical CC0 conflict"
+credit="Serilum; https://modrinth.com/project/gqRXDo8B"
+conditions="Ecosystem-only author modpack permission is not a GitHub/Actions mirror grant. Historical8.6 contains complete CC0 despite ARR metadata; exact applicability/reconciliation unresolved."
+evidence=[{url="https://api.modrinth.com/v2/project/gqRXDo8B",sha256="402186205458f370305df335bd6eea4db2a990f58cb9f2493a85ec071f40b8cd",at="2026-11-15T22:26:44.844494+00:00"}]
+[rules.nq8iJtT5]
+name="Villagers Tasks"
+license="CC-BY-4.0"
+credit="Nat_68; https://modrinth.com/project/nq8iJtT5"
+conditions="Creator/page/license links, retained notices and modification indication required: https://creativecommons.org/licenses/by/4.0/ . No GPL-style source duty under CC-BY alone."
+evidence=[{url="https://api.modrinth.com/v2/project/nq8iJtT5",sha256="a7315d1720a9ec2b8140180933e98c65f542be324d1ca72a25234e9ecd35b50c",at="2026-11-15T22:26:45.036729+00:00"}]
+[rules.LbGT0kSV]
+name="D&T Stronghold Overhaul Lite Edition"
+license="LicenseRef-All-Rights-Reserved"
+credit="NovaWostra; https://modrinth.com/project/LbGT0kSV"
+conditions="Exact metadata ARR; captured official evidence contains no written redistribution grant. Distinct26.2 project, not substituted by26.3 variant."
+evidence=[{url="https://api.modrinth.com/v2/project/LbGT0kSV",sha256="3177e210b770164e7464d4527d37b016fd329ddf8f1deb9e071b4a5ab5c104ff",at="2026-11-15T22:26:44.217646+00:00"}]
+[rules.ptis34fZ]
+name="No Creeper Explosion"
+license="Exact JAR CC0-1.0; current ARR conflict"
+credit="https://modrinth.com/project/ptis34fZ"
+conditions="Exact1.0.0 binary embeds CC0 text a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499; current project ARR. Preserve both and resolve applicability; not26.3 Creeper No Break."
+evidence=[{url="https://api.modrinth.com/v2/project/ptis34fZ",sha256="cd903257cd110e2a646a2a7da9467ab28de386ec2bb83cf117805f93e19dd4df",at="2026-11-15T22:26:45.225743+00:00"}]
+[rules.Cfbcv7uF]
+texts=["b02ca2cac4b96fa1a9829573fbc61b2603e5325b5e72b22993921e98bf06aa54","7347397a0665f6898b32894a1869a514251abef7da7620902b0e57c5026cf1ed","59067508e44346bf93dc9c5e4d673a67ecd77988c2020bb5e0f8667eb199f396","dbc36f9422a40d58d1a214080583667cfd37d61c2fae1657d981edda2a60727f","12d39a6615219d73202300715e365bec2b958f858d1e837c8f2dace57f905969"]
+text_provenance=[{url="https://api.modrinth.com/v2/version/GaUQd96e",member="META-INF/NOTICE.txt",sha256="b02ca2cac4b96fa1a9829573fbc61b2603e5325b5e72b22993921e98bf06aa54",at="2026-11-15"},{url="https://api.modrinth.com/v2/version/GaUQd96e",member="META-INF/NOTICE",sha256="7347397a0665f6898b32894a1869a514251abef7da7620902b0e57c5026cf1ed",at="2026-11-15"},{url="https://api.modrinth.com/v2/version/GaUQd96e",member="META-INF/FastDoubleParser-LICENSE",sha256="59067508e44346bf93dc9c5e4d673a67ecd77988c2020bb5e0f8667eb199f396",at="2026-11-15"},{url="https://api.modrinth.com/v2/version/GaUQd96e",member="META-INF/FastDoubleParser-ThirdParty-LICENSE",sha256="dbc36f9422a40d58d1a214080583667cfd37d61c2fae1657d981edda2a60727f",at="2026-11-15"},{url="https://api.modrinth.com/v2/version/GaUQd96e",member="META-INF/Schubfach-LICENSE",sha256="12d39a6615219d73202300715e365bec2b958f858d1e837c8f2dace57f905969",at="2026-11-15"}]
+name="Mc2Discord4.4.0 (prospective, not selected)"
+license="Apache 2.0"
+credit="DenisD3D; https://modrinth.com/project/Cfbcv7uF"
+conditions="Preserve Commons Collections/Jackson NOTICE, FastDoubleParser/Schubfach MIT copyrights and FastDoubleParser third-party terms. Source LICENSEc4b169807bcf407fddf3dfeb4b43a8908b37977d does not prove binary/source equality. No feature activation or PR20 clearance."
+evidence=[{url="https://api.modrinth.com/v2/project/Cfbcv7uF",sha256="0509a1c112fa8e6c086b4a995fef616adeca2a2db755ea6fba18e8558b31187f",at="2026-11-15T22:26:43.837643+00:00"}]
