@@ -83,13 +83,15 @@ text_provenance=[{url="https://www.gnu.org/licenses/gpl-3.0.txt",sha256="3972dc9
 name="Chunky"
 license="GPLv3"
 credit="pop4959; https://modrinth.com/project/fALzjamp"
-conditions="GPL3-only: preserve license/notices and complete exact Corresponding Source under GPL6. Captured1.5.0 tag does not bind selected1.5.3."
+conditions="GPL 3 only: preserve license/notices and provide complete exact Corresponding Source under GPL section 6."
+note="Captured 1.5.0 tag does not bind selected 1.5.3."
 evidence=[{url="https://api.modrinth.com/v2/project/fALzjamp",sha256="8f0e07f126c1bd24aac798b1397df9ddab3e8056f71186ca26621284c0476096",at="2026-11-15T22:26:44.809528+00:00"}]
 [rules.HSfsxuTo]
 name="Explorify"
 license="ARR"
 credit="bebebea_loste; https://modrinth.com/project/HSfsxuTo"
-conditions="Exact1.6.5/1.6.6 JAR metadata ARR. Captured official project/version evidence contains no written redistribution grant; not an exhaustive author-policy search."
+conditions="All rights reserved; written redistribution permission remains unverified."
+note="Exact 1.6.5/1.6.6 JAR metadata declares ARR. Captured official project/version evidence contains no written redistribution grant; not an exhaustive author-policy search."
 evidence=[{url="https://api.modrinth.com/v2/project/HSfsxuTo",sha256="5601f2a23e1e8cfa95675767e808fa06623a7510666f01b2a4ce4a1bee24d984",at="2026-11-15T22:26:44.218093+00:00"}]
 [rules.bWrNNfkb]
 texts=["bf04d0cc75e3f442e443f7310f9ad3a3850db9ad427e9ba4faab977105347370"]
@@ -97,19 +99,19 @@ text_provenance=[{url="https://api.modrinth.com/v2/version/m9eO07Zi",member="MET
 name="Floodgate"
 license="MIT"
 credit="GeyserMC; https://modrinth.com/project/bWrNNfkb"
-conditions="Preserve copyright2021 GeyserMC MIT text and bundled Guice Apache LICENSE/NOTICE. MIT does not settle nested duties or CurseForge admission. Exact hosted/non-hosted approval remains unverified."
+conditions="Preserve copyright 2021 GeyserMC MIT text and bundled Guice Apache LICENSE/NOTICE. MIT does not settle nested duties or CurseForge admission; exact hosted/non-hosted approval remains unverified."
 evidence=[{url="https://api.modrinth.com/v2/project/bWrNNfkb",sha256="94213bae9c3bf32788762bd5bc9db055b02d5cd4ad760d4fccdbbce0024a94a5",at="2026-11-15T22:26:44.473774+00:00"}]
 [rules.ohNO6lps]
 name="Forge Config API Port"
 license="MPL-2.0"
 credit="Fuzs; https://modrinth.com/project/ohNO6lps"
-conditions="Preserve MPL2, distinct ARR asset/Forge/night-config notices; MPL2 section3.2 requires exact covered Source Code Form and recipient access notice. No blanket whole-pack MPL claim."
+conditions="Preserve MPL 2.0 and distinct ARR asset/Forge/night-config notices; MPL 2.0 section 3.2 requires exact covered Source Code Form and recipient access notice. No blanket whole-pack MPL claim."
 evidence=[{url="https://api.modrinth.com/v2/project/ohNO6lps",sha256="853121c4c015c1d83aa0b27bf3a30dde196c2f842b934d3863a38f7944a3a1de",at="2026-11-15T22:26:45.156757+00:00"}]
 [rules.wKkoqHrH]
 name="Geyser"
 license="MIT"
 credit="GeyserMC; https://modrinth.com/project/wKkoqHrH"
-conditions="Preserve own and mappings MIT copyright2019-2026 GeyserMC. MinecraftAuth5.0.0 is independently LGPL3; outer MIT is not dependency clearance or CurseForge admission."
+conditions="Preserve own and mappings MIT copyright 2019-2026 GeyserMC. MinecraftAuth 5.0.0 is independently LGPL 3; outer MIT is not dependency clearance or CurseForge admission."
 evidence=[{url="https://api.modrinth.com/v2/project/wKkoqHrH",sha256="e1bed125914deb40f519bb368aa5d2ac4af32440049ebcc968adbdba9b035e83",at="2026-11-15T22:26:45.438982+00:00"}]
 [rules.9IxCUYAP]
 texts=["c4650aa76fd4b85b4bf715e874edd08466b7a7eebbcd12c27d6b4bb4ae8d256c","3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986","e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"]
@@ -117,7 +119,8 @@ text_provenance=[{url="https://api.modrinth.com/v2/version/avIdkeZp",member="LIC
 name="Hopo Better Mineshaft"
 license="LGPL-3.0-or-later and embedded author exception"
 credit="Hoponopono; https://modrinth.com/project/9IxCUYAP"
-conditions="Embedded author terms permit unmodified public modpack use and personal purposes. Preserve actual exception plus LGPL/GPL duties; current primary project lacks source URL. Generic homepage cannot satisfy Corresponding Source."
+conditions="Embedded author terms permit unmodified public modpack use and personal purposes. Preserve the actual exception plus LGPL/GPL duties. A generic homepage cannot satisfy Corresponding Source."
+note="Current primary project lacks a source URL."
 evidence=[{url="https://api.modrinth.com/v2/project/9IxCUYAP",sha256="3b3bce7cf3c7ade4845ad30bc30963020424f53ffd66ed52b9c9bb9a9347636c",at="2026-11-15T22:26:43.605218+00:00"}]
 [rules.Vebnzrzj]
 name="LuckPerms"
@@ -129,13 +132,15 @@ evidence=[{url="https://api.modrinth.com/v2/project/Vebnzrzj",sha256="f615dce1ce
 name="MOS - Moog's Ocean Structures"
 license="JAR LGPL3; exact-tag proprietary structure exclusion"
 credit="FinnDog; https://modrinth.com/project/ZKBkklMv"
-conditions="Matching1.1.0/1.1.1 source LICENSE excludes structure NBT as ARR and prohibits pack redistribution absent written permission. Binary/source equality not proved; reconcile unmodified whole-mod applicability rather than ignore or invent permission."
+conditions="Structure NBT is excluded as all rights reserved; pack redistribution requires written permission. Unmodified whole-mod applicability remains unresolved; do not ignore the exclusion or assume permission."
+note="Matching 1.1.0/1.1.1 source LICENSE contains the structure NBT exclusion and pack-redistribution prohibition. Binary/source equality is not proved."
 evidence=[{url="https://api.modrinth.com/v2/project/ZKBkklMv",sha256="dc3794878d90e30b88afdab5dd4d8689d64f080b5aa6b2f345784ab2d129f8b4",at="2026-11-15T22:26:44.528756+00:00"}]
 [rules.RJCLIx7k]
 name="MSS - Moog's Soaring Structures"
 license="Exact binary/tag LGPL3; current project GPL3-only"
 credit="FinnDog; https://modrinth.com/project/RJCLIx7k"
-conditions="Historical/current license discrepancy remains unresolved. Preserve exact-tag evidence; complete covered source/access required, not silent choice of stronger/current terms."
+conditions="Complete covered source/access is required; the historical/current license discrepancy remains unresolved. Do not silently substitute stronger/current terms."
+note="Preserve exact-tag evidence for the unresolved historical/current license discrepancy."
 evidence=[{url="https://api.modrinth.com/v2/project/RJCLIx7k",sha256="1149ccb5655dc7e810339140a9bcd866289b58dd72d99a0b00055cc6cc65aef7",at="2026-11-15T22:26:44.511561+00:00"}]
 [rules.1oUDhxuy]
 texts=["3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986","e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"]
@@ -143,13 +148,15 @@ text_provenance=[{url="https://www.gnu.org/licenses/gpl-3.0.txt",sha256="3972dc9
 name="Moog's Structure Lib"
 license="LGPL3"
 credit="FinnDog; https://modrinth.com/project/1oUDhxuy"
-conditions="Preserve embedded LGPL3 and GPL texts/notices, exact covered source and dependency duties. Captured tags do not bind selected3.4.2/3.2.0 builds."
+conditions="Preserve embedded LGPL 3 and GPL texts/notices, exact covered source and dependency duties."
+note="Captured tags do not bind selected 3.4.2/3.2.0 builds."
 evidence=[{url="https://api.modrinth.com/v2/project/1oUDhxuy",sha256="adf2e6108469d35080d909cec7a1936eeae07aed394748bf41a31ac89d7760c9",at="2026-11-15T22:26:43.601905+00:00"}]
 [rules.r0v8vy1s]
 name="Alternate Current"
 license="MIT"
 credit="Space Walker; https://modrinth.com/project/r0v8vy1s"
-conditions="Preserve copyright2022 Space Walker and complete MIT permission text. Own code has no source-delivery duty; matching1.9.0 version strings on the two lines are not binary identity."
+conditions="Preserve copyright 2022 Space Walker and complete MIT permission text. Own code has no source-delivery duty."
+note="Matching 1.9.0 version strings on the two lines are not binary identity."
 evidence=[{url="https://api.modrinth.com/v2/project/r0v8vy1s",sha256="aac2c13a401706323047ab2383696d67e3f289cabcc0406dcdc360cf4e0b8395",at="2026-11-15T22:26:45.235480+00:00"}]
 [rules.9s6osm5g]
 texts=["3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986","e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"]
@@ -163,7 +170,8 @@ evidence=[{url="https://api.modrinth.com/v2/project/9s6osm5g",sha256="037e9fbde0
 name="Collective"
 license="ARR; historical CC0 conflict"
 credit="Serilum; https://modrinth.com/project/e0M1UDsY"
-conditions="Author grants modpack use only while downloads remain hosted within CurseForge/Modrinth ecosystem. No GitHub/Actions grant established. Historical8.39 embeds CC0 while metadata says ARR; no retrospective waiver/revocation decision."
+conditions="Author grants modpack use only while downloads remain hosted within the CurseForge/Modrinth ecosystem. No GitHub/Actions grant is established."
+note="Historical 8.39 embeds CC0 while metadata says ARR; no retrospective waiver/revocation decision."
 evidence=[{url="https://api.modrinth.com/v2/project/e0M1UDsY",sha256="65d7ed057db9cc3db1aa1a3633d354cc2d27905b069ceeba532a72e217fc7988",at="2026-11-15T22:26:44.799792+00:00"}]
 [rules.ujZZZb4P]
 texts=["3d0941c68779f622e3423652f0c186bfae3bc5487dda3fe225d54b858417055b"]
@@ -171,7 +179,8 @@ text_provenance=[{url="https://raw.githubusercontent.com/lyuwenhan/minecraft-jav
 name="Creeper No Break"
 license="No embedded declaration; official MIT evidence"
 credit="Wenhan / lyuwenhan; https://modrinth.com/project/ujZZZb4P"
-conditions="Current official project and linked source LICENSE are MIT, copyright2026 lyuwenhan. Revision3a487949b476673a39928d36dc53a513fb5ed483 does not establish exact1.2.0 correspondence. Missing JAR label is not absence of permission."
+conditions="Preserve applicable MIT copyright and permission text; exact-version applicability remains unresolved."
+note="Current official project and linked source LICENSE are MIT, copyright 2026 lyuwenhan. Revision 3a487949b476673a39928d36dc53a513fb5ed483 does not establish exact 1.2.0 correspondence. Missing JAR label is not absence of permission."
 evidence=[{url="https://api.modrinth.com/v2/project/ujZZZb4P",sha256="975f940b84235cfe4279f4a38663f2074e208af7d445d03e5e1e492a584b6b7c",at="2026-11-15T22:26:45.491694+00:00"}]
 [rules.cl223EMc]
 texts=["471f8c825e19bd0b5e4953f0fb34cff817fe29b2b82e0db31b9c26802b7074fc"]
@@ -185,25 +194,28 @@ evidence=[{url="https://api.modrinth.com/v2/project/cl223EMc",sha256="ed26dba7fb
 name="Crops Love Rain"
 license="MIT"
 credit="ThePoultryMan; https://modrinth.com/project/cRci7UZp"
-conditions="Exact JAR/current project MIT; missing complete own copyright/permission text and exact-version applicability binding. Not a no-license determination."
+conditions="Preserve applicable MIT copyright and permission text. Complete own text and exact-version applicability remain unbound."
+note="Exact JAR/current project declares MIT; complete own copyright/permission text and exact-version applicability binding are missing. Not a no-license determination."
 evidence=[{url="https://api.modrinth.com/v2/project/cRci7UZp",sha256="399d59ea3e890942f96ab6b35603e9033134248d640aea3153ada458e8568b1a",at="2026-11-15T22:26:44.631803+00:00"}]
 [rules.rYocd2LE]
 name="Dungeons and Taverns Stronghold Overhaul"
 license="LicenseRef-All-Rights-Reserved"
 credit="Konci, MiziraGamez, NovaWostra; https://modrinth.com/project/rYocd2LE"
-conditions="Exact metadata ARR; no written redistribution grant in captured official project/version evidence. No assumption that hosting on a download site grants mirroring."
+conditions="All rights reserved; written redistribution permission remains unverified. Hosting on a download site does not itself grant mirroring permission."
+note="Exact metadata declares ARR; no written redistribution grant in captured official project/version evidence."
 evidence=[{url="https://api.modrinth.com/v2/project/rYocd2LE",sha256="8e28e9edb4e0ab68c159de245675bed13a9a5e7195df3f752ee0d1d8012676d2",at="2026-11-15T22:26:45.276582+00:00"}]
 [rules.3PvUBn3u]
 name="Epic Structures: Villages Standalone Edition"
 license="LicenseRef-Unknown / current ARR with positive modpack grant"
 credit="HardWater and ATi; https://modrinth.com/project/3PvUBn3u"
-conditions="Author says FEEL FREE TO ADD TO ANY MODPACK. Retain positive permission and modpack scope; not general standalone mirror permission. Exact1.0.0 applicability still conditional."
+conditions="Author says FEEL FREE TO ADD TO ANY MODPACK. Permission is scoped to modpack inclusion, not general standalone mirroring; exact-version applicability remains conditional."
+note="Exact 1.0.0 applicability is still conditional; retain the positive author permission and its modpack scope."
 evidence=[{url="https://api.modrinth.com/v2/project/3PvUBn3u",sha256="595c18ab11e2d2a4590908abdd9168211d4304a6c01692e701e067abb06705cc",at="2026-11-15T22:26:43.603676+00:00"}]
 [rules.P7dR8mSH]
 name="Fabric API"
 license="Apache-2.0"
 credit="FabricMC; https://modrinth.com/project/P7dR8mSH"
-conditions="Preserve complete Apache2 text/relevant notices/attribution and independent API-module duties. Apache has no general source-delivery duty; no dependent-component waiver."
+conditions="Preserve complete Apache 2.0 text/relevant notices/attribution and independent API-module duties. Apache has no general source-delivery duty; no dependent-component waiver."
 evidence=[{url="https://api.modrinth.com/v2/project/P7dR8mSH",sha256="4ae0681688bfbd5aeb8140cb15bfebd9aa4892880b8cd1b0e144fce1c2594133",at="2026-11-15T22:26:44.226293+00:00"}]
 [rules.uXXizFIs]
 texts=["68ce5c5cd4969030dbba6b6fc922af8e50cbe5494ed641737b9db9d7c43f8cb1"]
@@ -211,7 +223,8 @@ text_provenance=[{url="https://raw.githubusercontent.com/malte0811/FerriteCore/0
 name="FerriteCore"
 license="MIT"
 credit="malte0811; https://modrinth.com/project/uXXizFIs"
-conditions="Matching build-9.0.0 source0cef1f2add1f1329aa6e690e8e292acd625c5c6d supplies copyright/permission text absent in JAR. Include it; version-tag match is not reproducible-build proof."
+conditions="Include the complete MIT copyright and permission text supplied alongside the binary."
+note="Matching build-9.0.0 source 0cef1f2add1f1329aa6e690e8e292acd625c5c6d supplies copyright/permission text absent in JAR; version-tag match is not reproducible-build proof."
 evidence=[{url="https://api.modrinth.com/v2/project/uXXizFIs",sha256="104271a08d433f313d6c7b544dc0310cf0618862d8111c86242e901251e97075",at="2026-11-15T22:26:45.395005+00:00"}]
 [rules.yn9u3ypm]
 texts=["3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986","e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"]
@@ -220,7 +233,8 @@ source={status="unknown",basis="Matching source tags are candidates, not complet
 name="Universal Graves"
 license="LGPLv3"
 credit="Patbox; https://modrinth.com/project/yn9u3ypm"
-conditions="Preserve GPL/LGPL texts/notices and exact covered source/access. Matching source tags are candidates, not source-completeness or dependency-version clearance."
+conditions="Preserve GPL/LGPL texts/notices and exact covered source/access; source completeness and dependency-version clearance remain unverified."
+note="Matching source tags are candidates, not source-completeness or dependency-version clearance."
 evidence=[{url="https://api.modrinth.com/v2/project/yn9u3ypm",sha256="3a02ee3fbfb79ffbfa598ebd65e8b3567ce5156589c621d24c8a8e81c4b32634",at="2026-11-15T22:26:45.588839+00:00"}]
 [rules.ctV8T1ZK]
 texts=["fa44b6f28eb9a2ed2bc304356b73c0ba2040c934857158a204dc3af767b06ede"]
@@ -228,7 +242,8 @@ text_provenance=[{url="https://raw.githubusercontent.com/frandm16/JustEnoughBack
 name="Just Enough Backups (JEB)"
 license="MIT"
 credit="frandm16 / Fran Dorado; https://modrinth.com/project/ctV8T1ZK"
-conditions="Matching1.2.0.10/1.2.0.6 source-tag licenses supply full Fran Dorado copyright/permission absent from JAR. Nested/shaded dependencies retain independent duties."
+conditions="Include the full Fran Dorado copyright and MIT permission text. Nested/shaded dependencies retain independent duties."
+note="Matching 1.2.0.10/1.2.0.6 source-tag licenses supply full Fran Dorado copyright/permission absent from JAR."
 evidence=[{url="https://api.modrinth.com/v2/project/ctV8T1ZK",sha256="fad919abc549b2efc53f45d73d82385264817aaad650632b5ef0d63c7294881c",at="2026-11-15T22:26:44.756823+00:00"}]
 [rules.gvQqBUqZ]
 texts=["3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986","e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"]
@@ -237,7 +252,8 @@ source={status="unknown",basis="Exact source-tag candidates exist; complete Corr
 name="Lithium"
 license="LGPL-3.0-only"
 credit="JellySquid and 2No2Name; https://modrinth.com/project/gvQqBUqZ"
-conditions="Preserve GPL/LGPL texts/notices, exact covered source and replacement/relink rights as applicable. Source tags do not alone establish equivalent delivery or completeness."
+conditions="Preserve GPL/LGPL texts/notices, exact covered source and replacement/relink rights as applicable; equivalent source delivery and completeness remain unverified."
+note="Source tags do not alone establish equivalent delivery or completeness."
 evidence=[{url="https://api.modrinth.com/v2/project/gvQqBUqZ",sha256="5371dfa211ba3172c7c772cf0498026417235f3937ce51424f9e7eeec031ec81",at="2026-11-15T22:26:44.916929+00:00"}]
 [rules.hHVaPgFK]
 texts=["3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986","e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"]
@@ -260,7 +276,8 @@ evidence=[{url="https://api.modrinth.com/v2/project/xGdtZczs",sha256="7cec0f2e3d
 name="ServerCore"
 license="MIT"
 credit="Wesley1808; https://modrinth.com/project/4WWQxlQP"
-conditions="Own MIT declaration exists; complete copyright/permission text and exact-version applicability remain unbound. Nested obligations independent."
+conditions="Preserve complete applicable MIT copyright/permission text and independent nested obligations; complete text and exact-version applicability remain unbound."
+note="Own MIT declaration exists; complete copyright/permission text and exact-version applicability remain unbound."
 evidence=[{url="https://api.modrinth.com/v2/project/4WWQxlQP",sha256="f2f2cc5bf21f841c7fa1ff1d0d02d0d736def9dca2cf0aa5ac9b364b730b1cac",at="2026-11-15T22:26:43.600421+00:00"}]
 [rules.l6YH9Als]
 texts=["3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"]
@@ -268,7 +285,8 @@ text_provenance=[{url="https://www.gnu.org/licenses/gpl-3.0.txt",sha256="3972dc9
 name="spark"
 license="GPLv3"
 credit="Luck; https://modrinth.com/project/l6YH9Als"
-conditions="Preserve GPL text/notices and complete exact Corresponding Source. Captured generic v1.10 tag does not bind selected1.10.187/1.10.173."
+conditions="Preserve GPL text/notices and provide complete exact Corresponding Source."
+note="Captured generic v1.10 tag does not bind selected 1.10.187/1.10.173."
 evidence=[{url="https://api.modrinth.com/v2/project/l6YH9Als",sha256="954c0cbf538c055d047e119c5080207c145201bdd3d4cc196cffc95940f30a98",at="2026-11-15T22:26:45.006459+00:00"}]
 [rules.PFb7ZqK6]
 texts=["234b518d98a40671e14dae700dcb8b45eebb61f5a3d294201418e1d15b5166ce","992ed62dd3ee17d73ce6a4a5e02dd0fed9eb326bf386aa5304e6a512214df540"]
@@ -282,7 +300,8 @@ evidence=[{url="https://api.modrinth.com/v2/project/PFb7ZqK6",sha256="c89b4f1d6e
 name="Server-Side Waystones"
 license="MIT"
 credit="sylvxa; https://modrinth.com/project/BzV6ulv0"
-conditions="Preserve copyright2024 sylvxa and full MIT text. Nested Polymer components retain independent LGPL/source duties. Same1.3.2 string does not identify equal binaries across lines."
+conditions="Preserve copyright 2024 sylvxa and full MIT text. Nested Polymer components retain independent LGPL/source duties."
+note="Same 1.3.2 version string does not identify equal binaries across lines."
 evidence=[{url="https://api.modrinth.com/v2/project/BzV6ulv0",sha256="27d0fda3ecbb26769d1f523dc932800b5fb7f057e98eebcbd00d46fdfa7592e4",at="2026-11-15T22:26:43.908888+00:00"}]
 [rules.DjLobEOy]
 texts=["471f8c825e19bd0b5e4953f0fb34cff817fe29b2b82e0db31b9c26802b7074fc"]
@@ -290,13 +309,15 @@ text_provenance=[{url="https://api.modrinth.com/v2/version/vHZIKy6e",member="LIC
 name="Towns and Towers"
 license="Exact JAR CC-BY-NC-ND-4.0 with modpack exception; current CC-BY-NC-SA conflict"
 credit="Kubek, Biban_Auriu, Cristelknight999; https://modrinth.com/project/DjLobEOy"
-conditions="Linked credit and unchanged/config-only exception retains all CC-BY-NC-ND4 terms: https://creativecommons.org/licenses/by-nc-nd/4.0/ . Do not replace historical ND with current SA. NC account/monetization applicability unresolved."
+conditions="Linked credit and the unchanged/config-only exception retain all CC-BY-NC-ND 4.0 terms: https://creativecommons.org/licenses/by-nc-nd/4.0/ . NC account/monetization applicability remains unresolved."
+note="Do not replace historical ND with current SA."
 evidence=[{url="https://api.modrinth.com/v2/project/DjLobEOy",sha256="49f729f474b2df046f31d398dbb83cb0e7c0f5dd9ff2b36870432dd8538222e7",at="2026-11-15T22:26:43.838744+00:00"}]
 [rules.gqRXDo8B]
 name="Villager Names"
 license="ARR; historical CC0 conflict"
 credit="Serilum; https://modrinth.com/project/gqRXDo8B"
-conditions="Ecosystem-only author modpack permission is not a GitHub/Actions mirror grant. Historical8.6 contains complete CC0 despite ARR metadata; exact applicability/reconciliation unresolved."
+conditions="Ecosystem-only author modpack permission is not a GitHub/Actions mirror grant; exact applicability/reconciliation remains unresolved."
+note="Historical 8.6 contains complete CC0 despite ARR metadata."
 evidence=[{url="https://api.modrinth.com/v2/project/gqRXDo8B",sha256="402186205458f370305df335bd6eea4db2a990f58cb9f2493a85ec071f40b8cd",at="2026-11-15T22:26:44.844494+00:00"}]
 [rules.nq8iJtT5]
 name="Villagers Tasks"
