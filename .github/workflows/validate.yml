@@ -122,7 +122,6 @@ jobs:
     env:
       NATIVE_PROJECT: ch-native-${{ github.run_id }}-${{ github.run_attempt }}
       PYTHONDONTWRITEBYTECODE: "1"
-      TMPDIR: ${{ runner.temp }}
     steps:
       - name: Check out matching source
         id: source
@@ -146,6 +145,8 @@ jobs:
 
       - name: Build and validate all selected pins for ephemeral verification
         timeout-minutes: 15
+        env:
+          TMPDIR: ${{ runner.temp }}
         # No Actions artifact/cache bridge for uncleared JARs. Build and boot here.
         run: |
           make verify-archives
