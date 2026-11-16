@@ -17,6 +17,8 @@ import zipfile
 from unittest.mock import patch
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+import distribution
 
 
 def load_script(name: str):
@@ -242,6 +244,7 @@ class MrpackTests(unittest.TestCase):
             for directory in ("config", "squaremap")
             for path in (ROOT / directory).rglob("*") if path.is_file()
         }
+        self.overrides.update({"overrides/" + name: data for name, data in distribution.notice_members(ROOT).items()})
 
     def run_archive(self, index: dict, overrides: dict[str, bytes]) -> tuple[int, str]:
         with tempfile.TemporaryDirectory() as directory:

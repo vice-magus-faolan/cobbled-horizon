@@ -126,6 +126,8 @@ def validate_contract(index: dict, archive_files: dict[str, bytes], source_root:
                 relative = path.relative_to(source_root).as_posix()
                 if "overrides/" + relative not in expected_overrides:
                     errors.append(f"source config is not indexed: {relative}")
+    from distribution import notice_members
+    expected_overrides.update({"overrides/" + name: data for name, data in notice_members(source_root).items()})
     allowed = {"modrinth.index.json", *expected_overrides}
     allowed_directories = {"overrides/"}
     for path in expected_overrides:
