@@ -1,5 +1,5 @@
 PACKWIZ ?= packwiz
-MRPACK_INSTALL ?= mrpack-install
+
 # Public is the safe default; private preparation never grants upload authority.
 CHANNEL ?= github
 PACK_VERSION := $(shell python3 scripts/release_metadata.py --field version)
@@ -7,11 +7,11 @@ MINECRAFT_VERSION := $(shell python3 scripts/release_metadata.py --field minecra
 PACK_BASENAME := cobbled-horizon-$(PACK_VERSION)
 MRPACK := dist/$(PACK_BASENAME).mrpack
 CURSEFORGE := dist/$(PACK_BASENAME).zip
-SERVER := dist/$(PACK_BASENAME)-server.zip
+SERVER_DIR ?= build/server
 RELEASE_PLAN ?= release-plan.json
 RELEASE_TAG ?= v$(PACK_VERSION)
 
-.PHONY: validate test refresh distribution-check public-check check-release check-upload check-metadata export export-curseforge verify-archives release materialize clean
+.PHONY: validate test refresh distribution-check public-check check-release check-upload check-metadata export export-curseforge release materialize clean
 
 validate:
 	python3 scripts/permission_seed.py --check
@@ -44,12 +44,6 @@ check-metadata:
 	python3 scripts/validate_mrpack.py $(MRPACK) --minecraft $(MINECRAFT_VERSION)
 	cd dist && sha256sum --check $(PACK_BASENAME).mrpack.sha256
 
-# Ephemeral hosted verification ONLY. No binary upload consumes these outputs
-# without independently calling check-upload and public-check.
-verify-archives: export
-	$(PACKWIZ) curseforge export --side server -o $(CURSEFORGE)
-	python3 scripts/distribution.py verification-notices --archive $(CURSEFORGE)
-	python3 scripts/server_pack.py verify-build $(CURSEFORGE) $(SERVER) --mrpack $(MRPACK)
 
 export-curseforge: refresh validate distribution-check
 	mkdir -p dist
@@ -59,9 +53,11 @@ export-curseforge: refresh validate distribution-check
 
 # Run exports sequentially: both packwiz commands refresh the source index.
 release: export
+	@test -f "$(RELEASE_PLAN)" || python3 scripts/distribution.py release-plan --tag "$(RELEASE_TAG)" > "$(RELEASE_PLAN)"
 	$(MAKE) export-curseforge CHANNEL=$(CHANNEL)
-	python3 scripts/server_pack.py --channel $(CHANNEL) build $(CURSEFORGE) $(SERVER) --mrpack $(MRPACK)
-	cd dist && sha256sum $(PACK_BASENAME).mrpack $(PACK_BASENAME).zip $(PACK_BASENAME)-server.zip > $(PACK_BASENAME).sha256
+	rm -f $(MRPACK).sha256
+	cd dist && sha256sum $(PACK_BASENAME).mrpack $(PACK_BASENAME).zip > $(PACK_BASENAME).sha256
+	$(MAKE) check-release RELEASE_PLAN="$(RELEASE_PLAN)" RELEASE_TAG="$(RELEASE_TAG)"
 
 # Consume the same plan as artifact transfer and draft comparison. A validator
 # failure is fatal, never a reason to downgrade a full release to metadata.
@@ -76,13 +72,12 @@ check-release:
 check-upload: public-check
 	python3 scripts/validate_mrpack.py $(MRPACK) --minecraft $(MINECRAFT_VERSION)
 	python3 scripts/validate_curseforge.py $(CURSEFORGE) --channel github
-	python3 scripts/server_pack.py --channel github validate $(SERVER)
+
 	cd dist && sha256sum --check $(PACK_BASENAME).sha256
 
 materialize: export
-	$(MAKE) distribution-check CHANNEL=$(CHANNEL)
-	mkdir -p build
-	$(MRPACK_INSTALL) $(MRPACK) --server-dir build/server
+	mkdir -p $(dir $(SERVER_DIR))
+	python3 scripts/server_pack.py materialize $(MRPACK) $(SERVER_DIR)
 
 clean:
 	rm -rf build dist

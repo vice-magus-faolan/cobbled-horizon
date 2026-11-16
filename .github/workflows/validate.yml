@@ -81,7 +81,7 @@ jobs:
             echo 'cleared=true' >> "$GITHUB_OUTPUT"
           else
             echo 'cleared=false' >> "$GITHUB_OUTPUT"
-            echo '::notice::Both public ZIPs are withheld; validated no-JAR metadata remains eligible after native acceptance.'
+            echo '::notice::The public ZIP is withheld; validated no-JAR metadata remains eligible after native acceptance.'
           fi
           {
             echo 'paths<<RELEASE_ASSETS'
@@ -89,11 +89,10 @@ jobs:
             echo 'RELEASE_ASSETS'
           } >> "$GITHUB_OUTPUT"
 
-      - name: Export and validate all three pack archives
+      - name: Export and validate selected public archives
         if: steps.rights.outputs.cleared == 'true'
         run: |
-          make release CHANNEL=github
-          make check-upload
+          make release CHANNEL=github RELEASE_PLAN="$RUNNER_TEMP/release-plan.json"
           git diff --exit-code -- pack.toml index.toml
 
       - name: Upload validated selected release files
@@ -134,13 +133,13 @@ jobs:
       - name: Install pinned packwiz revision
         run: go install github.com/packwiz/packwiz@ef87d964f8cbd52b3b13ea42453ef322290e2b9e
 
-      - name: Build and validate all selected pins for ephemeral verification
+      - name: Export and validate mrpack for ephemeral verification
         timeout-minutes: 15
         env:
           TMPDIR: ${{ runner.temp }}
         # No Actions artifact/cache bridge for uncleared JARs. Build and boot here.
         run: |
-          make verify-archives
+          make export check-metadata
           git diff --exit-code -- pack.toml index.toml
 
       - name: Pull pinned Java 25 runtime
@@ -155,7 +154,7 @@ jobs:
           NATIVE_EVIDENCE: ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}
         run: |
           python3 scripts/native_acceptance.py run --project "$NATIVE_PROJECT" \
-            --archive "dist/cobbled-horizon-$PACK_VERSION-server.zip" \
+            --archive "dist/cobbled-horizon-$PACK_VERSION.mrpack" \
             --work "$NATIVE_WORK" --evidence "$NATIVE_EVIDENCE"
 
       - name: Remove and verify absence of owned resources

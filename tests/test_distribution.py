@@ -77,7 +77,7 @@ class DistributionTests(unittest.TestCase):
                 stream.write('[update.curseforge]\nproject-id = 1\nfile-id = 2\n')
             self.record["metafile_sha256"] = hashlib.sha256(self.metadata.read_bytes()).hexdigest()
             self.record["hosted"] = {"project-id": 1, "file-id": 2}
-            self.record["hosted_evidence"] = {"url": "https://example.invalid/owned.jar",
+            self.record["hosted_evidence"] = {"url": "https://www.curseforge.com/api/v1/mods/1/files/2/download",
                                                "sha256": hashlib.sha256(self.fixture.mod).hexdigest(),
                                                "sha512": self.record["sha512"], "at": "2026-11-16"}
             self.fixture.manifest["files"] = [{"projectID": 1, "fileID": 2, "required": True}]
@@ -120,7 +120,7 @@ class DistributionTests(unittest.TestCase):
             for name, data in self.fixture.files.items():
                 if name.startswith("overrides/") and not name.startswith("overrides/mods/"):
                     archive.writestr(name, data)
-        return self.root / "test.zip", self.root / "server.zip"
+        return self.root / "test.zip", self.root / "server"
 
     def test_exact_fixture_clearance_and_deterministic_full_notices(self):
         for channel in distribution.CHANNELS:
@@ -197,17 +197,16 @@ class DistributionTests(unittest.TestCase):
     def test_real_hosted_partition_and_complete_server(self):
         source, output = self.prepare_archives()
         distribution.clearance(self.root, "github")
-        with patch.object(server_pack.urllib.request, "urlopen", return_value=io.BytesIO(self.fixture.mod)) as download:
-            server_pack.build_archive(source, output, self.root, self.mrpack)
-        self.assertEqual(1, download.call_count)
+        with patch.object(server_pack.urllib.request, "urlopen", side_effect=[io.BytesIO(self.fixture.mod), io.BytesIO(self.override_bytes)]) as download:
+            server_pack.materialize(self.mrpack, output, self.root)
+        self.assertEqual(2, download.call_count)
         with zipfile.ZipFile(source) as archive:
             self.assertNotIn("overrides/mods/test.jar", archive.namelist())
-        with zipfile.ZipFile(output) as archive:
-            self.assertEqual(self.fixture.mod, archive.read("mods/test.jar"))
-            self.assertEqual(self.override_bytes, archive.read("mods/override.jar"))
-            self.assertEqual(b'{"enabled": true}', archive.read("config/test.json"))
-            self.assertEqual(self.text, archive.read("LICENSES/" + self.digest + ".txt"))
-        self.assertEqual([], server_pack.validate_archive(output, self.root))
+        self.assertEqual(self.fixture.mod, (output / "mods/test.jar").read_bytes())
+        self.assertEqual(self.override_bytes, (output / "mods/override.jar").read_bytes())
+        self.assertEqual(b'{"enabled": true}', (output / "config/test.json").read_bytes())
+        self.assertEqual(self.text, (output / "LICENSES" / (self.digest + ".txt")).read_bytes())
+        self.assertEqual([], server_pack.validate_directory(output, self.root))
         index, contents = validate_mrpack.read_index(self.mrpack)
         self.assertEqual([], validate_mrpack.validate_index(index, contents, "26.2", "fabric", self.root)[0])
         # JSON booleans/numbers must not compare equal to native reference IDs.
@@ -223,10 +222,17 @@ class DistributionTests(unittest.TestCase):
     def test_bad_hosted_download_preserves_previous_output(self):
         source, output = self.prepare_archives()
         output.write_bytes(b"previous artifact")
-        with patch.object(server_pack.urllib.request, "urlopen", return_value=io.BytesIO(b"wrong pin")):
-            with self.assertRaisesRegex(ValueError, "differs from selected pin"):
-                server_pack.build_archive(source, output, self.root, self.mrpack)
+        with patch.object(server_pack.urllib.request, "urlopen") as download:
+            with self.assertRaises(FileExistsError):
+                server_pack.materialize(self.mrpack, output, self.root)
+        download.assert_not_called()
         self.assertEqual(b"previous artifact", output.read_bytes())
+        output.unlink()
+        with patch.object(server_pack.urllib.request, "urlopen", side_effect=[io.BytesIO(b"x" * len(self.fixture.mod)), io.BytesIO(self.override_bytes)]):
+            with self.assertRaisesRegex(ValueError, "hash mismatch"):
+                server_pack.materialize(self.mrpack, output, self.root)
+        self.assertFalse(output.exists())
+        self.assertEqual([], list(self.root.glob(".materialize-*")))
 
     def test_hosted_evidence_must_bind_selected_download_hash(self):
         self.prepare_archives()
@@ -258,7 +264,7 @@ class DistributionTests(unittest.TestCase):
         self.assertNotIn(self.record["note"].encode(), notices["CREDITS.md"])
         self.assertIn(b"\n\nLicense/permission:", notices["CREDITS.md"])
 
-    def test_release_plan_selects_two_or_four_assets_and_only_active_blockers(self):
+    def test_release_plan_selects_two_or_three_assets_and_only_bundled_blockers(self):
         self.prepare_archives(hosted=False)
         self.record["channels"]["github"] = "conditional"
         self.record["note"] = "PRIVATE assessment must not appear in release notes"
@@ -273,7 +279,7 @@ class DistributionTests(unittest.TestCase):
         self.record["channels"]["github"] = "allowed"
         self.write_policy()
         full = distribution.release_plan(self.root, "v26.2.0.1.0")
-        self.assertEqual([basename + suffix for suffix in (".mrpack", ".zip", "-server.zip", ".sha256")], full["assets"])
+        self.assertEqual([basename + suffix for suffix in (".mrpack", ".zip", ".sha256")], full["assets"])
         self.assertEqual("full", full["mode"])
         with self.assertRaises(ValueError):
             distribution.release_plan(self.root, "v26.3.0.1.0")
@@ -299,6 +305,74 @@ class DistributionTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             distribution.release_plan(self.root)
 
+    def test_reference_unresolved_is_eligible_but_bundled_unresolved_withholds_zip(self):
+        self.prepare_archives()
+        self.record.update({"license": "ARR", "texts": [], "nested": "unknown", "pending": ["No binary redistribution grant"],
+                            "channels": {channel: "unknown" for channel in distribution.CHANNELS},
+                            "source": {"status": "unknown", "basis": "Not established"}})
+        self.write_policy()
+        self.assertEqual("full", distribution.release_plan(self.root)["mode"])
+        self.assertEqual(2, len(distribution.clearance(self.root, "github")))
+        self.override_record["channels"]["github"] = "unknown"
+        self.write_policy()
+        plan = distribution.release_plan(self.root)
+        self.assertEqual("metadata", plan["mode"])
+        self.assertIn(self.override_record["name"], plan["notes"])
+        self.assertNotIn(self.record["name"], plan["notes"])
+        # Without a verified mapping this is an unresolved bundled JAR, not
+        # platform-wide absence. Metadata remains eligible.
+        self.metadata.write_text(self.metadata.read_text().split('[update.curseforge]')[0])
+        self.record.pop("hosted")
+        self.record.pop("hosted_evidence")
+        self.record["metafile_sha256"] = hashlib.sha256(self.metadata.read_bytes()).hexdigest()
+        self.override_record["channels"]["github"] = "allowed"
+        self.write_policy()
+        self.assertEqual("metadata", distribution.release_plan(self.root)["mode"])
+
+    def test_reference_mapping_corruption_is_fatal_even_when_bundle_is_uncleared(self):
+        self.prepare_archives()
+        self.override_record["channels"]["github"] = "unknown"
+        original = copy.deepcopy(self.record)
+        original_metadata = self.metadata.read_bytes()
+        for defect in ("missing", "hash", "file", "native-file", "boolean", "source", "text"):
+            with self.subTest(defect=defect):
+                self.metadata.write_bytes(original_metadata)
+                self.record = copy.deepcopy(original)
+                if defect == "missing":
+                    self.record.pop("hosted_evidence")
+                elif defect == "hash":
+                    self.record["hosted_evidence"]["sha512"] = "0" * 128
+                elif defect == "file":
+                    self.record["hosted_evidence"]["url"] = "https://www.curseforge.com/api/v1/mods/1/files/3/download"
+                elif defect in {"native-file", "boolean"}:
+                    value = "3" if defect == "native-file" else "true"
+                    self.metadata.write_text(self.metadata.read_text().replace("file-id = 2", "file-id = " + value))
+                    self.record["hosted"]["file-id"] = 3 if defect == "native-file" else True
+                    self.record["metafile_sha256"] = hashlib.sha256(self.metadata.read_bytes()).hexdigest()
+                elif defect == "source":
+                    self.record["source"] = {"status": "equivalent-access", "basis": "missing exact identity"}
+                else:
+                    self.record["texts"] = ["0" * 64]
+                self.write_policy()
+                with self.assertRaises(ValueError):
+                    distribution.release_plan(self.root)
+
+    def test_selected_reference_partition_keeps_fabric_and_all_original_pins(self):
+        items = distribution.selected(ROOT)
+        references = validate_curseforge.hosted_files(ROOT)
+        targets = {"mods/" + mod["filename"] for mod, _ in items}
+        bundled = targets - references.keys()
+        self.assertEqual(32, len(targets))
+        self.assertEqual(5, len(references))
+        self.assertEqual(27, len(bundled))
+        self.assertFalse(bundled & references.keys())
+        self.assertEqual(targets, bundled | references.keys())
+        self.assertIn({"projectID": 306612, "fileID": 9295874, "required": True}, references.values())
+        for mod, record in items:
+            if "curseforge" in mod["update"]:
+                self.assertNotEqual("allowed", record["channels"]["github"])
+                self.assertEqual(mod["download"]["hash"], record["hosted_evidence"]["sha512"])
+
     def test_real_workflow_withholds_uncleared_uploads_and_accepts_metadata_tags(self):
         # Exercise the actual public boundary script, not an assertion of its text.
         import os
@@ -318,7 +392,7 @@ class DistributionTests(unittest.TestCase):
                 plan = json.loads((pathlib.Path(directory) / "release-plan.json").read_text())
                 self.assertEqual(2, len(plan["assets"]))
                 self.assertEqual(["dist/" + name for name in plan["assets"]], output.read_text().splitlines()[2:-1])
-                self.assertIn("public ZIPs are withheld", result.stdout)
+                self.assertIn("public ZIP is withheld", result.stdout)
 
     def test_curated_inventory_has_both_lines_and_inactive_prospective_record(self):
         inventory = distribution.records(ROOT)
@@ -333,6 +407,7 @@ class DistributionTests(unittest.TestCase):
     def test_uncleared_metadata_export_rejects_jars_and_private_members(self):
         self.prepare_archives()
         self.record["channels"]["github"] = "conditional"
+        self.override_record["channels"]["github"] = "conditional"
         self.write_policy()
         policy = (self.root / "distribution/permissions.toml").read_bytes()
         _, contents = validate_mrpack.read_index(self.mrpack)
@@ -358,27 +433,18 @@ class DistributionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "distribution not cleared"):
             distribution.clearance(self.root, "github")
 
-    def test_verification_build_materializes_uncleared_pins_without_public_bypass(self):
+    def test_materialize_downloads_uncleared_pins_without_public_bypass(self):
         source, output = self.prepare_archives()
-        self.record["channels"]["github"] = "conditional"
+        self.override_record["channels"]["github"] = "conditional"
         self.write_policy()
-        # Notices reflect the same unchanged source policy on both archive paths.
-        self.fixture.validate()
-        argv = ["server_pack.py", "verify-build", str(source), str(output), "--mrpack", str(self.mrpack)]
+        argv = ["server_pack.py", "materialize", str(self.mrpack), str(output)]
         with patch.object(server_pack, "ROOT", self.root), patch.object(sys, "argv", argv), \
-                patch.object(server_pack.urllib.request, "urlopen", return_value=io.BytesIO(self.fixture.mod)) as download:
+                patch.object(server_pack.urllib.request, "urlopen", side_effect=[io.BytesIO(self.fixture.mod), io.BytesIO(self.override_bytes)]) as download:
             self.assertEqual(0, server_pack.main())
-        self.assertEqual(1, download.call_count)
-        self.assertEqual([], server_pack.validate_archive(output, self.root))
-        previous = output.read_bytes()
-        for command in ("build", "validate"):
-            arguments = ([str(source), str(output), "--mrpack", str(self.mrpack)] if command == "build" else [str(output)])
-            with patch.object(server_pack, "ROOT", self.root), patch.object(sys, "argv", [
-                    "server_pack.py", "--channel", "github", command, *arguments]), \
-                    patch.object(server_pack.urllib.request, "urlopen") as download:
-                self.assertEqual(2, server_pack.main())
-            download.assert_not_called()
-            self.assertEqual(previous, output.read_bytes())
+        self.assertEqual(2, download.call_count)
+        self.assertEqual([], server_pack.validate_directory(output, self.root))
+        with self.assertRaisesRegex(ValueError, "distribution not cleared"):
+            distribution.clearance(self.root, "github")
 
     def test_channel_check_refuses_before_any_archive_or_network_effect(self):
         self.record["channels"]["github"] = "unknown"

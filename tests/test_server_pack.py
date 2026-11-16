@@ -1,156 +1,177 @@
-"""Synthetic payload regressions; real pinned archives are built and checked in CI."""
-
+"""Real mrpack preparation with controlled project-owned upstream downloads."""
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import pathlib
 import stat
 import unittest
 import warnings
 import zipfile
+from unittest.mock import patch
 
-import test_release
-from test_validation import ROOT, load_script, permission_seed
+import test_distribution
+from test_validation import ROOT, permission_seed
 
-server_pack = load_script("server_pack")
+server_pack = test_distribution.server_pack
 
 
 class ServerPackTests(unittest.TestCase):
-    def setUp(self) -> None:
-        # Reuse the existing CF producer fixture, not another manifest definition.
-        self.fixture = test_release.CurseForgeArchiveTests()
+    def setUp(self):
+        self.fixture = test_distribution.DistributionTests()
         self.fixture.setUp()
         self.addCleanup(self.fixture.doCleanups)
+        self.fixture.prepare_archives()
         self.root = self.fixture.root
+        self.source = self.fixture.mrpack
+        self.output = self.root / "server"
+        _, self.contents = test_distribution.validate_mrpack.read_index(self.source)
         (self.root / "squaremap").mkdir()
         (self.root / "squaremap/config.yml").write_bytes(b"enabled: true\n")
-        with (self.root / "index.toml").open("a") as index:
-            index.write('[[files]]\nfile = "squaremap/config.yml"\n')
-        self.fixture.files["overrides/squaremap/config.yml"] = b"enabled: true\n"
-        for relative in sorted(permission_seed.SEED_PATHS):
+        for relative in ("squaremap/config.yml", *sorted(permission_seed.SEED_PATHS)):
             target = self.root / relative
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes((ROOT / relative).read_bytes())
+            if relative in permission_seed.SEED_PATHS:
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes((ROOT / relative).read_bytes())
             with (self.root / "index.toml").open("a") as index:
                 index.write(f"[[files]]\nfile = {json.dumps(relative)}\n")
-            self.fixture.files["overrides/" + relative] = target.read_bytes()
-        self.assertEqual([], self.fixture.validate())
-        self.source = self.root / "test.zip"
-        self.output = self.root / "server.zip"
-        self.payload = {
-            name.removeprefix("overrides/"): data
-            for name, data in self.fixture.files.items()
-            if name.startswith("overrides/")
-        }
+            self.contents["overrides/" + relative] = target.read_bytes()
+        self.write_mrpack(self.contents)
+        self.payload = {name.removeprefix("overrides/"): data for name, data in self.contents.items() if name.startswith("overrides/")}
+        self.payload.update({"mods/test.jar": self.fixture.fixture.mod, "mods/override.jar": self.fixture.override_bytes})
 
-    def write_server(self, files: dict[str, bytes], duplicate: bool = False) -> None:
-        with zipfile.ZipFile(self.output, "w") as archive:
-            for name, contents in files.items():
-                archive.writestr(name, contents)
+    def write_mrpack(self, contents, duplicate=False, symlink=None):
+        with zipfile.ZipFile(self.source, "w") as archive:
+            for name, data in contents.items():
+                member = zipfile.ZipInfo(name)
+                member.external_attr = ((stat.S_IFLNK if name == symlink else stat.S_IFREG) | 0o644) << 16
+                archive.writestr(member, data)
             if duplicate:
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore", UserWarning)
-                    archive.writestr("mods/test.jar", self.fixture.mod)
+                    archive.writestr("modrinth.index.json", contents["modrinth.index.json"])
 
-    def test_build_has_exact_root_payload_and_preserves_input(self) -> None:
+    def materialize(self, destination=None):
+        with patch.object(server_pack.urllib.request, "urlopen", side_effect=[io.BytesIO(self.fixture.fixture.mod), io.BytesIO(self.fixture.override_bytes)]) as download:
+            server_pack.materialize(self.source, destination or self.output, self.root)
+        return download
+
+    def test_complete_root_payload_and_input_preservation(self):
         before = self.source.read_bytes()
-        server_pack.build_archive(self.source, self.output, self.root)
+        download = self.materialize()
+        self.assertEqual(2, download.call_count)
         self.assertEqual(before, self.source.read_bytes())
-        with zipfile.ZipFile(self.output) as archive:
-            self.assertEqual(set(self.payload), set(archive.namelist()))
-            self.assertEqual({"mods", "config", "squaremap"}, {
-                pathlib.PurePosixPath(name).parts[0] for name in archive.namelist()
-            })
-            for name, contents in self.payload.items():
-                self.assertEqual(hashlib.sha512(contents).digest(),
-                                 hashlib.sha512(archive.read(name)).digest())
-        self.assertEqual([], server_pack.validate_archive(self.output, self.root))
+        self.assertEqual(set(self.payload), {path.relative_to(self.output).as_posix() for path in self.output.rglob("*") if path.is_file()})
+        for name, data in self.payload.items():
+            self.assertEqual(data, (self.output / name).read_bytes())
+        self.assertEqual([], server_pack.validate_directory(self.output, self.root))
+        self.assertEqual([], list(self.root.glob(".materialize-*")))
 
-    def test_invalid_cf_is_rejected_before_output_is_opened(self) -> None:
-        for defect in ("missing", "modified", "extra", "duplicate", "manifest"):
+    def test_invalid_archive_is_rejected_before_download_or_destination(self):
+        for defect in ("missing", "modified", "extra", "duplicate", "symlink", "index", "traversal", "alias", "jar"):
             with self.subTest(defect=defect):
-                original = self.fixture.files.copy()
-                manifest = self.fixture.manifest.copy()
+                contents = self.contents.copy()
                 if defect == "missing":
-                    del self.fixture.files["overrides/mods/test.jar"]
+                    del contents["overrides/config/test.json"]
                 elif defect == "modified":
-                    self.fixture.files["overrides/config/test.json"] = b"changed"
+                    contents["overrides/config/test.json"] = b"changed"
                 elif defect == "extra":
-                    self.fixture.files["overrides/config/floodgate/key.pem"] = b"private"
-                elif defect == "manifest":
-                    self.fixture.manifest["files"] = [{"projectID": 1, "fileID": 2}]
-                self.fixture.validate(duplicate=defect == "duplicate")
-                self.output.write_bytes(b"previous artifact")
-                with self.assertRaises(ValueError):
-                    server_pack.build_archive(self.source, self.output, self.root)
-                self.assertEqual(b"previous artifact", self.output.read_bytes())
-                self.fixture.files = original
-                self.fixture.manifest = manifest
+                    contents["overrides/config/floodgate/key.pem"] = b"private"
+                elif defect == "index":
+                    index = json.loads(contents["modrinth.index.json"])
+                    index["files"].pop()
+                    contents["modrinth.index.json"] = json.dumps(index).encode()
+                elif defect in {"traversal", "alias", "jar"}:
+                    name = {"traversal": "../escape", "alias": "overrides/config//test.json", "jar": "overrides/mods/hidden.JAR"}[defect]
+                    contents[name] = b"bad"
+                self.write_mrpack(contents, duplicate=defect == "duplicate", symlink="overrides/config/test.json" if defect == "symlink" else None)
+                with patch.object(server_pack.urllib.request, "urlopen") as download:
+                    with self.assertRaises(ValueError):
+                        server_pack.materialize(self.source, self.output, self.root)
+                download.assert_not_called()
+                self.assertFalse(self.output.exists())
+                self.assertFalse((self.root / "escape").exists())
 
-    def test_missing_and_changed_root_files_are_rejected(self) -> None:
-        for name in self.payload:
-            for defect in ("missing", "modified"):
-                with self.subTest(name=name, defect=defect):
-                    files = self.payload.copy()
-                    if defect == "missing":
-                        del files[name]
-                    else:
-                        files[name] = b"changed"
-                    self.write_server(files)
-                    self.assertTrue(server_pack.validate_archive(self.output, self.root))
+    def test_missing_changed_and_private_root_files_are_rejected(self):
+        self.materialize()
+        for name, data in self.payload.items():
+            target = self.output / name
+            target.unlink()
+            self.assertTrue(server_pack.validate_directory(self.output, self.root), name)
+            target.write_bytes(b"changed")
+            self.assertTrue(server_pack.validate_directory(self.output, self.root), name)
+            target.write_bytes(data)
+        for name in ("world/level.dat", "logs/latest.log", "config/floodgate/key.pem", "mods/client.jar", "mods/luckperms/users.json", "server.jar"):
+            target = self.output / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(b"private")
+            self.assertIn("unexpected server entry: " + name, server_pack.validate_directory(self.output, self.root))
+            target.unlink()
+        self.assertEqual([], list(self.root.glob(".materialize-*")))
 
-    def test_wrappers_and_unexpected_private_runtime_paths_are_rejected(self) -> None:
-        for name in (
-            "manifest.json", "modlist.html", "overrides/mods/test.jar",
-            "server/mods/test.jar", "mods/staged.jar", "mods/client.jar",
-            "mods/luckperms/config.yml", "mods/luckperms/users.json",
-            "config/luckperms/users.json", "config/cobbled-horizon/extra.json",
-            "config/floodgate/key.pem", "logs/latest.log", "world/level.dat",
-            "server.jar", "../escape", "/absolute", "mods\\escape.jar",
-            "mods/../escape.jar", "mods//test.jar",
-        ):
-            with self.subTest(name=name):
-                self.write_server({**self.payload, name: b"unexpected"})
-                self.assertIn(f"unexpected archive entry: {name}",
-                              server_pack.validate_archive(self.output, self.root))
+    def test_fresh_destination_refuses_files_directories_and_symlinks_without_network(self):
+        for kind in ("file", "directory", "symlink"):
+            with self.subTest(kind=kind):
+                target = self.root / kind
+                if kind == "file":
+                    target.write_bytes(b"preserve")
+                elif kind == "directory":
+                    target.mkdir()
+                    (target / "canary").write_bytes(b"preserve")
+                else:
+                    target.symlink_to(self.root / "absent", target_is_directory=True)
+                with patch.object(server_pack.urllib.request, "urlopen") as download:
+                    with self.assertRaises(FileExistsError):
+                        server_pack.materialize(self.source, target, self.root)
+                download.assert_not_called()
+                if kind == "file":
+                    self.assertEqual(b"preserve", target.read_bytes())
+                elif kind == "directory":
+                    self.assertEqual(b"preserve", (target / "canary").read_bytes())
+                else:
+                    self.assertTrue(target.is_symlink())
 
-    def test_duplicate_root_entry_is_rejected(self) -> None:
-        self.write_server(self.payload, duplicate=True)
-        self.assertIn("archive contains duplicate paths",
-                      server_pack.validate_archive(self.output, self.root))
+    def test_download_hash_size_and_transport_failures_leave_no_folder(self):
+        for failure in ("hash", "size", "transport"):
+            with self.subTest(failure=failure):
+                responses = [io.BytesIO(b"x" * len(self.fixture.fixture.mod)), io.BytesIO(self.fixture.override_bytes)]
+                if failure == "size":
+                    responses[0] = io.BytesIO(b"short")
+                if failure == "transport":
+                    responses[1] = OSError("controlled failed download")
+                with patch.object(server_pack.urllib.request, "urlopen", side_effect=responses):
+                    with self.assertRaises((ValueError, OSError)):
+                        server_pack.materialize(self.source, self.output, self.root)
+                self.assertFalse(self.output.exists())
+                self.assertEqual([], list(self.root.glob(".materialize-*")))
 
-    def test_symlink_cannot_masquerade_as_expected_payload(self) -> None:
-        self.write_server({name: data for name, data in self.payload.items()
-                           if name != "mods/test.jar"})
-        with zipfile.ZipFile(self.output, "a") as archive:
-            link = zipfile.ZipInfo("mods/test.jar")
-            link.create_system = 3
-            link.external_attr = (stat.S_IFLNK | 0o777) << 16
-            archive.writestr(link, self.fixture.mod)
-        self.assertIn("unsafe archive entry type: mods/test.jar",
-                      server_pack.validate_archive(self.output, self.root))
+    def test_symlink_cannot_masquerade_as_payload_or_directory(self):
+        self.materialize()
+        target = self.output / "mods/test.jar"
+        target.unlink()
+        target.symlink_to(self.source)
+        self.assertIn("unsafe server entry type: mods/test.jar", server_pack.validate_directory(self.output, self.root))
+        self.assertTrue(server_pack.validate_directory(self.output / "mods/test.jar", self.root))
 
-    def test_source_side_and_unsafe_filename_are_rejected(self) -> None:
-        path = self.root / "mods/test.pw.toml"
+    def test_source_side_and_unsafe_filename_are_rejected(self):
+        path = self.fixture.metadata
         original = path.read_text()
-        for text in (original.replace('side = "server"', 'side = "client"'),
-                     original.replace('filename = "test.jar"', 'filename = "../escape.jar"')):
+        for text in (original.replace('side = "server"', 'side = "client"'), original.replace('filename = "test.jar"', 'filename = "../escape.jar"')):
             with self.subTest(text=text):
                 path.write_text(text)
-                with self.assertRaises(ValueError):
-                    server_pack.build_archive(self.source, self.output, self.root)
+                with patch.object(server_pack.urllib.request, "urlopen") as download:
+                    with self.assertRaises(ValueError):
+                        server_pack.materialize(self.source, self.output, self.root)
+                download.assert_not_called()
                 self.assertFalse(self.output.exists())
         path.write_text(original)
 
-    def test_malformed_input_and_same_output_path_do_not_destroy_input(self) -> None:
-        before = self.source.read_bytes()
-        with self.assertRaises(ValueError):
-            server_pack.build_archive(self.source, self.source, self.root)
-        self.assertEqual(before, self.source.read_bytes())
+    def test_malformed_input_does_not_create_folder_or_destroy_input(self):
         self.source.write_bytes(b"not a ZIP")
         with self.assertRaises(zipfile.BadZipFile):
-            server_pack.build_archive(self.source, self.output, self.root)
+            server_pack.materialize(self.source, self.output, self.root)
+        self.assertEqual(b"not a ZIP", self.source.read_bytes())
         self.assertFalse(self.output.exists())
 
 

@@ -210,14 +210,14 @@ class TaggedPublisherTests(unittest.TestCase):
         self.fixture.setUp()
         self.addCleanup(self.fixture.doCleanups)
         self.root = self.fixture.root
-        source, server = self.fixture.prepare_archives(hosted=False)
-        test_distribution.server_pack.build_archive(source, server, self.root, self.fixture.mrpack)
+        source, _ = self.fixture.prepare_archives(hosted=True)
+        self.fixture.record["channels"] = {channel: "unknown" for channel in self.fixture.record["channels"]}
+        self.fixture.write_policy()  # References never convey these uncleared bytes.
         self.dist = self.root / "dist"
         self.dist.mkdir()
         self.basename = "cobbled-horizon-26.2.0.1.0"
         self.tag = "v26.2.0.1.0"
-        self.archives = {".mrpack": self.fixture.mrpack.read_bytes(), ".zip": source.read_bytes(),
-                         "-server.zip": server.read_bytes()}
+        self.archives = {".mrpack": self.fixture.mrpack.read_bytes(), ".zip": source.read_bytes()}
         root = pathlib.Path(__file__).resolve().parents[1]
         shutil.copytree(root / "scripts", self.root / "scripts", ignore=shutil.ignore_patterns("__pycache__"))
         shutil.copyfile(root / "Makefile", self.root / "Makefile")
@@ -273,9 +273,9 @@ class TaggedPublisherTests(unittest.TestCase):
         transport.chmod(0o700)
 
     def stage(self, cleared: bool):
-        self.fixture.record["channels"]["github"] = "allowed" if cleared else "conditional"
+        self.fixture.override_record["channels"]["github"] = "allowed" if cleared else "conditional"
         self.fixture.write_policy()
-        suffixes = (".mrpack", ".zip", "-server.zip") if cleared else (".mrpack",)
+        suffixes = (".mrpack", ".zip") if cleared else (".mrpack",)
         for suffix in suffixes:
             (self.dist / (self.basename + suffix)).write_bytes(self.archives[suffix])
         self.checksum = self.basename + (".sha256" if cleared else ".mrpack.sha256")
@@ -283,8 +283,8 @@ class TaggedPublisherTests(unittest.TestCase):
 
     def rehash(self):
         names = sorted(path.name for path in self.dist.iterdir() if path.suffix in {".mrpack", ".zip"})
-        # Contract order is mrpack, CurseForge, server (not lexical sorting).
-        names.sort(key=lambda name: (not name.endswith(".mrpack"), name.endswith("-server.zip")))
+        # Contract order is mrpack, CurseForge (not lexical sorting).
+        names.sort(key=lambda name: not name.endswith(".mrpack"))
         (self.dist / self.checksum).write_text("".join(
             hashlib.sha256((self.dist / name).read_bytes()).hexdigest() + "  " + name + "\n" for name in names))
 
@@ -315,14 +315,14 @@ class TaggedPublisherTests(unittest.TestCase):
                     state = json.loads(case.provider.read_text())
                     self.assertFalse(state["isDraft"])
                     expected = [case.basename + suffix for suffix in
-                                ((".mrpack", ".zip", "-server.zip", ".sha256") if cleared else (".mrpack", ".mrpack.sha256"))]
+                                ((".mrpack", ".zip", ".sha256") if cleared else (".mrpack", ".mrpack.sha256"))]
                     self.assertEqual(sorted(expected), sorted(item["name"] for item in state["assets"]))
                     self.assertTrue(all(item["size"] > 0 for item in state["assets"]))
                     self.assertIn("PASS: metadata-only .mrpack", result.stdout)
-                    self.assertEqual(cleared, "PASS: complete server ZIP membership" in result.stdout)
+                    self.assertEqual(cleared, "PASS: CurseForge-format ZIP" in result.stdout)
                     if not cleared:
-                        self.assertIn(case.fixture.record["name"], state["notes"])
-                        self.assertIn("ZIPs are withheld", state["notes"])
+                        self.assertIn(case.fixture.override_record["name"], state["notes"])
+                        self.assertIn("ZIP is withheld", state["notes"])
                     previous = case.provider.read_bytes()
                     prior_calls = len(calls)
                     result, calls = case.publish()
@@ -367,9 +367,9 @@ class TaggedPublisherTests(unittest.TestCase):
                 self.tag = "v26.2.0.1.0"
         self.assertEqual(original, (self.root / "distribution/permissions.toml").read_bytes())
 
-    def test_both_zip_validators_and_no_jar_metadata_are_enforced_before_upload(self):
+    def test_primary_zip_and_no_jar_metadata_are_validated_before_upload(self):
         self.stage(True)
-        for suffix in (".mrpack", ".zip", "-server.zip"):
+        for suffix in (".mrpack", ".zip"):
             with self.subTest(suffix=suffix):
                 path = self.dist / (self.basename + suffix)
                 original = path.read_bytes()
@@ -382,6 +382,17 @@ class TaggedPublisherTests(unittest.TestCase):
                 path.write_bytes(original)
         self.rehash()
 
+    def test_old_four_asset_draft_stays_unpublished_and_is_not_deleted(self):
+        self.stage(True)
+        retired = self.basename + "-server.zip"
+        self.provider.write_text(json.dumps({"isDraft": True, "assets": [{"name": retired, "size": 100}]}))
+        result, calls = self.publish()
+        self.assertNotEqual(0, result.returncode, result.stdout + result.stderr)
+        state = json.loads(self.provider.read_text())
+        self.assertTrue(state["isDraft"])
+        self.assertIn(retired, [item["name"] for item in state["assets"]])
+        self.assertFalse(any(call[1] in {"edit", "delete"} for call in calls))
+
     def test_both_modes_recover_existing_and_partially_uploaded_drafts(self):
         for cleared in (False, True):
             for partial in (False, True):
@@ -392,7 +403,7 @@ class TaggedPublisherTests(unittest.TestCase):
                         case.stage(cleared)
                         case.provider.write_text(json.dumps({"isDraft": True, "assets": []}))
                         expected = [case.basename + suffix for suffix in
-                                    ((".mrpack", ".zip", "-server.zip", ".sha256") if cleared else (".mrpack", ".mrpack.sha256"))]
+                                    ((".mrpack", ".zip", ".sha256") if cleared else (".mrpack", ".mrpack.sha256"))]
                         prior_calls = 0
                         if partial:
                             result, calls = case.publish(PROVIDER_UPLOAD_FAIL="1")

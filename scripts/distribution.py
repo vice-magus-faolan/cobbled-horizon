@@ -45,6 +45,12 @@ def check_record(record: dict) -> None:
     require(isinstance(record.get("texts"), list) and isinstance(record.get("pending"), list), "permission record requires texts and pending obligations")
     require(record.get("nested") in {"verified", "unknown"}, "nested/shaded coverage must be explicit")
     require(isinstance(record.get("source"), dict), "permission record requires source disposition")
+    source = record["source"]
+    require(source.get("status") in {"unknown", "not-required", "equivalent-access"}, "invalid source disposition")
+    require(isinstance(source.get("basis"), str) and bool(source["basis"]), "source disposition needs a basis")
+    require(all(isinstance(item, str) and item for item in record["pending"]), "invalid pending obligation")
+    if source["status"] != "unknown":
+        check_source(source)
 
 
 def records(root: pathlib.Path) -> list[dict]:
@@ -76,6 +82,8 @@ def selected(root: pathlib.Path) -> list[tuple[dict, dict]]:
     by_identity = {(item["project"], item["version"], item["sha512"]): item for item in inventory}
     line = load(root / "pack.toml")["versions"]["minecraft"]
     result = []
+    targets = set()
+    references = set()
     for entry in load(root / "index.toml")["files"]:
         if not entry.get("metafile"):
             continue
@@ -90,6 +98,19 @@ def selected(root: pathlib.Path) -> list[tuple[dict, dict]]:
         require(mod["side"] == record["side"] and mod["download"]["hash-format"] == "sha512" and hashlib.sha256((root / relative).read_bytes()).hexdigest() == record["metafile_sha256"], f"stale permission download identity: {relative}")
         hosted = mod.get("update", {}).get("curseforge")
         require(hosted == record.get("hosted"), f"unverified hosted mapping: {relative}")
+        filename = mod["filename"]
+        require(isinstance(filename, str) and bool(filename) and
+                not any(char in filename for char in "/\\:\x00") and filename not in {".", ".."},
+                f"unsafe mod filename: {relative}")
+        require(filename not in targets, f"duplicate selected target: {filename}")
+        targets.add(filename)
+        if hosted is not None:
+            require(isinstance(hosted, dict) and set(hosted) == {"project-id", "file-id"} and
+                    all(type(value) is int and value > 0 for value in hosted.values()), "invalid native CurseForge mapping")
+            reference = (hosted["project-id"], hosted["file-id"])
+            require(reference not in references, "duplicate native CurseForge reference")
+            references.add(reference)
+            check_hosted_evidence(mod, record)
         result.append((mod, record))
     require(bool(result), "no selected distribution components")
     return result
@@ -107,28 +128,29 @@ def check_source(source: dict) -> None:
         require(bool(source.get("directions")) and bool(source.get("verified_at")), "source requires equivalent-access directions and availability verification")
 
 
+def check_hosted_evidence(mod: dict, record: dict) -> None:
+    evidence = record.get("hosted_evidence")
+    require(isinstance(evidence, dict), f"missing structured hosted mapping evidence: {record['name']}")
+    hosted = mod["update"]["curseforge"]
+    url = f"https://www.curseforge.com/api/v1/mods/{hosted['project-id']}/files/{hosted['file-id']}/download"
+    require(evidence.get("url") == url and evidence.get("at") and
+            re.fullmatch(r"[0-9a-f]{64}", evidence.get("sha256", "")) and
+            evidence.get("sha512") == mod["download"]["hash"],
+            f"hosted mapping evidence must bind selected download SHA-512: {record['name']}")
+
+
 def uncleared_components(items: list[tuple[dict, dict]], channel: str) -> list[dict]:
     """Separate valid unresolved obligations from corrupt policy/identity evidence.
 
-    Never catch a validator error to choose metadata-only publication. Even an
-    uncleared component must carry well-formed, byte-bound evidence and texts.
+    Validate every component, then assess redistribution only for conveyed JARs.
+    References do not convey binaries, but never bypass identity/evidence checks.
     """
     require(channel in CHANNELS, f"unknown distribution channel: {channel}")
     failures = []
     for mod, record in items:
         source = record["source"]
-        require(source.get("status") in {"unknown", "not-required", "equivalent-access"}, "invalid source disposition")
-        require(isinstance(source.get("basis"), str) and bool(source["basis"]), "source disposition needs a basis")
-        require(all(isinstance(item, str) and item for item in record["pending"]), "invalid pending obligation")
-        if source["status"] != "unknown":
-            check_source(source)
         if "curseforge" in mod.get("update", {}):
-            evidence = record.get("hosted_evidence")
-            require(isinstance(evidence, dict), f"missing structured hosted mapping evidence: {record['name']}")
-            require(https(evidence.get("url")) and evidence.get("at") and
-                    re.fullmatch(r"[0-9a-f]{64}", evidence.get("sha256", "")) and
-                    evidence.get("sha512") == mod["download"]["hash"],
-                    f"hosted mapping evidence must bind selected download SHA-512: {record['name']}")
+            continue  # Native CF exporter conveys this exact verified reference.
         unresolved = (record["channels"][channel] != "allowed" or record["pending"] or
                       record["nested"] != "verified" or source["status"] == "unknown" or not record["texts"])
         if unresolved or (channel == "curseforge" and record.get("platform") != "verified"):
@@ -150,15 +172,16 @@ def release_plan(root: pathlib.Path, tag: str | None = None) -> dict:
     identity = metadata(load(root / "pack.toml"), tag)
     blockers = uncleared_components(selected(root), "github")
     basename = identity["basename"]
-    suffixes = (".mrpack", ".mrpack.sha256") if blockers else (".mrpack", ".zip", "-server.zip", ".sha256")
-    notes = "Exact-pin distribution obligations are fulfilled for this release's selected assets."
+    suffixes = (".mrpack", ".mrpack.sha256") if blockers else (".mrpack", ".zip", ".sha256")
+    notes = ("Distribution obligations are fulfilled for the JARs actually bundled in the CurseForge ZIP. "
+             "Exact hosted references do not grant binary redistribution rights. No server ZIP is published.")
     if blockers:
         names = sorted(f"{item['name']} ({item['project']}/{item['version']})" for item in blockers)
-        notes = ("Metadata-only release: both the CurseForge and DatHost server ZIPs are withheld because "
-                 "binary redistribution obligations remain unresolved for these selected mods:\n\n" +
+        notes = ("Metadata-only release: the CurseForge ZIP is withheld because "
+                 "binary redistribution obligations remain unresolved for these bundled mods:\n\n" +
                  "\n".join("- " + name for name in names) +
                  "\n\nThe no-JAR .mrpack contains upstream download references, configuration and recipient notices; "
-                 "it does not grant redistribution permission for the referenced binaries.")
+                 "it does not grant redistribution permission for the referenced binaries. No server ZIP is published.")
     return {"schema": 1, "tag": identity["tag"], "mode": "metadata" if blockers else "full",
             "assets": [basename + suffix for suffix in suffixes], "checksum": basename + suffixes[-1],
             "policy_sha256": hashlib.sha256((root / "distribution/permissions.toml").read_bytes()).hexdigest(),
