@@ -8,8 +8,10 @@ PACK_BASENAME := cobbled-horizon-$(PACK_VERSION)
 MRPACK := dist/$(PACK_BASENAME).mrpack
 CURSEFORGE := dist/$(PACK_BASENAME).zip
 SERVER := dist/$(PACK_BASENAME)-server.zip
+RELEASE_PLAN ?= release-plan.json
+RELEASE_TAG ?= v$(PACK_VERSION)
 
-.PHONY: validate test refresh distribution-check public-check check-upload check-metadata export export-curseforge verify-archives release materialize clean
+.PHONY: validate test refresh distribution-check public-check check-release check-upload check-metadata export export-curseforge verify-archives release materialize clean
 
 validate:
 	python3 scripts/permission_seed.py --check
@@ -60,6 +62,16 @@ release: export
 	$(MAKE) export-curseforge CHANNEL=$(CHANNEL)
 	python3 scripts/server_pack.py --channel $(CHANNEL) build $(CURSEFORGE) $(SERVER) --mrpack $(MRPACK)
 	cd dist && sha256sum $(PACK_BASENAME).mrpack $(PACK_BASENAME).zip $(PACK_BASENAME)-server.zip > $(PACK_BASENAME).sha256
+
+# Consume the same plan as artifact transfer and draft comparison. A validator
+# failure is fatal, never a reason to downgrade a full release to metadata.
+check-release:
+	python3 scripts/distribution.py verify-release --plan "$(RELEASE_PLAN)" --tag "$(RELEASE_TAG)"
+	@if [ "$$(jq -r .mode "$(RELEASE_PLAN)")" = full ]; then \
+		$(MAKE) check-upload; \
+	else \
+		$(MAKE) check-metadata; \
+	fi
 
 check-upload: public-check
 	python3 scripts/validate_mrpack.py $(MRPACK) --minecraft $(MINECRAFT_VERSION)

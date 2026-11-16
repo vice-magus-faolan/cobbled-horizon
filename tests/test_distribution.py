@@ -258,24 +258,67 @@ class DistributionTests(unittest.TestCase):
         self.assertNotIn(self.record["note"].encode(), notices["CREDITS.md"])
         self.assertIn(b"\n\nLicense/permission:", notices["CREDITS.md"])
 
-    def test_real_workflow_withholds_uncleared_uploads_and_rejects_tags(self):
+    def test_release_plan_selects_two_or_four_assets_and_only_active_blockers(self):
+        self.prepare_archives(hosted=False)
+        self.record["channels"]["github"] = "conditional"
+        self.record["note"] = "PRIVATE assessment must not appear in release notes"
+        self.write_policy()
+        metadata = distribution.release_plan(self.root, "v26.2.0.1.0")
+        basename = "cobbled-horizon-26.2.0.1.0"
+        self.assertEqual([basename + ".mrpack", basename + ".mrpack.sha256"], metadata["assets"])
+        self.assertEqual("metadata", metadata["mode"])
+        self.assertIn(self.record["name"], metadata["notes"])
+        self.assertNotIn(self.override_record["name"], metadata["notes"])
+        self.assertNotIn(self.record["note"], metadata["notes"])
+        self.record["channels"]["github"] = "allowed"
+        self.write_policy()
+        full = distribution.release_plan(self.root, "v26.2.0.1.0")
+        self.assertEqual([basename + suffix for suffix in (".mrpack", ".zip", "-server.zip", ".sha256")], full["assets"])
+        self.assertEqual("full", full["mode"])
+        with self.assertRaises(ValueError):
+            distribution.release_plan(self.root, "v26.3.0.1.0")
+
+    def test_release_plan_never_converts_invalid_input_to_metadata(self):
+        self.prepare_archives(hosted=False)
+        self.record["channels"]["github"] = "conditional"
+        original = copy.deepcopy(self.record)
+        for variant in ({"channels": {"github": "typo"}}, {"source": {"status": "typo"}},
+                        {"pending": "not a list"}, {"metafile_sha256": "0" * 64},
+                        {"source": {"status": "equivalent-access", "basis": "missing binding"}}):
+            with self.subTest(variant=variant):
+                self.record = {**original, **variant}
+                self.write_policy()
+                with self.assertRaises((ValueError, KeyError, TypeError)):
+                    distribution.release_plan(self.root)
+        self.record = original
+        self.write_policy()
+        (self.root / "distribution/texts" / (self.digest + ".txt")).write_bytes(b"corrupt")
+        with self.assertRaises(ValueError):
+            distribution.release_plan(self.root)
+        (self.root / "distribution/permissions.toml").write_text("not valid TOML!")
+        with self.assertRaises(ValueError):
+            distribution.release_plan(self.root)
+
+    def test_real_workflow_withholds_uncleared_uploads_and_accepts_metadata_tags(self):
         # Exercise the actual public boundary script, not an assertion of its text.
         import os
         import tempfile
-        import textwrap
-        workflow = (ROOT / ".github/workflows/validate.yml").read_text()
-        block = workflow.split("      - name: Evaluate public distribution clearance\n", 1)[1]
-        script = textwrap.dedent(block.split("run: |\n", 1)[1].split("\n      - name:", 1)[0])
+        script = test_release.workflow_script("Evaluate public distribution clearance")
         for ref_type in ("branch", "tag"):
             with self.subTest(ref_type=ref_type), tempfile.TemporaryDirectory() as directory:
                 output = pathlib.Path(directory) / "outputs"
                 output.touch()
                 result = subprocess.run(["bash", "--noprofile", "--norc", "-e", "-o", "pipefail", "-c", script], cwd=ROOT,
-                                        env={"PATH": os.environ["PATH"], "PYTHONDONTWRITEBYTECODE": "1", "GITHUB_REF_TYPE": ref_type, "GITHUB_OUTPUT": str(output)},
+                                        env={"PATH": os.environ["PATH"], "PYTHONDONTWRITEBYTECODE": "1", "GITHUB_REF_TYPE": ref_type,
+                                             "GITHUB_REF_NAME": "v" + distribution.load(ROOT / "pack.toml")["version"],
+                                             "RUNNER_TEMP": directory, "GITHUB_OUTPUT": str(output)},
                                         capture_output=True, text=True, timeout=30)
-                self.assertEqual("cleared=false\n", output.read_text())
-                self.assertEqual(ref_type == "branch", result.returncode == 0, result.stdout + result.stderr)
-                self.assertIn("public archives are withheld", result.stdout)
+                self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+                self.assertTrue(output.read_text().startswith("cleared=false\n"))
+                plan = json.loads((pathlib.Path(directory) / "release-plan.json").read_text())
+                self.assertEqual(2, len(plan["assets"]))
+                self.assertEqual(["dist/" + name for name in plan["assets"]], output.read_text().splitlines()[2:-1])
+                self.assertIn("public ZIPs are withheld", result.stdout)
 
     def test_curated_inventory_has_both_lines_and_inactive_prospective_record(self):
         inventory = distribution.records(ROOT)

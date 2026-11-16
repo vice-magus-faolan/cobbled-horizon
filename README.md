@@ -167,7 +167,14 @@ Do not assume a provider imports `.mrpack` files. Build and test on the designat
 
 Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. This candidate's source version is `26.3.0.1.4`, for Minecraft `26.3` and pack revision `0.1.4`. A matching tag would be `v26.3.0.1.4`; the numeric version is not a production approval. Do not tag this development candidate until separately approved for release.
 
-To build and validate all three release archives without starting Minecraft, run:
+A valid matching tag selects one of two asset sets from the frozen exact-pin distribution policy:
+
+- **Uncleared binaries:** exactly the validated no-JAR `.mrpack` and its `.mrpack.sha256`. Both ZIPs are withheld; release notes identify the actual selected mods with unresolved obligations. Verify with `sha256sum --check cobbled-horizon-26.3.0.1.4.mrpack.sha256`.
+- **Cleared binaries:** exactly the three archives and combined `.sha256` listed below, including both the primary CurseForge ZIP and the complete DatHost server ZIP. The metadata-only checksum is not a fifth release asset.
+
+Malformed policy, stale identity, corrupt/missing required texts, invalid archives and checksum errors are fatal, not a metadata-only fallback. Neither mode bypasses native first-install/restart acceptance or separate release approval.
+
+Once public obligations are fulfilled, build and validate all three release archives without starting Minecraft:
 
 ```bash
 make test
@@ -194,9 +201,9 @@ git tag -a v26.3.0.1.4 -m "Cobbled Horizon v26.3.0.1.4"
 git push origin v26.3.0.1.4
 ```
 
-GitHub Actions checks source/schema, versions, tests and the index independently of unresolved distribution rights. The `validate` job uploads a separately validated no-JAR `.mrpack` and its metadata-only checksum. On ordinary PR/branch runs, `native-acceptance` builds and validates the real all-pin CurseForge and complete server ZIPs, then boots and restarts that server inside its own ephemeral hosted job. It does not transfer uncleared JARs through artifacts or caches; only bounded allowlisted runtime evidence leaves that job. Public binary artifacts and release publication still require exact-pin public clearance. Uncleared tags fail before release publication. Publishing uses the built-in `GITHUB_TOKEN`; this workflow uploads to GitHub only and grants no CurseForge moderation approval.
+GitHub Actions checks source/schema, versions, tests and the index independently of unresolved distribution rights. The `validate` job uploads the selected validated asset set: metadata/checksum while binaries are uncleared, or all three archives/combined checksum when cleared. On PR, branch and tag runs, `native-acceptance` builds and validates the real all-pin CurseForge and complete server ZIPs, then boots and restarts that server inside its own ephemeral hosted job. It does not transfer uncleared JARs through artifacts or caches; only bounded allowlisted runtime evidence leaves that job. Both tag modes require successful native acceptance; public binary transfer additionally requires exact-pin public clearance. Publishing uses the built-in `GITHUB_TOKEN`; this workflow uploads to GitHub only and grants no CurseForge moderation approval.
 
-The workflow revalidates public rights and complete archives, verifies checksums and the exact four nonempty files, uploads into a draft, and publishes only after the complete nonempty asset set is confirmed. If an upload fails, rerun the failed job to complete the draft. A rerun refuses to replace assets on an already published release. Use a new pack version and tag for a corrected release. Cleared branch, pull request and manual runs upload artifacts but do not create releases.
+The workflow uses one asset manifest from `scripts/distribution.py release-plan`. The publish job reevaluates the frozen policy and exact tag, then `make check-release` validates the same selected nonempty files and exact checksum membership. Full mode must pass `make check-upload` before any ZIP upload; metadata mode passes `make check-metadata`. Uploads go into a draft, which becomes public only after its complete nonempty asset set matches that manifest. Unexpected draft assets are not deleted automatically. If an upload fails, rerun the failed job to complete the draft. A rerun refuses to replace assets on an already published release. Use a new pack version and tag for a corrected release. Branch, pull request and manual runs upload eligible artifacts but do not create releases.
 
 Release automation also requires the hosted native first-install/restart checks described in [`docs/acceptance-tests.md`](docs/acceptance-tests.md#automated-gates). A green job is not Java/Bedrock client, gameplay, density, backup-restore or production certification; complete the remaining designated-host acceptance tests before production. See [`docs/version-policy.md`](docs/version-policy.md) for the update procedure.
 

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import pathlib
 import re
 import tomllib
@@ -106,18 +107,21 @@ def check_source(source: dict) -> None:
         require(bool(source.get("directions")) and bool(source.get("verified_at")), "source requires equivalent-access directions and availability verification")
 
 
-def clearance(root: pathlib.Path, channel: str) -> list[tuple[dict, dict]]:
+def uncleared_components(items: list[tuple[dict, dict]], channel: str) -> list[dict]:
+    """Separate valid unresolved obligations from corrupt policy/identity evidence.
+
+    Never catch a validator error to choose metadata-only publication. Even an
+    uncleared component must carry well-formed, byte-bound evidence and texts.
+    """
     require(channel in CHANNELS, f"unknown distribution channel: {channel}")
-    items = selected(root)
     failures = []
     for mod, record in items:
-        if record["channels"][channel] != "allowed" or record["pending"] or record["nested"] != "verified":
-            failures.append(f"{record['name']} {record['version']}: {record['channels'][channel]}; {record['conditions']}")
-            continue
-        check_source(record["source"])
-        require(record["texts"], f"required full notices missing: {record['name']}")
-        if channel == "curseforge":
-            require(record.get("platform") == "verified", f"CurseForge platform eligibility unresolved: {record['name']}")
+        source = record["source"]
+        require(source.get("status") in {"unknown", "not-required", "equivalent-access"}, "invalid source disposition")
+        require(isinstance(source.get("basis"), str) and bool(source["basis"]), "source disposition needs a basis")
+        require(all(isinstance(item, str) and item for item in record["pending"]), "invalid pending obligation")
+        if source["status"] != "unknown":
+            check_source(source)
         if "curseforge" in mod.get("update", {}):
             evidence = record.get("hosted_evidence")
             require(isinstance(evidence, dict), f"missing structured hosted mapping evidence: {record['name']}")
@@ -125,8 +129,59 @@ def clearance(root: pathlib.Path, channel: str) -> list[tuple[dict, dict]]:
                     re.fullmatch(r"[0-9a-f]{64}", evidence.get("sha256", "")) and
                     evidence.get("sha512") == mod["download"]["hash"],
                     f"hosted mapping evidence must bind selected download SHA-512: {record['name']}")
-    require(not failures, "distribution not cleared for " + channel + ":\n" + "\n".join(failures))
+        unresolved = (record["channels"][channel] != "allowed" or record["pending"] or
+                      record["nested"] != "verified" or source["status"] == "unknown" or not record["texts"])
+        if unresolved or (channel == "curseforge" and record.get("platform") != "verified"):
+            failures.append(record)
+    return failures
+
+
+def clearance(root: pathlib.Path, channel: str) -> list[tuple[dict, dict]]:
+    items = selected(root)
+    failures = uncleared_components(items, channel)
+    require(not failures, "distribution not cleared for " + channel + ":\n" + "\n".join(
+        f"{record['name']} {record['version']}: {record['channels'][channel]}; {record['conditions']}" for record in failures))
     return items
+
+
+def release_plan(root: pathlib.Path, tag: str | None = None) -> dict:
+    """The single public asset contract; policy errors are never a fallback."""
+    from release_metadata import metadata
+    identity = metadata(load(root / "pack.toml"), tag)
+    blockers = uncleared_components(selected(root), "github")
+    basename = identity["basename"]
+    suffixes = (".mrpack", ".mrpack.sha256") if blockers else (".mrpack", ".zip", "-server.zip", ".sha256")
+    notes = "Exact-pin distribution obligations are fulfilled for this release's selected assets."
+    if blockers:
+        names = sorted(f"{item['name']} ({item['project']}/{item['version']})" for item in blockers)
+        notes = ("Metadata-only release: both the CurseForge and DatHost server ZIPs are withheld because "
+                 "binary redistribution obligations remain unresolved for these selected mods:\n\n" +
+                 "\n".join("- " + name for name in names) +
+                 "\n\nThe no-JAR .mrpack contains upstream download references, configuration and recipient notices; "
+                 "it does not grant redistribution permission for the referenced binaries.")
+    return {"schema": 1, "tag": identity["tag"], "mode": "metadata" if blockers else "full",
+            "assets": [basename + suffix for suffix in suffixes], "checksum": basename + suffixes[-1],
+            "policy_sha256": hashlib.sha256((root / "distribution/permissions.toml").read_bytes()).hexdigest(),
+            "notes": notes}
+
+
+def verify_release(root: pathlib.Path, plan: dict, directory: pathlib.Path, tag: str | None = None) -> None:
+    """Reassess policy, then require exactly the selected nonempty checksum set.
+
+    Archive semantics remain in Make's existing check-metadata/check-upload
+    consumers. In particular a failing ZIP check must not select another mode.
+    """
+    require(plan == release_plan(root, tag), "release plan differs from current source/policy/tag")
+    require({path.name for path in directory.iterdir()} == set(plan["assets"]), "unexpected release file set")
+    for name in plan["assets"]:
+        path = directory / name
+        require(path.is_file() and not path.is_symlink() and path.stat().st_size > 0, "missing regular nonempty asset: " + name)
+    expected = []
+    for name in plan["assets"][:-1]:
+        with (directory / name).open("rb") as stream:
+            expected.append(hashlib.file_digest(stream, "sha256").hexdigest() + "  " + name + "\n")
+    require((directory / plan["checksum"]).read_text(encoding="utf-8") == "".join(expected),
+            "release checksum content/membership differs from selected archives")
 
 
 def notice_members(root: pathlib.Path) -> dict[str, bytes]:
@@ -175,12 +230,21 @@ def write_notices(path: pathlib.Path, root: pathlib.Path) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("schema", "check", "notices", "status", "verification-notices", "metadata-notices"))
+    parser.add_argument("command", choices=("schema", "check", "notices", "status", "verification-notices", "metadata-notices", "release-plan", "verify-release"))
     parser.add_argument("--channel", choices=sorted(CHANNELS))
     parser.add_argument("--archive", type=pathlib.Path)
+    parser.add_argument("--tag")
+    parser.add_argument("--plan", type=pathlib.Path)
+    parser.add_argument("--directory", type=pathlib.Path, default=ROOT / "dist")
     args = parser.parse_args()
     try:
-        if args.command == "schema":
+        if args.command == "release-plan":
+            print(json.dumps(release_plan(ROOT, args.tag), sort_keys=True))
+            return 0
+        elif args.command == "verify-release":
+            require(args.plan is not None, "release plan is required")
+            verify_release(ROOT, json.loads(args.plan.read_text(encoding="utf-8")), args.directory, args.tag)
+        elif args.command == "schema":
             selected(ROOT)
         elif args.command == "status":
             items = selected(ROOT)
