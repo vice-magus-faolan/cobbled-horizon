@@ -331,6 +331,90 @@ class TaggedPublisherTests(unittest.TestCase):
                 finally:
                     case.doCleanups()
 
+    def test_default_build_refreshes_plan_but_explicit_plans_remain_frozen(self):
+        import distribution
+        self.stage(False)
+        stale = distribution.release_plan(self.root, self.tag)
+        default = self.root / "release-plan.json"
+        default.write_text(json.dumps(stale))
+        (self.dist / self.checksum).unlink()
+        self.stage(True)
+        # Real release recipe; the fixture's valid archives model completed
+        # exporter targets. Do not run third-party downloads or source refresh.
+        command = ["make", "-o", "export", "release", "MAKE=make -o export-curseforge"]
+        env = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}
+        env.pop("RELEASE_PLAN", None)
+        result = subprocess.run(command, cwd=self.root, env=env, capture_output=True, text=True, timeout=30)
+        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+        fresh = distribution.release_plan(self.root, self.tag)
+        self.assertEqual(fresh, json.loads(default.read_text()))
+        self.assertFalse((self.dist / (self.basename + ".mrpack.sha256")).exists())
+        self.assertIn("PASS: CurseForge-format ZIP", result.stdout)
+        frozen = self.root / "frozen.json"
+        for plan, accepted in ((fresh, True), (stale, False), ({**fresh, "tag": "v26.2.0.1.1"}, False)):
+            with self.subTest(plan=plan["mode"], tag=plan["tag"]):
+                frozen.write_text(json.dumps(plan, indent=2) + "\n")
+                original = frozen.read_bytes()
+                result = subprocess.run([*command, "RELEASE_PLAN=" + str(frozen)], cwd=self.root, env=env,
+                                        capture_output=True, text=True, timeout=30)
+                self.assertEqual(accepted, result.returncode == 0, result.stdout + result.stderr)
+                self.assertEqual(original, frozen.read_bytes())
+                if not accepted:
+                    self.assertIn("release plan differs", result.stdout)
+
+    def test_verify_release_discriminates_frozen_plan_independently(self):
+        import distribution
+        for cleared in (False, True):
+            with self.subTest(cleared=cleared):
+                case = TaggedPublisherTests()
+                case.setUp()
+                try:
+                    case.stage(cleared)
+                    plan = distribution.release_plan(case.root, case.tag)
+                    path = case.root / "frozen.json"
+                    for changed in (None, "notes", "policy_sha256", "tag"):
+                        with self.subTest(changed=changed):
+                            edited = dict(plan)
+                            if changed:
+                                edited[changed] += "edited"
+                            path.write_text(json.dumps(edited))
+                            result = subprocess.run([sys.executable, "scripts/distribution.py", "verify-release",
+                                                     "--plan", str(path), "--tag", case.tag], cwd=case.root,
+                                                    capture_output=True, text=True, timeout=10)
+                            self.assertEqual(changed is None, result.returncode == 0, result.stdout + result.stderr)
+                            if changed:
+                                self.assertIn("release plan differs", result.stdout)
+                finally:
+                    case.doCleanups()
+
+    def test_native_download_consumer_checks_both_checksum_modes_without_reexport(self):
+        script = workflow_script("Validate downloaded pack artifacts")
+        for cleared in (False, True):
+            case = TaggedPublisherTests()
+            case.setUp()
+            try:
+                case.stage(cleared)
+                for defect in (None, "hash", "missing"):
+                    with self.subTest(cleared=cleared, defect=defect):
+                        path = case.dist / (case.basename + ".mrpack")
+                        original = path.read_bytes()
+                        if defect == "hash":
+                            path.write_bytes(original + b"corrupt")
+                        elif defect == "missing":
+                            path.unlink()
+                        env = {"PATH": os.environ["PATH"], "PYTHONDONTWRITEBYTECODE": "1",
+                               "GITHUB_REF_TYPE": "tag", "GITHUB_REF_NAME": case.tag, "RUNNER_TEMP": str(case.root)}
+                        result = subprocess.run(["bash", "--noprofile", "--norc", "-e", "-o", "pipefail", "-c", script],
+                                                cwd=case.root, env=env, capture_output=True, text=True, timeout=30)
+                        self.assertEqual(defect is None, result.returncode == 0, result.stdout + result.stderr)
+                        if defect == "missing":
+                            self.assertFalse(path.exists())  # No fallback/re-export.
+                        else:
+                            self.assertEqual(original if defect is None else original + b"corrupt", path.read_bytes())
+                        path.write_bytes(original)
+            finally:
+                case.doCleanups()
+
     def test_bad_policy_identity_text_or_checksum_has_zero_provider_effects(self):
         self.stage(False)
         original = (self.root / "distribution/permissions.toml").read_bytes()

@@ -161,6 +161,17 @@ class DistributionTests(unittest.TestCase):
         self.write_policy()
         self.assertEqual(1, len(distribution.clearance(self.root, "github")))
 
+    def test_curseforge_platform_is_independent_of_otherwise_fulfilled_rights(self):
+        # This is a bundled, otherwise fully eligible JAR, not a CF reference.
+        self.record["platform"] = "unknown"
+        self.write_policy()
+        self.assertEqual(1, len(distribution.clearance(self.root, "github")))
+        with self.assertRaisesRegex(ValueError, "distribution not cleared for curseforge"):
+            distribution.clearance(self.root, "curseforge")
+        self.record["platform"] = "verified"
+        self.write_policy()
+        self.assertEqual(1, len(distribution.clearance(self.root, "curseforge")))
+
     def test_missing_changed_or_symlink_license_text_fails(self):
         path = self.root / "distribution/texts" / (self.digest + ".txt")
         path.write_bytes(b"changed")
@@ -370,29 +381,34 @@ class DistributionTests(unittest.TestCase):
         self.assertIn({"projectID": 306612, "fileID": 9295874, "required": True}, references.values())
         for mod, record in items:
             if "curseforge" in mod["update"]:
-                self.assertNotEqual("allowed", record["channels"]["github"])
+                if record["project"] != "P7dR8mSH":
+                    self.assertEqual("unknown", record["channels"]["github"])
                 self.assertEqual(mod["download"]["hash"], record["hosted_evidence"]["sha512"])
 
     def test_real_workflow_withholds_uncleared_uploads_and_accepts_metadata_tags(self):
-        # Exercise the actual public boundary script, not an assertion of its text.
+        # Owned policy varies independently of the live pack's clearance state.
         import os
-        import tempfile
+        import shutil
+        self.prepare_archives(hosted=True)
+        shutil.copytree(ROOT / "scripts", self.root / "scripts", ignore=shutil.ignore_patterns("__pycache__"))
         script = test_release.workflow_script("Evaluate public distribution clearance")
-        for ref_type in ("branch", "tag"):
-            with self.subTest(ref_type=ref_type), tempfile.TemporaryDirectory() as directory:
-                output = pathlib.Path(directory) / "outputs"
-                output.touch()
-                result = subprocess.run(["bash", "--noprofile", "--norc", "-e", "-o", "pipefail", "-c", script], cwd=ROOT,
-                                        env={"PATH": os.environ["PATH"], "PYTHONDONTWRITEBYTECODE": "1", "GITHUB_REF_TYPE": ref_type,
-                                             "GITHUB_REF_NAME": "v" + distribution.load(ROOT / "pack.toml")["version"],
-                                             "RUNNER_TEMP": directory, "GITHUB_OUTPUT": str(output)},
-                                        capture_output=True, text=True, timeout=30)
-                self.assertEqual(0, result.returncode, result.stdout + result.stderr)
-                self.assertTrue(output.read_text().startswith("cleared=false\n"))
-                plan = json.loads((pathlib.Path(directory) / "release-plan.json").read_text())
-                self.assertEqual(2, len(plan["assets"]))
-                self.assertEqual(["dist/" + name for name in plan["assets"]], output.read_text().splitlines()[2:-1])
-                self.assertIn("public ZIP is withheld", result.stdout)
+        for cleared in (False, True):
+            self.override_record["channels"]["github"] = "allowed" if cleared else "conditional"
+            self.write_policy()
+            for ref_type in ("branch", "tag"):
+                with self.subTest(cleared=cleared, ref_type=ref_type):
+                    output = self.root / "outputs"
+                    output.write_text("")
+                    result = subprocess.run(["bash", "--noprofile", "--norc", "-e", "-o", "pipefail", "-c", script], cwd=self.root,
+                                            env={"PATH": os.environ["PATH"], "PYTHONDONTWRITEBYTECODE": "1", "GITHUB_REF_TYPE": ref_type,
+                                                 "GITHUB_REF_NAME": "v26.2.0.1.0", "RUNNER_TEMP": str(self.root), "GITHUB_OUTPUT": str(output)},
+                                            capture_output=True, text=True, timeout=30)
+                    self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+                    self.assertTrue(output.read_text().startswith("cleared=" + str(cleared).lower() + "\n"))
+                    plan = json.loads((self.root / "release-plan.json").read_text())
+                    self.assertEqual(3 if cleared else 2, len(plan["assets"]))
+                    self.assertEqual(["dist/" + name for name in plan["assets"]], output.read_text().splitlines()[2:-1])
+                    self.assertEqual(not cleared, "public ZIP is withheld" in result.stdout)
 
     def test_curated_inventory_has_both_lines_and_inactive_prospective_record(self):
         inventory = distribution.records(ROOT)

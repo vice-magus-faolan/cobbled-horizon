@@ -20,9 +20,11 @@ JAR. Unresolved bundled obligations select only the validated no-JAR `.mrpack` a
 combined `.sha256`. Both tagged-release modes require successful hosted native
 acceptance; no server ZIP is published.
 
-The hosted `native-acceptance` job independently exports and validates the matching
-revision's `.mrpack`, then materializes a fresh complete server folder from its verified
-downloads, configs and notices before runtime provisioning. It does not rebuild or
+The hosted `native-acceptance` job downloads the immutable artifact ID produced by
+`validate`, revalidates its exact selected files and checksum (combined in full mode,
+per-mrpack in metadata mode), then materializes that very `.mrpack` into a fresh
+complete server folder. Download/hash failures are fatal, never a reason to re-export.
+`summary.json` records the consumed `archive_sha256`. It does not rebuild or
 substitute mods. In one disposable non-root Java 25 container
 at a time (4 GB heap, no published ports), the first boot permits public dependency
 bootstrap and the second runs offline. It checks Minecraft readiness, MSS/Hopo and
