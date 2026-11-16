@@ -11,11 +11,19 @@ All Minecraft server startup, world-generation, and gameplay tests must run on t
 ```bash
 make test
 make validate
-make release
+make export check-metadata
 ```
 
-The hosted `native-acceptance` job consumes the same run's validated server ZIP;
-it does not rebuild or substitute mods. In one disposable non-root Java 25 container
+Public ZIP export via `make release` additionally requires clearance for every bundled
+JAR. Unresolved bundled obligations select only the validated no-JAR `.mrpack` and
+`.mrpack.sha256`; the cleared set is `.mrpack`, the primary CurseForge ZIP and the
+combined `.sha256`. Both tagged-release modes require successful hosted native
+acceptance; no server ZIP is published.
+
+The hosted `native-acceptance` job independently exports and validates the matching
+revision's `.mrpack`, then materializes a fresh complete server folder from its verified
+downloads, configs and notices before runtime provisioning. It does not rebuild or
+substitute mods. In one disposable non-root Java 25 container
 at a time (4 GB heap, no published ports), the first boot permits public dependency
 bootstrap and the second runs offline. It checks Minecraft readiness, MSS/Hopo and
 Moog policy, fresh group creation, native import/repeat/conflict/roundtrip preservation,
