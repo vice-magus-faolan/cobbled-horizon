@@ -12,3 +12,7 @@ hash = "d4368c83b493c6fcf9b489cd91b4d1e468d695d099d9df3845a6fcee07ef58dc35074557
 [update.modrinth]
 mod-id = "HSfsxuTo"
 version = "oyrAnNG8"
+
+[update.curseforge]
+project-id = 698309
+file-id = 9509145
