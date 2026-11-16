@@ -53,6 +53,29 @@ class PackSourceTests(unittest.TestCase):
             summary.baseline_selected + summary.baseline_dependencies,
         )
 
+    def test_source_entrypoint_rejects_stale_or_malformed_distribution_records(self) -> None:
+        original_load = distribution.load
+        for variant in ("missing pin", "stale identity", "missing text", "bad schema"):
+            with self.subTest(variant=variant):
+                def load(path):
+                    data = original_load(path)
+                    if path == ROOT / "distribution/permissions.toml":
+                        data = copy.deepcopy(data)
+                        if variant == "missing pin":
+                            data["components"] = data["components"][1:]
+                        elif variant == "stale identity":
+                            data["components"][0]["metafile_sha256"] = "0" * 64
+                        elif variant == "missing text":
+                            data["components"][0]["texts"] = ["0" * 64]
+                        else:
+                            data["schema"] = 999
+                    return data
+                with patch.object(distribution, "load", side_effect=load):
+                    errors, _ = check_pack.validate()
+                self.assertTrue(any(error.startswith("distribution:") for error in errors), errors)
+        errors, _ = check_pack.validate()
+        self.assertEqual([], errors)  # Unresolved rights are valid source data, not public clearance.
+
     def test_friends_and_family_policy_is_pinned(self) -> None:
         waystones = json.loads((ROOT / "config/sswaystones.json").read_text())
         self.assertEqual(2, waystones["xp_cost"])

@@ -59,6 +59,7 @@ class DistributionTests(unittest.TestCase):
             "conditions": "Project-owned unmodified test bytes, not third-party permission.",
             "channels": {channel: "allowed" for channel in distribution.CHANNELS},
             "texts": [self.digest], "pending": [], "nested": "verified", "platform": "verified",
+            "text_provenance": [{"url": "https://example.invalid/owned-license", "sha256": self.digest, "at": "2026-11-15"}],
             "source": {"status": "not-required", "basis": "Project-owned MIT fixture has no source-delivery duty."},
             "evidence": [{"url": "https://example.invalid/owned-permission", "sha256": self.digest, "at": "2026-11-15"}],
         }
@@ -169,6 +170,15 @@ class DistributionTests(unittest.TestCase):
         path.symlink_to(ROOT / "LICENSE")
         with self.assertRaisesRegex(ValueError, "missing regular license"):
             distribution.clearance(self.root, "github")
+
+    def test_full_text_requires_matching_primary_provenance(self):
+        for provenance in ([], [{"url": "http://example.invalid/license", "sha256": self.digest, "at": "2026-11-15"}],
+                           [{"url": "https://example.invalid/license", "sha256": "0" * 64, "at": "2026-11-15"}]):
+            with self.subTest(provenance=provenance):
+                self.record["text_provenance"] = provenance
+                self.write_policy()
+                with self.assertRaisesRegex(ValueError, "license-text provenance"):
+                    distribution.records(self.root)
 
     def test_exact_equivalent_source_not_generic_homepage(self):
         revision = "1" * 40

@@ -67,6 +67,8 @@ def records(root: pathlib.Path) -> list[dict]:
             path = root / "distribution/texts" / (digest + ".txt")
             require(path.is_file() and not path.is_symlink(), f"missing regular license text: {digest}")
             require(hashlib.sha256(path.read_bytes()).hexdigest() == digest, f"changed license text: {digest}")
+            provenance = record.get("text_provenance", [])
+            require(any(https(item.get("url")) and item.get("sha256") == digest and item.get("at") for item in provenance), f"missing license-text provenance: {digest}")
     return result
 
 

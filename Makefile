@@ -15,7 +15,6 @@ validate:
 	python3 scripts/permission_seed.py --check
 	python3 scripts/release_metadata.py
 	python3 scripts/check_pack.py
-	python3 scripts/distribution.py schema
 
 test:
 	python3 -m unittest discover -s tests -v
