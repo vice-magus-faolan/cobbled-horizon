@@ -152,6 +152,7 @@ tag runs instead retain the exact release-tag check.
 
 ```text
 dist/cobbled-horizon-26.3.0.1.4.mrpack
+dist/cobbled-horizon-26.3.0.1.4.mrpack.sha256
 ```
 
 On the designated Minecraft test host, materialize a clean server tree with:
