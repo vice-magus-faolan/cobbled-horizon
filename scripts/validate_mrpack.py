@@ -30,6 +30,8 @@ def read_index(source: pathlib.Path) -> tuple[dict, dict[str, bytes]]:
         names = archive.namelist()
         if len(names) != len(set(names)):
             raise ValueError("archive contains duplicate paths")
+        if any(name.lower().endswith(".jar") for name in names):
+            raise ValueError("metadata-only .mrpack must not bundle JARs")
         contents = {name: archive.read(name) for name in names}
         return json.loads(contents["modrinth.index.json"]), contents
 
@@ -220,7 +222,7 @@ def main() -> int:
         print(f"ERROR: {error}")
     if errors:
         return 1
-    print(f"PASS: {len(required_server_files)} required server file(s); pins and configuration overrides match source")
+    print(f"PASS: metadata-only .mrpack; no bundled JARs; {len(required_server_files)} pinned server download(s); overrides and notices match source")
     return 0
 
 

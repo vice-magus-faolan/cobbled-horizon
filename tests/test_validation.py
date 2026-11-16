@@ -368,7 +368,8 @@ class MrpackTests(unittest.TestCase):
         self.assert_archive_rejected({**self.index, "files": self.index["files"] + [extra]}, self.overrides, "unexpected exported file")
         for name in ("overrides/staged/config/example.json", "server-overrides/config/justenoughbackups.json", "overrides/mods/krypton.jar", "overrides/config/floodgate/key.pem"):
             with self.subTest(name=name):
-                self.assert_archive_rejected(self.index, {**self.overrides, name: b"unexpected"}, "unexpected archive entry")
+                reason = "must not bundle JARs" if name.endswith(".jar") else "unexpected archive entry"
+                self.assert_archive_rejected(self.index, {**self.overrides, name: b"unexpected"}, reason)
 
     def test_duplicate_archive_paths_are_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

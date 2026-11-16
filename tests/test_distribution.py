@@ -77,7 +77,9 @@ class DistributionTests(unittest.TestCase):
                 stream.write('[update.curseforge]\nproject-id = 1\nfile-id = 2\n')
             self.record["metafile_sha256"] = hashlib.sha256(self.metadata.read_bytes()).hexdigest()
             self.record["hosted"] = {"project-id": 1, "file-id": 2}
-            self.record["hosted_evidence"] = "Synthetic fixture identity, checked against owned bytes."
+            self.record["hosted_evidence"] = {"url": "https://example.invalid/owned.jar",
+                                               "sha256": hashlib.sha256(self.fixture.mod).hexdigest(),
+                                               "sha512": self.record["sha512"], "at": "2026-11-16"}
             self.fixture.manifest["files"] = [{"projectID": 1, "fileID": 2, "required": True}]
             del self.fixture.files["overrides/mods/test.jar"]
         # Exercise a real mixed partition, not separate all-hosted/all-override cases.
@@ -226,7 +228,38 @@ class DistributionTests(unittest.TestCase):
                 server_pack.build_archive(source, output, self.root, self.mrpack)
         self.assertEqual(b"previous artifact", output.read_bytes())
 
+    def test_hosted_evidence_must_bind_selected_download_hash(self):
+        self.prepare_archives()
+        matching = copy.deepcopy(self.record["hosted_evidence"])
+        self.assertEqual(2, len(distribution.clearance(self.root, "github")))
+        for evidence in ({**matching, "sha512": "0" * 128}, "unstructured claim", {},
+                         {**matching, "url": "http://example.invalid/owned.jar"}):
+            with self.subTest(evidence=evidence):
+                self.record["hosted_evidence"] = evidence
+                self.write_policy()
+                with self.assertRaisesRegex(ValueError, "hosted mapping evidence"):
+                    distribution.clearance(self.root, "github")
+        self.record["hosted_evidence"] = matching
+        self.write_policy()
+        self.assertEqual(2, len(distribution.clearance(self.root, "curseforge")))
+
+    def test_equivalent_source_and_recipient_credits_are_actionable(self):
+        revision = "1" * 40
+        self.record["source"] = {"status": "equivalent-access", "basis": "Complete owned fixture source.",
+                                 "revision": revision, "url": "https://example.invalid/archive/" + revision + ".zip",
+                                 "sha256": self.digest, "directions": "Download this exact source archive.",
+                                 "verified_at": "2026-11-16"}
+        self.record["note"] = "Internal reviewer evidence note, not recipient terms."
+        self.write_policy()
+        distribution.clearance(self.root, "github")
+        notices = distribution.notice_members(self.root)
+        self.assertIn(self.record["source"]["url"].encode(), notices["SOURCES.md"])
+        self.assertIn(revision.encode(), notices["SOURCES.md"])
+        self.assertNotIn(self.record["note"].encode(), notices["CREDITS.md"])
+        self.assertIn(b"\n\nLicense/permission:", notices["CREDITS.md"])
+
     def test_real_workflow_withholds_uncleared_uploads_and_rejects_tags(self):
+        # Exercise the actual public boundary script, not an assertion of its text.
         import os
         import tempfile
         import textwrap
@@ -253,6 +286,56 @@ class DistributionTests(unittest.TestCase):
             self.assertEqual(32, sum(line in item["lines"] for item in inventory))
         self.assertEqual(["Cfbcv7uF"], [item["project"] for item in inventory if "prospective" in item["lines"]])
         self.assertNotIn("Cfbcv7uF", {item["project"] for _, item in distribution.selected(ROOT)})
+
+    def test_uncleared_metadata_export_rejects_jars_and_private_members(self):
+        self.prepare_archives()
+        self.record["channels"]["github"] = "conditional"
+        self.write_policy()
+        policy = (self.root / "distribution/permissions.toml").read_bytes()
+        _, contents = validate_mrpack.read_index(self.mrpack)
+        base = {name: data for name, data in contents.items()
+                if name == "modrinth.index.json" or name == "overrides/config/test.json"}
+        for extra in (None, "overrides/mods/hidden.JAR", "overrides/config/floodgate/key.pem", "world/level.dat"):
+            with self.subTest(extra=extra):
+                with zipfile.ZipFile(self.mrpack, "w") as archive:
+                    for name, data in base.items():
+                        archive.writestr(name, data)
+                    if extra:
+                        archive.writestr(extra, b"must not publish")
+                with patch.object(distribution, "ROOT", self.root), patch.object(sys, "argv", [
+                        "distribution.py", "metadata-notices", "--archive", str(self.mrpack)]):
+                    self.assertEqual(0 if extra is None else 1, distribution.main())
+                if extra is None:
+                    index, members = validate_mrpack.read_index(self.mrpack)
+                    self.assertEqual([], validate_mrpack.validate_index(index, members, "26.2", "fabric", self.root)[0])
+                    self.assertEqual(2, len(index["files"]))
+                    self.assertFalse(any(name.lower().endswith(".jar") for name in members))
+                    self.assertIn("overrides/CREDITS.md", members)
+        self.assertEqual(policy, (self.root / "distribution/permissions.toml").read_bytes())
+        with self.assertRaisesRegex(ValueError, "distribution not cleared"):
+            distribution.clearance(self.root, "github")
+
+    def test_verification_build_materializes_uncleared_pins_without_public_bypass(self):
+        source, output = self.prepare_archives()
+        self.record["channels"]["github"] = "conditional"
+        self.write_policy()
+        # Notices reflect the same unchanged source policy on both archive paths.
+        self.fixture.validate()
+        argv = ["server_pack.py", "verify-build", str(source), str(output), "--mrpack", str(self.mrpack)]
+        with patch.object(server_pack, "ROOT", self.root), patch.object(sys, "argv", argv), \
+                patch.object(server_pack.urllib.request, "urlopen", return_value=io.BytesIO(self.fixture.mod)) as download:
+            self.assertEqual(0, server_pack.main())
+        self.assertEqual(1, download.call_count)
+        self.assertEqual([], server_pack.validate_archive(output, self.root))
+        previous = output.read_bytes()
+        for command in ("build", "validate"):
+            arguments = ([str(source), str(output), "--mrpack", str(self.mrpack)] if command == "build" else [str(output)])
+            with patch.object(server_pack, "ROOT", self.root), patch.object(sys, "argv", [
+                    "server_pack.py", "--channel", "github", command, *arguments]), \
+                    patch.object(server_pack.urllib.request, "urlopen") as download:
+                self.assertEqual(2, server_pack.main())
+            download.assert_not_called()
+            self.assertEqual(previous, output.read_bytes())
 
     def test_channel_check_refuses_before_any_archive_or_network_effect(self):
         self.record["channels"]["github"] = "unknown"

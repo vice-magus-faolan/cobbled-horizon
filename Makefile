@@ -9,7 +9,7 @@ MRPACK := dist/$(PACK_BASENAME).mrpack
 CURSEFORGE := dist/$(PACK_BASENAME).zip
 SERVER := dist/$(PACK_BASENAME)-server.zip
 
-.PHONY: validate test refresh distribution-check public-check check-upload export export-curseforge release materialize clean
+.PHONY: validate test refresh distribution-check public-check check-upload check-metadata export export-curseforge verify-archives release materialize clean
 
 validate:
 	python3 scripts/permission_seed.py --check
@@ -30,11 +30,24 @@ distribution-check:
 public-check:
 	python3 scripts/distribution.py check --channel github
 
-export: refresh validate distribution-check
+# Metadata references, approved config and finite notices contain no mod binaries.
+export: refresh validate
 	mkdir -p dist
 	$(PACKWIZ) modrinth export -o $(MRPACK)
-	python3 scripts/distribution.py notices --channel $(CHANNEL) --archive $(MRPACK)
+	python3 scripts/distribution.py metadata-notices --archive $(MRPACK)
 	python3 scripts/validate_mrpack.py $(MRPACK) --minecraft $(MINECRAFT_VERSION)
+	cd dist && sha256sum $(PACK_BASENAME).mrpack > $(PACK_BASENAME).mrpack.sha256
+
+check-metadata:
+	python3 scripts/validate_mrpack.py $(MRPACK) --minecraft $(MINECRAFT_VERSION)
+	cd dist && sha256sum --check $(PACK_BASENAME).mrpack.sha256
+
+# Ephemeral hosted verification ONLY. No binary upload consumes these outputs
+# without independently calling check-upload and public-check.
+verify-archives: export
+	$(PACKWIZ) curseforge export --side server -o $(CURSEFORGE)
+	python3 scripts/distribution.py verification-notices --archive $(CURSEFORGE)
+	python3 scripts/server_pack.py verify-build $(CURSEFORGE) $(SERVER) --mrpack $(MRPACK)
 
 export-curseforge: refresh validate distribution-check
 	mkdir -p dist
@@ -55,6 +68,7 @@ check-upload: public-check
 	cd dist && sha256sum --check $(PACK_BASENAME).sha256
 
 materialize: export
+	$(MAKE) distribution-check CHANNEL=$(CHANNEL)
 	mkdir -p build
 	$(MRPACK_INSTALL) $(MRPACK) --server-dir build/server
 

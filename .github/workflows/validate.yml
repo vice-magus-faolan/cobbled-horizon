@@ -62,6 +62,21 @@ jobs:
           packwiz refresh --build
           git diff --exit-code -- pack.toml index.toml
 
+      - name: Export and validate metadata-only pack
+        run: |
+          make export check-metadata
+          git diff --exit-code -- pack.toml index.toml
+
+      - name: Upload validated no-JAR metadata pack
+        uses: actions/upload-artifact@v7
+        with:
+          name: cobbled-horizon-metadata-${{ steps.metadata.outputs.version }}
+          path: |
+            dist/cobbled-horizon-${{ steps.metadata.outputs.version }}.mrpack
+            dist/cobbled-horizon-${{ steps.metadata.outputs.version }}.mrpack.sha256
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Evaluate public distribution clearance
         id: rights
         shell: bash
@@ -100,14 +115,14 @@ jobs:
 
   native-acceptance:
     needs: validate
-    if: needs.validate.outputs.cleared == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     permissions:
       contents: read
     env:
       NATIVE_PROJECT: ch-native-${{ github.run_id }}-${{ github.run_attempt }}
       PYTHONDONTWRITEBYTECODE: "1"
+      TMPDIR: ${{ runner.temp }}
     steps:
       - name: Check out matching source
         id: source
@@ -120,11 +135,21 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Download this run validated release files
-        uses: actions/download-artifact@v8
+      - name: Set up Go
+        uses: actions/setup-go@v7
         with:
-          name: cobbled-horizon-${{ needs.validate.outputs.version }}
-          path: dist
+          go-version: '1.25.x'
+          cache: false
+
+      - name: Install pinned packwiz revision
+        run: go install github.com/packwiz/packwiz@ef87d964f8cbd52b3b13ea42453ef322290e2b9e
+
+      - name: Build and validate all selected pins for ephemeral verification
+        timeout-minutes: 15
+        # No Actions artifact/cache bridge for uncleared JARs. Build and boot here.
+        run: |
+          make verify-archives
+          git diff --exit-code -- pack.toml index.toml
 
       - name: Pull pinned Java 25 runtime
         timeout-minutes: 2
@@ -151,7 +176,11 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: native-acceptance-${{ needs.validate.outputs.version }}
-          path: ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/summary.json
+            ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/installer.log
+            ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/first-boot.log
+            ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/offline-second-boot.log
           if-no-files-found: warn
           retention-days: 7
 

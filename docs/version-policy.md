@@ -6,19 +6,19 @@
 
 The next pack-only patch on Minecraft 26.3 would use `26.3.0.1.5`. If Minecraft gains another version component, keep the complete prefix, for example `26.3.1.0.1.0` for Minecraft 26.3.1 and pack revision 0.1.0. Release tags currently accept numeric versions only, without prerelease suffixes.
 
-A matching tag must pass exact-pin public distribution clearance before building or publishing the `.mrpack`, primary CurseForge manifest-format `.zip`, complete standalone `-server.zip`, and `.sha256` covering all three archives to GitHub Releases. Uncleared tags fail without publication. See the [release instructions](../README.md#github-releases) and [distribution obligations](../README.md#ownership-and-licensing). Publication to Modrinth or CurseForge is not configured.
+A matching tag must pass exact-pin public distribution clearance before publishing the complete `.mrpack`, primary CurseForge manifest-format `.zip`, standalone `-server.zip`, and `.sha256` set to GitHub Releases. The separately validated no-JAR `.mrpack` artifact path does not require binary redistribution clearance; ephemeral hosted binary export/boot also remains distinct from public upload. Uncleared tags fail without release publication. See the [release instructions](../README.md#github-releases) and [distribution obligations](../README.md#ownership-and-licensing). Publication to Modrinth or CurseForge is not configured.
 
 ## Version branches
 
 `26.2` retains the original Minecraft 26.2 line. `26.3` is the default development line; it is not production-approved merely because it is the default. Topic pull requests target their intended version branch. Backport a shared fix deliberately in a separate reviewed change; never synchronize the lines wholesale or replace retained 26.2 pins with 26.3 artifacts. The former `main` and `upgrade/minecraft-26.3` branch names are historical, not operational targets.
 
-The existing `Build and release pack` workflow, job `validate`, runs for pull requests and pushes to either version branch, not duplicate topic pushes. Pins, validators and export infrastructure share a broad contract, so these PRs use the full unit suite. Source/schema/tests/index checks remain usable while rights are unresolved; archives and native acceptance are withheld until public clearance succeeds. A successful source-only job is not full-export evidence. Tag publication remains separate from branch/PR artifact builds.
+The existing `Build and release pack` workflow, job `validate`, runs for pull requests and pushes to either version branch, not duplicate topic pushes. Pins, validators and export infrastructure share a broad contract, so these PRs use the full unit suite. Source/schema/tests/index checks and validated no-JAR metadata artifacts remain usable while binary rights are unresolved. The `native-acceptance` job builds the real all-pin CurseForge/server ZIPs and boots/restarts the complete server in that same ephemeral job, without an uncleared JAR artifact/cache bridge. Public binary upload and tag publication retain independent clearance gates. A source-only green job is not real export or runtime evidence.
 
 ## Exact pins
 
 `collection.toml` records why each active baseline project exists. Add deliberately chosen projects under `[[selected]]`; add only packwiz-resolved libraries under `[[resolved-dependency]]` with their `required-by` parent. The validation gate requires the union of those sections to match `mods/*.pw.toml` exactly.
 
-`candidates.toml` records staged and future projects. Staged projects retain pinned metadata under `staged/mods/`, which packwiz excludes from normal exports. Promotion requires moving both intent and metadata into the baseline in one reviewed change, with an exact distribution record and resolved channel, notice and covered-source duties before export.
+`candidates.toml` records staged and future projects. Staged projects retain pinned metadata under `staged/mods/`, which packwiz excludes from normal exports. Promotion requires moving both intent and metadata into the baseline in one reviewed change, with an exact distribution record. Resolve channel, notice and covered-source duties before binary transfer/publication; metadata and ephemeral verification do not clear them.
 
 Every `mods/*.pw.toml` entry must contain:
 
@@ -44,7 +44,7 @@ Staged pins retain historical bytes, including 26.2 builds; they are excluded fr
 3. Select exact new version IDs; do not use an unreviewed floating update on `26.2` or `26.3`.
 4. Review changelogs, dependencies, environment metadata, and licenses. Update the exact permission/evidence/text/source records, preserving unknown obligations rather than marking them allowed to obtain a build.
 5. Run `packwiz refresh --build`.
-6. Run useful development checks (`make validate`, `make test`); commit the coherent source and obtain independent exact-commit source review. Publish the reviewed topic PR and require its exact-head hosted `validate` job. Separately confirm that public clearance succeeded and all three actual archives/checksums were built and validated with `make release CHANNEL=github` and `make check-upload`; a source-only green run with withheld artifacts cannot satisfy that export gate.
+6. Run useful development checks (`make validate`, `make test`); commit the coherent source and obtain independent exact-commit source review. Publish the reviewed topic PR and require its exact-head hosted `validate` and `native-acceptance` jobs, including real all-pin exports, native install/restart and validated no-JAR metadata artifacts. Separately require public clearance and `make release CHANNEL=github` / `make check-upload` before transferring the complete binary archive/checksum set; source-only success and private boot are not public rights clearance.
 7. Separately authorize and complete all designated-host runtime acceptance against a disposable world copy. Source approval and hosted static checks do not satisfy this step.
 8. Only with release approval and resolved public obligations, push the matching release tag. Retain published archives and checksums as the release record. Back up production before any separately authorized deployment.
 9. Deploy only after its gates pass, verify, and retain the previous known-good pack and matching world snapshot for rollback.

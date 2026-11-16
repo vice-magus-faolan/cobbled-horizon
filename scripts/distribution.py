@@ -52,9 +52,6 @@ def records(root: pathlib.Path) -> list[dict]:
     rules = data.get("rules", {})
     obligations = data.get("obligations", {})
     result = [{**obligations, **rules.get(item["project"], {}), **item} for item in data.get("components", [])]
-    for item in result:
-        if item.get("note"):
-            item["conditions"] += " " + item["note"]
     require(bool(result), "permission inventory is empty")
     seen = set()
     for record in result:
@@ -122,7 +119,12 @@ def clearance(root: pathlib.Path, channel: str) -> list[tuple[dict, dict]]:
         if channel == "curseforge":
             require(record.get("platform") == "verified", f"CurseForge platform eligibility unresolved: {record['name']}")
         if "curseforge" in mod.get("update", {}):
-            require(record.get("hosted_evidence"), f"missing byte-verified hosted mapping evidence: {record['name']}")
+            evidence = record.get("hosted_evidence")
+            require(isinstance(evidence, dict), f"missing structured hosted mapping evidence: {record['name']}")
+            require(https(evidence.get("url")) and evidence.get("at") and
+                    re.fullmatch(r"[0-9a-f]{64}", evidence.get("sha256", "")) and
+                    evidence.get("sha512") == mod["download"]["hash"],
+                    f"hosted mapping evidence must bind selected download SHA-512: {record['name']}")
     require(not failures, "distribution not cleared for " + channel + ":\n" + "\n".join(failures))
     return items
 
@@ -131,7 +133,8 @@ def notice_members(root: pathlib.Path) -> dict[str, bytes]:
     """Use a finite member contract; never copy the policy directory wholesale.
 
     Structural-only fixtures without policy intentionally have no notice members.
-    Public entrypoints always call clearance, which requires the policy file.
+    Binary publication entrypoints also call clearance. Metadata-only exports
+    and ephemeral verification retain unresolved notices without granting rights.
     """
     if not (root / "distribution/permissions.toml").exists():
         return {}
@@ -140,9 +143,13 @@ def notice_members(root: pathlib.Path) -> dict[str, bytes]:
     members = {}
     for _, record in sorted(selected(root), key=lambda item: (item[1]["project"], item[1]["version"])):
         identity = f"{record['name']} ({record['project']}/{record['version']})"
-        credits.extend([f"## {identity}", record["credit"], f"License/permission: {record['license']}", record["conditions"], ""])
+        credits.extend([f"## {identity}", "", record["credit"], "", f"License/permission: {record['license']}", "",
+                        "Distribution conditions (not a grant): " + record["conditions"], ""])
         source = record["source"]
-        sources.extend([f"## {identity}", source.get("directions", source.get("basis", "Source delivery unresolved; not redistribution clearance.")), ""])
+        sources.extend([f"## {identity}", "", source.get("directions", source.get("basis", "Source delivery unresolved; not redistribution clearance.")), ""])
+        if source.get("status") == "equivalent-access":
+            check_source(source)
+            sources.extend(["Source download: " + source["url"], "", "Revision: " + source["revision"], ""])
         for digest in record["texts"]:
             members["LICENSES/" + digest + ".txt"] = (root / "distribution/texts" / (digest + ".txt")).read_bytes()
     members["CREDITS.md"] = ("\n".join(credits) + "\n").encode()
@@ -152,6 +159,11 @@ def notice_members(root: pathlib.Path) -> dict[str, bytes]:
 
 def add_notices(path: pathlib.Path, root: pathlib.Path, channel: str) -> None:
     clearance(root, channel)
+    write_notices(path, root)
+
+
+def write_notices(path: pathlib.Path, root: pathlib.Path) -> None:
+    """Write finite notices for integrity-only preparation, not upload clearance."""
     members = notice_members(root)
     with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
         require(not any("overrides/" + name in archive.namelist() for name in members), "archive already contains notice members")
@@ -163,7 +175,7 @@ def add_notices(path: pathlib.Path, root: pathlib.Path, channel: str) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("schema", "check", "notices", "status"))
+    parser.add_argument("command", choices=("schema", "check", "notices", "status", "verification-notices", "metadata-notices"))
     parser.add_argument("--channel", choices=sorted(CHANNELS))
     parser.add_argument("--archive", type=pathlib.Path)
     args = parser.parse_args()
@@ -174,6 +186,17 @@ def main() -> int:
             items = selected(ROOT)
             for channel in sorted(CHANNELS):
                 print(f"{channel}: {sum(item['channels'][channel] == 'allowed' for _, item in items)}/{len(items)} records allowed (all obligations still required)")
+        elif args.command in {"verification-notices", "metadata-notices"}:
+            require(args.archive is not None, "archive is required")
+            if args.command == "metadata-notices":
+                require(args.archive.suffix.lower() == ".mrpack", "metadata-only notices require a .mrpack")
+            write_notices(args.archive, ROOT)
+            if args.command == "metadata-notices":
+                import validate_mrpack
+                index, contents = validate_mrpack.read_index(args.archive)
+                minecraft = load(ROOT / "pack.toml")["versions"]["minecraft"]
+                errors, _, _ = validate_mrpack.validate_index(index, contents, minecraft, "fabric", ROOT)
+                require(not errors, "invalid metadata-only archive: " + "; ".join(errors))
         else:
             require(args.channel is not None, "explicit distribution channel is required")
             if args.command == "check":

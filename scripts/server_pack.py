@@ -98,22 +98,25 @@ def build_archive(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--channel", required=True, choices=sorted(distribution.CHANNELS))
+    parser.add_argument("--channel", choices=sorted(distribution.CHANNELS))
     commands = parser.add_subparsers(dest="command", required=True)
-    build = commands.add_parser("build", help="prepare every selected mod, config and notice")
-    build.add_argument("curseforge", type=pathlib.Path)
-    build.add_argument("output", type=pathlib.Path)
-    build.add_argument("--mrpack", type=pathlib.Path, required=True)
+    for command in ("build", "verify-build"):
+        build = commands.add_parser(command, help="prepare complete ZIP; verify-build is nonpublishing integrity-only")
+        build.add_argument("curseforge", type=pathlib.Path)
+        build.add_argument("output", type=pathlib.Path)
+        build.add_argument("--mrpack", type=pathlib.Path, required=True)
     validate = commands.add_parser("validate", help="check a complete standalone server ZIP")
     validate.add_argument("pack", type=pathlib.Path)
     args = parser.parse_args()
     try:
-        distribution.clearance(ROOT, args.channel)
-        if args.command == "build":
-            build_archive(args.curseforge, args.output, mrpack=args.mrpack)
+        if args.command != "verify-build":
+            distribution.require(args.channel is not None, "explicit distribution channel is required")
+            distribution.clearance(ROOT, args.channel)
+        if args.command in {"build", "verify-build"}:
+            build_archive(args.curseforge, args.output, source_root=ROOT, mrpack=args.mrpack)
             errors = []
         else:
-            errors = validate_archive(args.pack)
+            errors = validate_archive(args.pack, ROOT)
     except (OSError, KeyError, TypeError, ValueError, RuntimeError, zipfile.BadZipFile) as exc:
         print(f"ERROR: cannot {args.command} server pack: {exc}")
         return 2
@@ -121,7 +124,7 @@ def main() -> int:
         print(f"ERROR: {error}")
     if errors:
         return 1
-    print("PASS: complete server ZIP membership, hashes, configs and notices match source")
+    print("PASS: complete server ZIP membership, hashes, configs and notices match source; integrity is not upload clearance")
     return 0
 
 
