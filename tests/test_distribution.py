@@ -10,6 +10,7 @@ import hashlib
 import io
 import json
 import pathlib
+import re
 import subprocess
 import sys
 import unittest
@@ -131,6 +132,32 @@ class DistributionTests(unittest.TestCase):
         self.assertIn(b"contributors", first["CREDITS.md"])
         self.assertIn(b"no source-delivery duty", first["SOURCES.md"])
 
+    def test_real_rendered_notices_keep_readable_labels(self):
+        glued = re.compile(r"SHA-?256[0-9a-f]|Copyright[0-9]|[A-Za-z](?:[0-9]+(?:\.[0-9]+)+|[0-9]{4,})\b")
+        # Literal URLs/digests and these observed handles/tags are identifiers,
+        # not prose labels. Do not exempt arbitrary words containing digits.
+        identifiers = re.compile(
+            r"https?://[^\s]+|\b[0-9a-f]{7,128}\b|"
+            r"\b(?:Wesley1808|wesley1808|malte0811|pop4959|v0\.7\.0|v1\.10|v4\.5|v1\.4\.3|v26\.3)(?!\w|\.[0-9])"
+        )
+        notices = distribution.notice_members(ROOT)
+        cases = [(name, notices[name].decode(), False) for name in ("CREDITS.md", "SOURCES.md")]
+        cases.extend((label, label, True) for label in (
+            "Gson2.11.0", "ASM9.5", "AWS SDK2.31.78", "reg-sync0.18.2",
+            "Alpine3.22", "Java-WebSocket2010-2020", "Widget2026", "Wesley1808.2",
+            "Copyright2021", "SHA256abcdef",
+        ))
+        cases.append(("literal identifiers and readable labels", "Wesley1808 malte0811 pop4959 jose4j v1.10 v26.3 "
+                      "Gson 2.11.0 ASM 9.5 Java-WebSocket 2010-2020 "
+                      "https://example.invalid/Gson2.11.0 6d5108cb9bef4b07939fb579b5fc0b5e2589bb02", False))
+        for name, text, should_fail in cases:
+            with self.subTest(name=name):
+                prose = identifiers.sub("", text)
+                if should_fail:
+                    self.assertRegex(prose, glued)
+                else:
+                    self.assertNotRegex(prose, glued)
+
     def test_changed_pin_url_side_and_new_identity_fail(self):
         original = self.metadata.read_bytes()
         for suffix in (b'\n# changed identity\n', b'\n[extra]\nurl = "https://example.invalid/new"\n'):
@@ -160,6 +187,17 @@ class DistributionTests(unittest.TestCase):
         self.record = original
         self.write_policy()
         self.assertEqual(1, len(distribution.clearance(self.root, "github")))
+
+    def test_curseforge_platform_is_independent_of_otherwise_fulfilled_rights(self):
+        # This is a bundled, otherwise fully eligible JAR, not a CF reference.
+        self.record["platform"] = "unknown"
+        self.write_policy()
+        self.assertEqual(1, len(distribution.clearance(self.root, "github")))
+        with self.assertRaisesRegex(ValueError, "distribution not cleared for curseforge"):
+            distribution.clearance(self.root, "curseforge")
+        self.record["platform"] = "verified"
+        self.write_policy()
+        self.assertEqual(1, len(distribution.clearance(self.root, "curseforge")))
 
     def test_missing_changed_or_symlink_license_text_fails(self):
         path = self.root / "distribution/texts" / (self.digest + ".txt")
@@ -363,36 +401,49 @@ class DistributionTests(unittest.TestCase):
         targets = {"mods/" + mod["filename"] for mod, _ in items}
         bundled = targets - references.keys()
         self.assertEqual(32, len(targets))
-        self.assertEqual(5, len(references))
-        self.assertEqual(27, len(bundled))
+        self.assertEqual(6, len(references))
+        self.assertEqual(26, len(bundled))
         self.assertFalse(bundled & references.keys())
         self.assertEqual(targets, bundled | references.keys())
-        self.assertIn({"projectID": 306612, "fileID": 9295874, "required": True}, references.values())
+        self.assertEqual({
+            (306612, 9295874), (698309, 9509145), (342584, 9394030),
+            (345854, 9272149), (920416, 8926271), (547434, 8938808),
+        }, {(item["projectID"], item["fileID"]) for item in references.values()})
+        self.assertTrue(all(item["required"] is True for item in references.values()))
         for mod, record in items:
             if "curseforge" in mod["update"]:
-                self.assertNotEqual("allowed", record["channels"]["github"])
+                if record["project"] == "ohNO6lps":
+                    self.assertEqual("allowed", record["channels"]["github"])
+                    self.assertEqual("b9339c21e14beec2eae0ca215317284bcaacef72e1d1dee8b3dfbe2de0eefaa758a172446df85419b6534557c479abe972d7d21f4ec194f2d436f9ed4329cb9f", mod["download"]["hash"])
+                    self.assertNotIn("mods/" + mod["filename"], bundled)
+                elif record["project"] != "P7dR8mSH":
+                    self.assertEqual("unknown", record["channels"]["github"])
                 self.assertEqual(mod["download"]["hash"], record["hosted_evidence"]["sha512"])
 
     def test_real_workflow_withholds_uncleared_uploads_and_accepts_metadata_tags(self):
-        # Exercise the actual public boundary script, not an assertion of its text.
+        # Owned policy varies independently of the live pack's clearance state.
         import os
-        import tempfile
+        import shutil
+        self.prepare_archives(hosted=True)
+        shutil.copytree(ROOT / "scripts", self.root / "scripts", ignore=shutil.ignore_patterns("__pycache__"))
         script = test_release.workflow_script("Evaluate public distribution clearance")
-        for ref_type in ("branch", "tag"):
-            with self.subTest(ref_type=ref_type), tempfile.TemporaryDirectory() as directory:
-                output = pathlib.Path(directory) / "outputs"
-                output.touch()
-                result = subprocess.run(["bash", "--noprofile", "--norc", "-e", "-o", "pipefail", "-c", script], cwd=ROOT,
-                                        env={"PATH": os.environ["PATH"], "PYTHONDONTWRITEBYTECODE": "1", "GITHUB_REF_TYPE": ref_type,
-                                             "GITHUB_REF_NAME": "v" + distribution.load(ROOT / "pack.toml")["version"],
-                                             "RUNNER_TEMP": directory, "GITHUB_OUTPUT": str(output)},
-                                        capture_output=True, text=True, timeout=30)
-                self.assertEqual(0, result.returncode, result.stdout + result.stderr)
-                self.assertTrue(output.read_text().startswith("cleared=false\n"))
-                plan = json.loads((pathlib.Path(directory) / "release-plan.json").read_text())
-                self.assertEqual(2, len(plan["assets"]))
-                self.assertEqual(["dist/" + name for name in plan["assets"]], output.read_text().splitlines()[2:-1])
-                self.assertIn("public ZIP is withheld", result.stdout)
+        for cleared in (False, True):
+            self.override_record["channels"]["github"] = "allowed" if cleared else "conditional"
+            self.write_policy()
+            for ref_type in ("branch", "tag"):
+                with self.subTest(cleared=cleared, ref_type=ref_type):
+                    output = self.root / "outputs"
+                    output.write_text("")
+                    result = subprocess.run(["bash", "--noprofile", "--norc", "-e", "-o", "pipefail", "-c", script], cwd=self.root,
+                                            env={"PATH": os.environ["PATH"], "PYTHONDONTWRITEBYTECODE": "1", "GITHUB_REF_TYPE": ref_type,
+                                                 "GITHUB_REF_NAME": "v26.2.0.1.0", "RUNNER_TEMP": str(self.root), "GITHUB_OUTPUT": str(output)},
+                                            capture_output=True, text=True, timeout=30)
+                    self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+                    self.assertTrue(output.read_text().startswith("cleared=" + str(cleared).lower() + "\n"))
+                    plan = json.loads((self.root / "release-plan.json").read_text())
+                    self.assertEqual(3 if cleared else 2, len(plan["assets"]))
+                    self.assertEqual(["dist/" + name for name in plan["assets"]], output.read_text().splitlines()[2:-1])
+                    self.assertEqual(not cleared, "public ZIP is withheld" in result.stdout)
 
     def test_curated_inventory_has_both_lines_and_inactive_prospective_record(self):
         inventory = distribution.records(ROOT)

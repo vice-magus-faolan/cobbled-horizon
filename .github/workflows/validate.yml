@@ -21,6 +21,7 @@ jobs:
     outputs:
       version: ${{ steps.metadata.outputs.version }}
       cleared: ${{ steps.rights.outputs.cleared }}
+      artifact-id: ${{ steps.artifacts.outputs.artifact-id }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
@@ -76,7 +77,7 @@ jobs:
             args+=(--tag "$GITHUB_REF_NAME")
           fi
           python3 scripts/distribution.py release-plan "${args[@]}" > "$RUNNER_TEMP/release-plan.json"
-          mode=$(jq -r .mode "$RUNNER_TEMP/release-plan.json")
+          mode=$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))["mode"])' "$RUNNER_TEMP/release-plan.json")
           if [[ "$mode" == full ]]; then
             echo 'cleared=true' >> "$GITHUB_OUTPUT"
           else
@@ -85,7 +86,7 @@ jobs:
           fi
           {
             echo 'paths<<RELEASE_ASSETS'
-            jq -r '.assets[] | "dist/" + .' "$RUNNER_TEMP/release-plan.json"
+            python3 -c 'import json, sys; print("\n".join("dist/" + name for name in json.load(open(sys.argv[1]))["assets"]))' "$RUNNER_TEMP/release-plan.json"
             echo 'RELEASE_ASSETS'
           } >> "$GITHUB_OUTPUT"
 
@@ -96,6 +97,7 @@ jobs:
           git diff --exit-code -- pack.toml index.toml
 
       - name: Upload validated selected release files
+        id: artifacts
         uses: actions/upload-artifact@v7
         with:
           name: cobbled-horizon-${{ steps.metadata.outputs.version }}
@@ -124,23 +126,24 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Set up Go
-        uses: actions/setup-go@v7
+      - name: Download immutable validated pack artifacts
+        uses: actions/download-artifact@v8
         with:
-          go-version: '1.25.x'
-          cache: false
+          artifact-ids: ${{ needs.validate.outputs.artifact-id }}
+          merge-multiple: true
+          path: dist
 
-      - name: Install pinned packwiz revision
-        run: go install github.com/packwiz/packwiz@ef87d964f8cbd52b3b13ea42453ef322290e2b9e
-
-      - name: Export and validate mrpack for ephemeral verification
-        timeout-minutes: 15
-        env:
-          TMPDIR: ${{ runner.temp }}
-        # No Actions artifact/cache bridge for uncleared JARs. Build and boot here.
+      - name: Validate downloaded pack artifacts
+        shell: bash
+        # Fail on download/hash/plan errors; never silently re-export a substitute.
         run: |
-          make export check-metadata
-          git diff --exit-code -- pack.toml index.toml
+          args=()
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then
+            args+=(--tag "$GITHUB_REF_NAME")
+          fi
+          plan="$RUNNER_TEMP/native-release-plan.json"
+          python3 scripts/distribution.py release-plan "${args[@]}" > "$plan"
+          make check-release RELEASE_PLAN="$plan"
 
       - name: Pull pinned Java 25 runtime
         timeout-minutes: 2
@@ -209,8 +212,9 @@ jobs:
           plan="$RUNNER_TEMP/publish-plan.json"
           python3 scripts/distribution.py release-plan --tag "$GITHUB_REF_NAME" > "$plan"
           make check-release RELEASE_PLAN="$plan" RELEASE_TAG="$GITHUB_REF_NAME"
-          mapfile -t assets < <(jq -r '.assets[]' "$plan")
-          jq -r .notes "$plan" > "$RUNNER_TEMP/release-notes.md"
+          selected=$(python3 -c 'import json, sys; print("\n".join(json.load(open(sys.argv[1]))["assets"]))' "$plan")
+          mapfile -t assets <<< "$selected"
+          python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))["notes"])' "$plan" > "$RUNNER_TEMP/release-notes.md"
           cd dist
           # Upload into a draft so failed uploads never publish a partial release.
           if draft=$(gh release view "$GITHUB_REF_NAME" --json isDraft --jq .isDraft); then
@@ -220,7 +224,7 @@ jobs:
             fi
           else
             gh release create "$GITHUB_REF_NAME" --verify-tag --draft \
-              --title "Cobbled Horizon $GITHUB_REF_NAME" --generate-notes \
+              --title "Cobbled Horizon $GITHUB_REF_NAME" \
               --notes-file "$RUNNER_TEMP/release-notes.md"
           fi
           gh release upload "$GITHUB_REF_NAME" "${assets[@]}" --clobber
