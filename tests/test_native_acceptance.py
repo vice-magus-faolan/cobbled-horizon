@@ -14,8 +14,9 @@ import time
 import unittest
 from unittest.mock import Mock, patch
 
-import test_server_pack
-from test_validation import ROOT, load_script, permission_seed
+import test_server_folder
+from pack_fixtures import ROOT, load_script
+import permission_seed
 
 native = load_script("native_acceptance")
 READY_LINE = "[12:00:00] [Server thread/INFO]: Done (1.2s)! For help, type \"help\"\n"
@@ -194,25 +195,25 @@ class NativeAcceptanceTests(unittest.TestCase):
                 native.check_worldgen(server, READY_LINE)
 
     def test_native_prepares_the_complete_mrpack_folder_before_provisioning(self):
-        fixture = test_server_pack.ServerPackTests()
+        fixture = test_server_folder.ServerFolderTests()
         fixture.setUp()
         self.addCleanup(fixture.doCleanups)
         work = fixture.root / "native-work"
         work.mkdir()
         summary = {}
         with patch.object(native, "ROOT", fixture.root), \
-                patch.object(native.server_pack.urllib.request, "urlopen", side_effect=[io.BytesIO(fixture.fixture.fixture.mod), io.BytesIO(fixture.fixture.override_bytes)]), \
+                patch.object(native.server_folder.urllib.request, "urlopen", side_effect=[io.BytesIO(fixture.fixture.fixture.mod), io.BytesIO(fixture.fixture.override_bytes)]), \
                 patch.object(native, "provision", side_effect=RuntimeError("stop before runtime")) as provision:
             with self.assertRaisesRegex(RuntimeError, "stop before runtime"):
                 native.native_run(fixture.source, work, "ch-native-1-1", summary)
         self.assertEqual(work / "server", provision.call_args.args[0])
-        self.assertEqual([], native.server_pack.validate_directory(work / "server", fixture.root))
+        self.assertEqual([], native.server_folder.validate_directory(work / "server", fixture.root))
         self.assertEqual("validated mrpack to complete server folder", summary["preparation"])
         fixture.write_mrpack({**fixture.contents, "../escape": b"bad"})
         other = fixture.root / "invalid-work"
         other.mkdir()
         with patch.object(native, "ROOT", fixture.root), patch.object(native, "provision") as provision, \
-                patch.object(native.server_pack.urllib.request, "urlopen") as download:
+                patch.object(native.server_folder.urllib.request, "urlopen") as download:
             with self.assertRaises(ValueError):
                 native.native_run(fixture.source, other, "ch-native-1-1", {})
         provision.assert_not_called()

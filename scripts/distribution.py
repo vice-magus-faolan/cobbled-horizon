@@ -174,14 +174,14 @@ def release_plan(root: pathlib.Path, tag: str | None = None) -> dict:
     basename = identity["basename"]
     suffixes = (".mrpack", ".mrpack.sha256") if blockers else (".mrpack", ".zip", ".sha256")
     notes = ("Distribution obligations are fulfilled for the JARs actually bundled in the CurseForge ZIP. "
-             "Exact hosted references do not grant binary redistribution rights. No server ZIP is published.")
+             "Exact hosted references do not grant binary redistribution rights.")
     if blockers:
         names = sorted(f"{item['name']} ({item['project']}/{item['version']})" for item in blockers)
         notes = ("Metadata-only release: the CurseForge ZIP is withheld because "
                  "binary redistribution obligations remain unresolved for these bundled mods:\n\n" +
                  "\n".join("- " + name for name in names) +
                  "\n\nThe no-JAR .mrpack contains upstream download references, configuration and recipient notices; "
-                 "it does not grant redistribution permission for the referenced binaries. No server ZIP is published.")
+                 "it does not grant redistribution permission for the referenced binaries.")
     return {"schema": 1, "tag": identity["tag"], "mode": "metadata" if blockers else "full",
             "assets": [basename + suffix for suffix in suffixes], "checksum": basename + suffixes[-1],
             "policy_sha256": hashlib.sha256((root / "distribution/permissions.toml").read_bytes()).hexdigest(),

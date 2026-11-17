@@ -18,7 +18,7 @@ Public ZIP export via `make release` additionally requires clearance for every b
 JAR. Unresolved bundled obligations select only the validated no-JAR `.mrpack` and
 `.mrpack.sha256`; the cleared set is `.mrpack`, the primary CurseForge ZIP and the
 combined `.sha256`. Both tagged-release modes require successful hosted native
-acceptance; no server ZIP is published.
+acceptance.
 
 The hosted `native-acceptance` job downloads the immutable artifact ID produced by
 `validate`, revalidates its exact selected files and checksum (combined in full mode,

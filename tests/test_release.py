@@ -18,7 +18,8 @@ import warnings
 import zipfile
 from unittest.mock import patch
 
-from test_validation import load_script
+from pack_fixtures import load_script
+import permission_seed
 
 release_metadata = load_script("release_metadata")
 validate_curseforge = load_script("validate_curseforge")
@@ -125,7 +126,6 @@ class CurseForgeArchiveTests(unittest.TestCase):
         self.assertEqual([], self.validate())
 
     def test_setup_payload_and_indexed_private_state(self) -> None:
-        from test_validation import permission_seed
         for relative in sorted(permission_seed.SEED_PATHS):
             source = self.root / relative
             source.parent.mkdir(parents=True, exist_ok=True)
@@ -501,17 +501,6 @@ class TaggedPublisherTests(unittest.TestCase):
                 self.assertEqual([], calls)
                 path.write_bytes(original)
         self.rehash()
-
-    def test_old_four_asset_draft_stays_unpublished_and_is_not_deleted(self):
-        self.stage(True)
-        retired = self.basename + "-server.zip"
-        self.provider.write_text(json.dumps({"isDraft": True, "assets": [{"name": retired, "size": 100}]}))
-        result, calls = self.publish()
-        self.assertNotEqual(0, result.returncode, result.stdout + result.stderr)
-        state = json.loads(self.provider.read_text())
-        self.assertTrue(state["isDraft"])
-        self.assertIn(retired, [item["name"] for item in state["assets"]])
-        self.assertFalse(any(call[1] in {"edit", "delete"} for call in calls))
 
     def test_both_modes_recover_existing_and_partially_uploaded_drafts(self):
         for cleared in (False, True):

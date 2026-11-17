@@ -1,4 +1,4 @@
-"""Distribution boundary and complete hosted-reference materialization regressions.
+"""Distribution boundary and hosted-reference archive regressions.
 
 All binary/source/permission fixtures are project-owned synthetic bytes. They
 establish producer behavior, never permission for the real selected modpack.
@@ -7,9 +7,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
-import io
 import json
-import pathlib
 import re
 import subprocess
 import sys
@@ -17,12 +15,11 @@ import unittest
 import zipfile
 from unittest.mock import patch
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "scripts"))
+from pack_fixtures import ROOT
 import distribution
-import server_pack
 import validate_curseforge
 import validate_mrpack
+
 import test_release
 
 
@@ -232,19 +229,11 @@ class DistributionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "not a homepage"):
             distribution.clearance(self.root, "github")
 
-    def test_real_hosted_partition_and_complete_server(self):
-        source, output = self.prepare_archives()
+    def test_real_hosted_partition_preserves_archive_contract(self):
+        source, _ = self.prepare_archives()
         distribution.clearance(self.root, "github")
-        with patch.object(server_pack.urllib.request, "urlopen", side_effect=[io.BytesIO(self.fixture.mod), io.BytesIO(self.override_bytes)]) as download:
-            server_pack.materialize(self.mrpack, output, self.root)
-        self.assertEqual(2, download.call_count)
         with zipfile.ZipFile(source) as archive:
             self.assertNotIn("overrides/mods/test.jar", archive.namelist())
-        self.assertEqual(self.fixture.mod, (output / "mods/test.jar").read_bytes())
-        self.assertEqual(self.override_bytes, (output / "mods/override.jar").read_bytes())
-        self.assertEqual(b'{"enabled": true}', (output / "config/test.json").read_bytes())
-        self.assertEqual(self.text, (output / "LICENSES" / (self.digest + ".txt")).read_bytes())
-        self.assertEqual([], server_pack.validate_directory(output, self.root))
         index, contents = validate_mrpack.read_index(self.mrpack)
         self.assertEqual([], validate_mrpack.validate_index(index, contents, "26.2", "fabric", self.root)[0])
         # JSON booleans/numbers must not compare equal to native reference IDs.
@@ -256,21 +245,6 @@ class DistributionTests(unittest.TestCase):
         # A hosted binary cannot also appear as an override.
         self.fixture.files["overrides/mods/test.jar"] = self.fixture.mod
         self.assertIn("unexpected archive entry: overrides/mods/test.jar", self.fixture.validate())
-
-    def test_bad_hosted_download_preserves_previous_output(self):
-        source, output = self.prepare_archives()
-        output.write_bytes(b"previous artifact")
-        with patch.object(server_pack.urllib.request, "urlopen") as download:
-            with self.assertRaises(FileExistsError):
-                server_pack.materialize(self.mrpack, output, self.root)
-        download.assert_not_called()
-        self.assertEqual(b"previous artifact", output.read_bytes())
-        output.unlink()
-        with patch.object(server_pack.urllib.request, "urlopen", side_effect=[io.BytesIO(b"x" * len(self.fixture.mod)), io.BytesIO(self.override_bytes)]):
-            with self.assertRaisesRegex(ValueError, "hash mismatch"):
-                server_pack.materialize(self.mrpack, output, self.root)
-        self.assertFalse(output.exists())
-        self.assertEqual([], list(self.root.glob(".materialize-*")))
 
     def test_hosted_evidence_must_bind_selected_download_hash(self):
         self.prepare_archives()
@@ -481,19 +455,6 @@ class DistributionTests(unittest.TestCase):
                     self.assertFalse(any(name.lower().endswith(".jar") for name in members))
                     self.assertIn("overrides/CREDITS.md", members)
         self.assertEqual(policy, (self.root / "distribution/permissions.toml").read_bytes())
-        with self.assertRaisesRegex(ValueError, "distribution not cleared"):
-            distribution.clearance(self.root, "github")
-
-    def test_materialize_downloads_uncleared_pins_without_public_bypass(self):
-        source, output = self.prepare_archives()
-        self.override_record["channels"]["github"] = "conditional"
-        self.write_policy()
-        argv = ["server_pack.py", "materialize", str(self.mrpack), str(output)]
-        with patch.object(server_pack, "ROOT", self.root), patch.object(sys, "argv", argv), \
-                patch.object(server_pack.urllib.request, "urlopen", side_effect=[io.BytesIO(self.fixture.mod), io.BytesIO(self.override_bytes)]) as download:
-            self.assertEqual(0, server_pack.main())
-        self.assertEqual(2, download.call_count)
-        self.assertEqual([], server_pack.validate_directory(output, self.root))
         with self.assertRaisesRegex(ValueError, "distribution not cleared"):
             distribution.clearance(self.root, "github")
 

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import contextlib
 import copy
-import importlib.util
 import io
 import json
 import pathlib
@@ -16,20 +15,8 @@ import warnings
 import zipfile
 from unittest.mock import patch
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "scripts"))
+from pack_fixtures import ROOT, load_script
 import distribution
-
-
-def load_script(name: str):
-    path = ROOT / "scripts" / f"{name}.py"
-    spec = importlib.util.spec_from_file_location(name, path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"cannot load {path}")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[name] = module
-    spec.loader.exec_module(module)
-    return module
 
 
 release_metadata = load_script("release_metadata")
