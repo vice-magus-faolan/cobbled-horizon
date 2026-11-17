@@ -374,14 +374,22 @@ class DistributionTests(unittest.TestCase):
         targets = {"mods/" + mod["filename"] for mod, _ in items}
         bundled = targets - references.keys()
         self.assertEqual(32, len(targets))
-        self.assertEqual(5, len(references))
-        self.assertEqual(27, len(bundled))
+        self.assertEqual(6, len(references))
+        self.assertEqual(26, len(bundled))
         self.assertFalse(bundled & references.keys())
         self.assertEqual(targets, bundled | references.keys())
-        self.assertIn({"projectID": 306612, "fileID": 9295874, "required": True}, references.values())
+        self.assertEqual({
+            (306612, 9295874), (698309, 9509145), (342584, 9394030),
+            (345854, 9272149), (920416, 8926271), (547434, 8938808),
+        }, {(item["projectID"], item["fileID"]) for item in references.values()})
+        self.assertTrue(all(item["required"] is True for item in references.values()))
         for mod, record in items:
             if "curseforge" in mod["update"]:
-                if record["project"] != "P7dR8mSH":
+                if record["project"] == "ohNO6lps":
+                    self.assertEqual("conditional", record["channels"]["github"])
+                    self.assertEqual("b9339c21e14beec2eae0ca215317284bcaacef72e1d1dee8b3dfbe2de0eefaa758a172446df85419b6534557c479abe972d7d21f4ec194f2d436f9ed4329cb9f", mod["download"]["hash"])
+                    self.assertNotIn("mods/" + mod["filename"], bundled)
+                elif record["project"] != "P7dR8mSH":
                     self.assertEqual("unknown", record["channels"]["github"])
                 self.assertEqual(mod["download"]["hash"], record["hosted_evidence"]["sha512"])
 
