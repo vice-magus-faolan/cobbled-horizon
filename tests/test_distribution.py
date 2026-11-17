@@ -131,6 +131,12 @@ class DistributionTests(unittest.TestCase):
         self.assertIn(b"contributors", first["CREDITS.md"])
         self.assertIn(b"no source-delivery duty", first["SOURCES.md"])
 
+    def test_real_rendered_notices_keep_readable_labels(self):
+        notices = distribution.notice_members(ROOT)
+        for name in ("CREDITS.md", "SOURCES.md"):
+            with self.subTest(name=name):
+                self.assertNotRegex(notices[name].decode(), r"SHA256[0-9a-f]|Copyright[0-9]")
+
     def test_changed_pin_url_side_and_new_identity_fail(self):
         original = self.metadata.read_bytes()
         for suffix in (b'\n# changed identity\n', b'\n[extra]\nurl = "https://example.invalid/new"\n'):
@@ -386,7 +392,7 @@ class DistributionTests(unittest.TestCase):
         for mod, record in items:
             if "curseforge" in mod["update"]:
                 if record["project"] == "ohNO6lps":
-                    self.assertEqual("conditional", record["channels"]["github"])
+                    self.assertEqual("allowed", record["channels"]["github"])
                     self.assertEqual("b9339c21e14beec2eae0ca215317284bcaacef72e1d1dee8b3dfbe2de0eefaa758a172446df85419b6534557c479abe972d7d21f4ec194f2d436f9ed4329cb9f", mod["download"]["hash"])
                     self.assertNotIn("mods/" + mod["filename"], bundled)
                 elif record["project"] != "P7dR8mSH":

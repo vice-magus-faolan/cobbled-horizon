@@ -229,7 +229,7 @@ class TaggedPublisherTests(unittest.TestCase):
         # decisions and archive validation run unchanged production code.
         transport = self.bin / "gh"
         transport.write_text("#!" + sys.executable + "\n" + textwrap.dedent('''\
-            import json, os, pathlib, subprocess, sys
+            import json, os, pathlib, sys
             root = pathlib.Path(os.environ["PROVIDER_ROOT"])
             args = sys.argv[1:]
             with (root / "provider-calls.jsonl").open("a") as stream:
@@ -240,9 +240,17 @@ class TaggedPublisherTests(unittest.TestCase):
             if action == "view":
                 if state is None:
                     sys.exit(1)
-                query = args[args.index("--jq") + 1]
-                result = subprocess.run(["jq", "-r", query], input=json.dumps(state), text=True, timeout=5)
-                sys.exit(result.returncode)
+                fields = args[args.index("--json") + 1]
+                if fields == "isDraft":
+                    print(json.dumps(state["isDraft"]))
+                elif fields == "assets":
+                    if any(item["size"] <= 0 for item in state["assets"]):
+                        sys.exit(1)
+                    for name in sorted(item["name"] for item in state["assets"]):
+                        print(name)
+                else:
+                    raise AssertionError(fields)
+                sys.exit(0)
             if action == "create":
                 assert "--draft" in args and "--verify-tag" in args
                 state = {"isDraft": True, "assets": []}
@@ -271,6 +279,11 @@ class TaggedPublisherTests(unittest.TestCase):
             path.write_text(json.dumps(state))
             '''))
         transport.chmod(0o700)
+        # The existing fixture PATH contains only publication prerequisites,
+        # deliberately not jq, even when it is installed on the test host.
+        for name in ("bash", "make", "sha256sum", "sort"):
+            (self.bin / name).symlink_to(shutil.which(name))
+        (self.bin / "python3").symlink_to(sys.executable)
 
     def stage(self, cleared: bool):
         self.fixture.override_record["channels"]["github"] = "allowed" if cleared else "conditional"
@@ -289,7 +302,7 @@ class TaggedPublisherTests(unittest.TestCase):
             hashlib.sha256((self.dist / name).read_bytes()).hexdigest() + "  " + name + "\n" for name in names))
 
     def publish(self, **extra):
-        env = {"PATH": str(self.bin) + os.pathsep + os.environ["PATH"], "PYTHONDONTWRITEBYTECODE": "1",
+        env = {"PATH": str(self.bin), "PYTHONDONTWRITEBYTECODE": "1",
                "RUNNER_TEMP": str(self.root), "TMPDIR": str(self.root), "PROVIDER_ROOT": str(self.root),
                "GITHUB_REF_NAME": self.tag, "GH_REPO": "owned/synthetic", **extra}
         result = subprocess.run(["bash", "--noprofile", "--norc", "-e", "-o", "pipefail", "-c",
