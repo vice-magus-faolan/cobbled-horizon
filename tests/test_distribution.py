@@ -10,6 +10,7 @@ import hashlib
 import io
 import json
 import pathlib
+import re
 import subprocess
 import sys
 import unittest
@@ -132,10 +133,30 @@ class DistributionTests(unittest.TestCase):
         self.assertIn(b"no source-delivery duty", first["SOURCES.md"])
 
     def test_real_rendered_notices_keep_readable_labels(self):
+        glued = re.compile(r"SHA-?256[0-9a-f]|Copyright[0-9]|[A-Za-z](?:[0-9]+(?:\.[0-9]+)+|[0-9]{4,})\b")
+        # Literal URLs/digests and these observed handles/tags are identifiers,
+        # not prose labels. Do not exempt arbitrary words containing digits.
+        identifiers = re.compile(
+            r"https?://[^\s]+|\b[0-9a-f]{7,128}\b|"
+            r"\b(?:Wesley1808|wesley1808|malte0811|pop4959|v0\.7\.0|v1\.10|v4\.5|v1\.4\.3|v26\.3)(?!\w|\.[0-9])"
+        )
         notices = distribution.notice_members(ROOT)
-        for name in ("CREDITS.md", "SOURCES.md"):
+        cases = [(name, notices[name].decode(), False) for name in ("CREDITS.md", "SOURCES.md")]
+        cases.extend((label, label, True) for label in (
+            "Gson2.11.0", "ASM9.5", "AWS SDK2.31.78", "reg-sync0.18.2",
+            "Alpine3.22", "Java-WebSocket2010-2020", "Widget2026", "Wesley1808.2",
+            "Copyright2021", "SHA256abcdef",
+        ))
+        cases.append(("literal identifiers and readable labels", "Wesley1808 malte0811 pop4959 jose4j v1.10 v26.3 "
+                      "Gson 2.11.0 ASM 9.5 Java-WebSocket 2010-2020 "
+                      "https://example.invalid/Gson2.11.0 6d5108cb9bef4b07939fb579b5fc0b5e2589bb02", False))
+        for name, text, should_fail in cases:
             with self.subTest(name=name):
-                self.assertNotRegex(notices[name].decode(), r"SHA256[0-9a-f]|Copyright[0-9]")
+                prose = identifiers.sub("", text)
+                if should_fail:
+                    self.assertRegex(prose, glued)
+                else:
+                    self.assertNotRegex(prose, glued)
 
     def test_changed_pin_url_side_and_new_identity_fail(self):
         original = self.metadata.read_bytes()

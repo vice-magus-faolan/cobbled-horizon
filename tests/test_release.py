@@ -241,6 +241,12 @@ class TaggedPublisherTests(unittest.TestCase):
                 if state is None:
                     sys.exit(1)
                 fields = args[args.index("--json") + 1]
+                query = args[args.index("--jq") + 1]
+                expected_queries = {
+                    "isDraft": ".isDraft",
+                    "assets": 'if all(.assets[]; .size > 0) then .assets | map(.name) | sort | .[] else error("empty release asset") end',
+                }
+                assert query == expected_queries[fields], (fields, query)
                 if fields == "isDraft":
                     print(json.dumps(state["isDraft"]))
                 elif fields == "assets":
@@ -343,6 +349,23 @@ class TaggedPublisherTests(unittest.TestCase):
                     self.assertEqual(previous, case.provider.read_bytes())
                 finally:
                     case.doCleanups()
+
+    def test_changed_provider_queries_fail_publisher_regression(self):
+        script = workflow_script("Reassess, validate and publish selected GitHub release")
+        for query, wrong in (("--jq .isDraft", "--jq .draft"),
+                             ("map(.name)", "map(.size)")):
+            with self.subTest(query=query):
+                self.assertIn(query, script)
+                # Run the existing real-publisher regression, including its
+                # published-rerun assertions: a failed draft query can otherwise
+                # fall through to creation and appear to publish successfully.
+                case = TaggedPublisherTests("test_both_modes_publish_exact_assets_and_refuse_published_rerun")
+                result = unittest.TestResult()
+                with patch("test_release.workflow_script", return_value=script.replace(query, wrong)):
+                    case.run(result)
+                self.assertEqual([], result.errors)
+                self.assertTrue(result.failures)
+                self.assertIn(wrong.removeprefix("--jq "), result.failures[0][1])
 
     def test_default_build_refreshes_plan_but_explicit_plans_remain_frozen(self):
         import distribution
