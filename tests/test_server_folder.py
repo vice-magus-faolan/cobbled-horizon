@@ -1,23 +1,25 @@
 """Real mrpack preparation with controlled project-owned upstream downloads."""
 from __future__ import annotations
 
-import hashlib
 import io
 import json
-import pathlib
 import stat
+import sys
 import unittest
 import warnings
 import zipfile
 from unittest.mock import patch
 
+from pack_fixtures import ROOT
+import distribution
+import permission_seed
+import server_folder
+import validate_mrpack
+
 import test_distribution
-from test_validation import ROOT, permission_seed
-
-server_pack = test_distribution.server_pack
 
 
-class ServerPackTests(unittest.TestCase):
+class ServerFolderTests(unittest.TestCase):
     def setUp(self):
         self.fixture = test_distribution.DistributionTests()
         self.fixture.setUp()
@@ -26,7 +28,7 @@ class ServerPackTests(unittest.TestCase):
         self.root = self.fixture.root
         self.source = self.fixture.mrpack
         self.output = self.root / "server"
-        _, self.contents = test_distribution.validate_mrpack.read_index(self.source)
+        _, self.contents = validate_mrpack.read_index(self.source)
         (self.root / "squaremap").mkdir()
         (self.root / "squaremap/config.yml").write_bytes(b"enabled: true\n")
         for relative in ("squaremap/config.yml", *sorted(permission_seed.SEED_PATHS)):
@@ -53,8 +55,8 @@ class ServerPackTests(unittest.TestCase):
                     archive.writestr("modrinth.index.json", contents["modrinth.index.json"])
 
     def materialize(self, destination=None):
-        with patch.object(server_pack.urllib.request, "urlopen", side_effect=[io.BytesIO(self.fixture.fixture.mod), io.BytesIO(self.fixture.override_bytes)]) as download:
-            server_pack.materialize(self.source, destination or self.output, self.root)
+        with patch.object(server_folder.urllib.request, "urlopen", side_effect=[io.BytesIO(self.fixture.fixture.mod), io.BytesIO(self.fixture.override_bytes)]) as download:
+            server_folder.materialize(self.source, destination or self.output, self.root)
         return download
 
     def test_complete_root_payload_and_input_preservation(self):
@@ -65,8 +67,20 @@ class ServerPackTests(unittest.TestCase):
         self.assertEqual(set(self.payload), {path.relative_to(self.output).as_posix() for path in self.output.rglob("*") if path.is_file()})
         for name, data in self.payload.items():
             self.assertEqual(data, (self.output / name).read_bytes())
-        self.assertEqual([], server_pack.validate_directory(self.output, self.root))
+        self.assertEqual([], server_folder.validate_directory(self.output, self.root))
         self.assertEqual([], list(self.root.glob(".materialize-*")))
+
+    def test_materialize_downloads_uncleared_pins_without_public_bypass(self):
+        self.fixture.override_record["channels"]["github"] = "conditional"
+        self.fixture.write_policy()
+        argv = ["server_folder.py", "materialize", str(self.source), str(self.output)]
+        with patch.object(server_folder, "ROOT", self.root), patch.object(sys, "argv", argv), \
+                patch.object(server_folder.urllib.request, "urlopen", side_effect=[io.BytesIO(self.fixture.fixture.mod), io.BytesIO(self.fixture.override_bytes)]) as download:
+            self.assertEqual(0, server_folder.main())
+        self.assertEqual(2, download.call_count)
+        self.assertEqual([], server_folder.validate_directory(self.output, self.root))
+        with self.assertRaisesRegex(ValueError, "distribution not cleared"):
+            distribution.clearance(self.root, "github")
 
     def test_invalid_archive_is_rejected_before_download_or_destination(self):
         for defect in ("missing", "modified", "extra", "duplicate", "symlink", "index", "traversal", "alias", "jar"):
@@ -86,9 +100,9 @@ class ServerPackTests(unittest.TestCase):
                     name = {"traversal": "../escape", "alias": "overrides/config//test.json", "jar": "overrides/mods/hidden.JAR"}[defect]
                     contents[name] = b"bad"
                 self.write_mrpack(contents, duplicate=defect == "duplicate", symlink="overrides/config/test.json" if defect == "symlink" else None)
-                with patch.object(server_pack.urllib.request, "urlopen") as download:
+                with patch.object(server_folder.urllib.request, "urlopen") as download:
                     with self.assertRaises(ValueError):
-                        server_pack.materialize(self.source, self.output, self.root)
+                        server_folder.materialize(self.source, self.output, self.root)
                 download.assert_not_called()
                 self.assertFalse(self.output.exists())
                 self.assertFalse((self.root / "escape").exists())
@@ -98,15 +112,15 @@ class ServerPackTests(unittest.TestCase):
         for name, data in self.payload.items():
             target = self.output / name
             target.unlink()
-            self.assertTrue(server_pack.validate_directory(self.output, self.root), name)
+            self.assertTrue(server_folder.validate_directory(self.output, self.root), name)
             target.write_bytes(b"changed")
-            self.assertTrue(server_pack.validate_directory(self.output, self.root), name)
+            self.assertTrue(server_folder.validate_directory(self.output, self.root), name)
             target.write_bytes(data)
         for name in ("world/level.dat", "logs/latest.log", "config/floodgate/key.pem", "mods/client.jar", "mods/luckperms/users.json", "server.jar"):
             target = self.output / name
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(b"private")
-            self.assertIn("unexpected server entry: " + name, server_pack.validate_directory(self.output, self.root))
+            self.assertIn("unexpected server entry: " + name, server_folder.validate_directory(self.output, self.root))
             target.unlink()
         self.assertEqual([], list(self.root.glob(".materialize-*")))
 
@@ -121,9 +135,9 @@ class ServerPackTests(unittest.TestCase):
                     (target / "canary").write_bytes(b"preserve")
                 else:
                     target.symlink_to(self.root / "absent", target_is_directory=True)
-                with patch.object(server_pack.urllib.request, "urlopen") as download:
+                with patch.object(server_folder.urllib.request, "urlopen") as download:
                     with self.assertRaises(FileExistsError):
-                        server_pack.materialize(self.source, target, self.root)
+                        server_folder.materialize(self.source, target, self.root)
                 download.assert_not_called()
                 if kind == "file":
                     self.assertEqual(b"preserve", target.read_bytes())
@@ -140,9 +154,11 @@ class ServerPackTests(unittest.TestCase):
                     responses[0] = io.BytesIO(b"short")
                 if failure == "transport":
                     responses[1] = OSError("controlled failed download")
-                with patch.object(server_pack.urllib.request, "urlopen", side_effect=responses):
-                    with self.assertRaises((ValueError, OSError)):
-                        server_pack.materialize(self.source, self.output, self.root)
+                with patch.object(server_folder.urllib.request, "urlopen", side_effect=responses):
+                    expected = OSError if failure == "transport" else ValueError
+                    message = {"hash": "hash mismatch", "size": "size differs", "transport": "controlled failed download"}[failure]
+                    with self.assertRaisesRegex(expected, message):
+                        server_folder.materialize(self.source, self.output, self.root)
                 self.assertFalse(self.output.exists())
                 self.assertEqual([], list(self.root.glob(".materialize-*")))
 
@@ -151,8 +167,8 @@ class ServerPackTests(unittest.TestCase):
         target = self.output / "mods/test.jar"
         target.unlink()
         target.symlink_to(self.source)
-        self.assertIn("unsafe server entry type: mods/test.jar", server_pack.validate_directory(self.output, self.root))
-        self.assertTrue(server_pack.validate_directory(self.output / "mods/test.jar", self.root))
+        self.assertIn("unsafe server entry type: mods/test.jar", server_folder.validate_directory(self.output, self.root))
+        self.assertTrue(server_folder.validate_directory(self.output / "mods/test.jar", self.root))
 
     def test_source_side_and_unsafe_filename_are_rejected(self):
         path = self.fixture.metadata
@@ -160,9 +176,9 @@ class ServerPackTests(unittest.TestCase):
         for text in (original.replace('side = "server"', 'side = "client"'), original.replace('filename = "test.jar"', 'filename = "../escape.jar"')):
             with self.subTest(text=text):
                 path.write_text(text)
-                with patch.object(server_pack.urllib.request, "urlopen") as download:
+                with patch.object(server_folder.urllib.request, "urlopen") as download:
                     with self.assertRaises(ValueError):
-                        server_pack.materialize(self.source, self.output, self.root)
+                        server_folder.materialize(self.source, self.output, self.root)
                 download.assert_not_called()
                 self.assertFalse(self.output.exists())
         path.write_text(original)
@@ -170,7 +186,7 @@ class ServerPackTests(unittest.TestCase):
     def test_malformed_input_does_not_create_folder_or_destroy_input(self):
         self.source.write_bytes(b"not a ZIP")
         with self.assertRaises(zipfile.BadZipFile):
-            server_pack.materialize(self.source, self.output, self.root)
+            server_folder.materialize(self.source, self.output, self.root)
         self.assertEqual(b"not a ZIP", self.source.read_bytes())
         self.assertFalse(self.output.exists())
 

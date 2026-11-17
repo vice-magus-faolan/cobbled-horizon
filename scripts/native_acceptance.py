@@ -21,7 +21,7 @@ import urllib.request
 import zipfile
 
 import permission_seed
-import server_pack
+import server_folder
 
 ROOT = Path(__file__).resolve().parents[1]
 JAVA_IMAGE = "eclipse-temurin:25-jdk@sha256:b8705e936964c228dfce359e63dbf08f6c69cb380ed1d576b1f6b1064f15567d"
@@ -334,7 +334,7 @@ def first_boot(console: Console, server: Path) -> dict:
 def native_run(archive: Path, work: Path, project: str, summary: dict) -> None:
     deadline = time.monotonic() + 720
     server = work / "server"
-    server_pack.materialize(archive, server, ROOT)
+    server_folder.materialize(archive, server, ROOT)
     summary["preparation"] = "validated mrpack to complete server folder"
     with archive.open("rb") as stream:
         summary["archive_sha256"] = hashlib.file_digest(stream, "sha256").hexdigest()

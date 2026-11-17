@@ -81,7 +81,7 @@ check-upload: public-check
 
 materialize: export
 	mkdir -p $(dir $(SERVER_DIR))
-	python3 scripts/server_pack.py materialize $(MRPACK) $(SERVER_DIR)
+	python3 scripts/server_folder.py materialize $(MRPACK) $(SERVER_DIR)
 
 clean:
 	rm -rf build dist
