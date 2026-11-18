@@ -236,6 +236,17 @@ class TaggedPublisherTests(unittest.TestCase):
                 stream.write(json.dumps(args) + "\\n")
             path = root / "provider.json"
             state = json.loads(path.read_text()) if path.exists() else None
+            if args[0] == "api":
+                assert args == ["api", "repos/{owner}/{repo}/releases", "--paginate", "--jq",
+                                '.[] | select(.draft == false and .prerelease == false) | .tag_name'], args
+                pages = json.loads(os.environ.get("PROVIDER_RELEASE_PAGES", "[[]]"))
+                for page in pages:
+                    for item in page:
+                        if not item["draft"] and not item["prerelease"]:
+                            print(item["tag_name"])
+                if os.environ.get("PROVIDER_LIST_FAIL"):
+                    sys.exit(1)  # Partial page output must not become success.
+                sys.exit(0)
             action = args[1]
             if action == "view":
                 if state is None:
@@ -277,6 +288,9 @@ class TaggedPublisherTests(unittest.TestCase):
                         sys.exit(1)  # Preserve a genuinely partial upload for retry.
             elif action == "edit":
                 assert "--draft=false" in args and "--verify-tag" in args
+                latest = [value for value in args if value.startswith("--latest=")]
+                assert len(latest) == 1 and latest[0] in {"--latest=true", "--latest=false"}, args
+                state["latest"] = latest[0] == "--latest=true"
                 state["isDraft"] = False
             else:
                 raise AssertionError(args)
@@ -333,6 +347,7 @@ class TaggedPublisherTests(unittest.TestCase):
                     self.assertEqual(0, result.returncode, result.stdout + result.stderr)
                     state = json.loads(case.provider.read_text())
                     self.assertFalse(state["isDraft"])
+                    self.assertTrue(state["latest"])  # Empty published inventory.
                     expected = [case.basename + suffix for suffix in
                                 ((".mrpack", ".zip", ".sha256") if cleared else (".mrpack", ".mrpack.sha256"))]
                     self.assertEqual(sorted(expected), sorted(item["name"] for item in state["assets"]))
@@ -350,10 +365,53 @@ class TaggedPublisherTests(unittest.TestCase):
                 finally:
                     case.doCleanups()
 
+    def test_latest_compares_versions_across_all_published_pages(self):
+        def release(tag, **extra):
+            return {"tag_name": tag, "draft": False, "prerelease": False, **extra}
+
+        # Newer creation dates/order cannot conceal a higher old version on
+        # another page. Also distinguish numeric from lexical version order.
+        recent = [release(f"v26.1.0.0.{number}") for number in range(30)]
+        inventories = (
+            ([recent, [release("v26.3.0.1.4")]], False),
+            ([[release("v26.10.0.0.0"), release("v26.1.0.99.99")]], False),
+            ([[release("v26.1.0.99.99"), release("v99.0.0.0.0", draft=True),
+               release("v99.0.0.0.1", prerelease=True)]], True),
+        )
+        for pages, expected in inventories:
+            for cleared in (False, True):
+                with self.subTest(pages=pages, cleared=cleared):
+                    case = TaggedPublisherTests()
+                    case.setUp()
+                    try:
+                        case.stage(cleared)
+                        result, calls = case.publish(PROVIDER_RELEASE_PAGES=json.dumps(pages))
+                        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+                        state = json.loads(case.provider.read_text())
+                        self.assertFalse(state["isDraft"])
+                        self.assertEqual(expected, state["latest"])
+                        self.assertIn("--latest=" + str(expected).lower(), calls[-1])
+                        self.assertEqual("api", calls[0][0])
+                    finally:
+                        case.doCleanups()
+
+    def test_unavailable_or_malformed_inventory_has_no_publication_effects(self):
+        self.stage(False)
+        published = [[{"tag_name": "v26.3.0.1.4", "draft": False, "prerelease": False}]]
+        for extra in ({"PROVIDER_LIST_FAIL": "1", "PROVIDER_RELEASE_PAGES": json.dumps(published)},
+                      {"PROVIDER_RELEASE_PAGES": json.dumps([[{"tag_name": "unparseable", "draft": False, "prerelease": False}]])}):
+            with self.subTest(extra=extra):
+                prior = len(self.calls.read_text().splitlines()) if self.calls.exists() else 0
+                result, calls = self.publish(**extra)
+                self.assert_no_upload(result, calls[prior:])
+                self.assertFalse(self.provider.exists())
+
     def test_changed_provider_queries_fail_publisher_regression(self):
         script = workflow_script("Reassess, validate and publish selected GitHub release")
         for query, wrong in (("--jq .isDraft", "--jq .draft"),
-                             ("map(.name)", "map(.size)")):
+                             ("map(.name)", "map(.size)"),
+                             ("--paginate", "--no-paginate"),
+                             (".tag_name", ".name")):
             with self.subTest(query=query):
                 self.assertIn(query, script)
                 # Run the existing real-publisher regression, including its
