@@ -374,17 +374,26 @@ class DistributionTests(unittest.TestCase):
         references = validate_curseforge.hosted_files(ROOT)
         targets = {"mods/" + mod["filename"] for mod, _ in items}
         self.assertEqual(32, len(targets))
-        # Frozen 26.2 has no native CF mappings. Do not import 26.3 mappings.
-        self.assertEqual({}, references)
-        self.assertTrue(all("curseforge" not in mod["update"] for mod, _ in items))
-        blockers = distribution.uncleared_components(items, "github")
-        self.assertEqual(29, len(blockers))
+        # These mappings bind the unchanged 26.2 pins, never newer 26.3 files.
+        expected = {
+            (306612, 8831797), (547434, 8292030), (698309, 8082824),
+            (342584, 8341462), (345854, 8715294), (1175319, 7320697),
+            (884883, 8327191),
+        }
+        self.assertEqual(7, len(references))
+        self.assertEqual(expected, {(item["projectID"], item["fileID"]) for item in references.values()})
+        self.assertTrue(all(item["required"] is True for item in references.values()))
+        bundled = {"mods/" + mod["filename"] for mod, record in items if not record.get("hosted")}
+        self.assertEqual(25, len(bundled))
+        self.assertEqual(set(), bundled & references.keys())
+        self.assertEqual(targets, bundled | references.keys())
+        self.assertEqual([], distribution.uncleared_components(items, "github"))
         plan = distribution.release_plan(ROOT)
-        self.assertEqual("metadata", plan["mode"])
+        self.assertEqual("full", plan["mode"])
         self.assertEqual(["cobbled-horizon-26.2.0.1.2.mrpack",
-                          "cobbled-horizon-26.2.0.1.2.mrpack.sha256"], plan["assets"])
-        for record in blockers:
-            self.assertIn(f"({record['project']}/{record['version']})", plan["notes"])
+                          "cobbled-horizon-26.2.0.1.2.zip",
+                          "cobbled-horizon-26.2.0.1.2.sha256"], plan["assets"])
+        self.assertIn("Exact hosted references do not grant binary redistribution rights.", plan["notes"])
 
     def test_real_workflow_withholds_uncleared_uploads_and_accepts_metadata_tags(self):
         # Owned policy varies independently of the live pack's clearance state.

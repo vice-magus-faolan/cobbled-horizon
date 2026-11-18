@@ -12,3 +12,7 @@ hash = "9b22adeb1952ec25856e160b93aaa41934fd41e8d1aef985317cb2c9d64aae1012e134e2
 [update.modrinth]
 mod-id = "HSfsxuTo"
 version = "CuBdAr31"
+
+[update.curseforge]
+project-id = 698309
+file-id = 8082824
