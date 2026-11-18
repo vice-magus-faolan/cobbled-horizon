@@ -2,11 +2,11 @@
 
 ## Release versions
 
-`pack.toml` is the source of truth for release versions and artifact names. Its `version` is `<Minecraft version>.<pack major>.<pack minor>.<pack patch>`, currently `26.2.0.1.2`. Git tags add a leading `v`, giving `v26.2.0.1.2`. The Minecraft prefix must match `versions.minecraft` exactly. Both exported manifests retain the complete pack version.
+`pack.toml` is the source of truth for release versions and artifact names. Its `version` is `<Minecraft version>.<pack major>.<pack minor>.<pack patch>`, currently `26.2.0.1.3`. Git tags add a leading `v`, giving `v26.2.0.1.3`. The Minecraft prefix must match `versions.minecraft` exactly. Both exported manifests retain the complete pack version.
 
-For the next pack-only patch on Minecraft 26.2, use `26.2.0.1.3`. If Minecraft gains another version component, keep the complete prefix, for example `26.2.1.0.1.0` for Minecraft 26.2.1 and pack revision 0.1.0. Release tags currently accept numeric versions only, without prerelease suffixes.
+For the next pack-only patch on Minecraft 26.2, use `26.2.0.1.4`. If Minecraft gains another version component, keep the complete prefix, for example `26.2.1.0.1.0` for Minecraft 26.2.1 and pack revision 0.1.0. Release tags currently accept numeric versions only, without prerelease suffixes.
 
-Pushing a matching tag publishes only the derived distribution plan's assets, after validate and native acceptance succeed. Current 26.2 selects metadata mode: the no-JAR `.mrpack` and `.mrpack.sha256`. Full clearance selects the `.mrpack`, primary CurseForge-format `.zip` and combined `.sha256`, never an additional server-folder ZIP. See the [release instructions](../README.md#github-releases). Publication to Modrinth or CurseForge is not configured.
+Pushing a matching tag publishes only the derived distribution plan's assets, after validate and native acceptance succeed. Current 26.2 selects full mode: the `.mrpack`, primary CurseForge-format `.zip` and combined `.sha256`, never an additional server-folder ZIP. Metadata mode remains a fallback for well-formed unresolved bundled obligations and selects the no-JAR `.mrpack` and `.mrpack.sha256`. See the [release instructions](../README.md#github-releases). Publication to Modrinth or CurseForge is not configured.
 
 ## Production pins
 
