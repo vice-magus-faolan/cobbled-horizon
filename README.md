@@ -137,7 +137,7 @@ tag runs instead retain the exact release-tag check.
 The export lands at:
 
 ```text
-dist/cobbled-horizon-26.2.0.1.2.mrpack
+dist/cobbled-horizon-26.2.0.1.3.mrpack
 ```
 
 On the designated Minecraft test host, materialize a clean server tree with:
@@ -150,18 +150,18 @@ Do not upload the `.mrpack` to DatHost's server-ZIP field. `make materialize` va
 
 ## GitHub releases
 
-Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. For the current pack, use `v26.2.0.1.2`, for Minecraft `26.2` and pack revision `0.1.2`. `pack.toml` stores the complete version, `26.2.0.1.2`, without the leading `v`.
+Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. For the current pack, use `v26.2.0.1.3`, for Minecraft `26.2` and pack revision `0.1.3`. `pack.toml` stores the complete version, `26.2.0.1.3`, without the leading `v`.
 
 The derived distribution plan selects one public asset set:
 
-- **Metadata mode (current 26.2):** `cobbled-horizon-26.2.0.1.2.mrpack` and `.mrpack.sha256`. The no-JAR archive contains exact upstream references, configuration and finite recipient notices. The public ZIP is withheld while 29 selected mods have unresolved binary distribution obligations.
-- **Full mode (only after clearance):** the `.mrpack`, primary CurseForge-format `.zip` and combined `.sha256`. Native CurseForge references and bundled binaries have separate exact-identity/evidence checks. A validation failure never downgrades a full release to metadata.
+- **Full mode (current 26.2):** `cobbled-horizon-26.2.0.1.3.mrpack`, `cobbled-horizon-26.2.0.1.3.zip` and the combined `cobbled-horizon-26.2.0.1.3.sha256`. Native CurseForge references and bundled binaries have separate exact-identity/evidence checks. A validation failure never downgrades a full release to metadata.
+- **Metadata fallback:** the `.mrpack` and `.mrpack.sha256` when selected bundled records have well-formed unresolved binary obligations. The no-JAR archive contains exact upstream references, configuration and finite recipient notices.
 
-Inspect the current plan and build the metadata archive with:
+Inspect the current plan and build its full release with:
 
 ```bash
 python3 scripts/distribution.py release-plan
-make validate test export check-metadata
+make validate test release
 ```
 
 `make release` builds the full public archives only when distribution checks permit it. There is no additional server-folder ZIP. `make materialize` produces the complete local folder from the mrpack instead. The host must supply Java 25, Minecraft 26.2 and Fabric Loader 0.19.5; runtime binaries, worlds and credentials are not packaged. Vanilla Java clients need no pack.

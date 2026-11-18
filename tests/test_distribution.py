@@ -390,9 +390,9 @@ class DistributionTests(unittest.TestCase):
         self.assertEqual([], distribution.uncleared_components(items, "github"))
         plan = distribution.release_plan(ROOT)
         self.assertEqual("full", plan["mode"])
-        self.assertEqual(["cobbled-horizon-26.2.0.1.2.mrpack",
-                          "cobbled-horizon-26.2.0.1.2.zip",
-                          "cobbled-horizon-26.2.0.1.2.sha256"], plan["assets"])
+        self.assertEqual(["cobbled-horizon-26.2.0.1.3.mrpack",
+                          "cobbled-horizon-26.2.0.1.3.zip",
+                          "cobbled-horizon-26.2.0.1.3.sha256"], plan["assets"])
         self.assertIn("Exact hosted references do not grant binary redistribution rights.", plan["notes"])
 
     def test_real_workflow_withholds_uncleared_uploads_and_accepts_metadata_tags(self):

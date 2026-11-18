@@ -23,12 +23,12 @@ The guide calls for removing an installed modpack before Custom upload. Do not a
 
 ## Build
 
-Verify a downloaded release's mrpack checksum before preparing it:
+Download the full release's mrpack, ZIP and combined checksum into `dist/`, then verify the checksums before preparing the mrpack:
 
 ```bash
-(cd dist && sha256sum --check cobbled-horizon-26.2.0.1.2.mrpack.sha256)
+(cd dist && sha256sum --check cobbled-horizon-26.2.0.1.3.sha256)
 mkdir -p build
-python3 scripts/server_folder.py materialize dist/cobbled-horizon-26.2.0.1.2.mrpack build/server
+python3 scripts/server_folder.py materialize dist/cobbled-horizon-26.2.0.1.3.mrpack build/server
 ```
 
 Alternatively, build and materialize the exact reviewed source on the designated Minecraft test host:
