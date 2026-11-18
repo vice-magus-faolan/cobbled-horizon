@@ -215,6 +215,18 @@ jobs:
           selected=$(python3 -c 'import json, sys; print("\n".join(json.load(open(sys.argv[1]))["assets"]))' "$plan")
           mapfile -t assets <<< "$selected"
           python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))["notes"])' "$plan" > "$RUNNER_TEMP/release-notes.md"
+          # GitHub's creation-time heuristic can let an older Minecraft line
+          # steal Latest. Fetch every published stable tag and compare numbers.
+          published=$(gh api 'repos/{owner}/{repo}/releases' --paginate --jq \
+            '.[] | select(.draft == false and .prerelease == false) | .tag_name')
+          latest=$(python3 -c '
+          import re, sys
+          tags = [sys.argv[1], *sys.argv[2].splitlines()]
+          if not all(re.fullmatch(r"v[0-9]+(?:\.[0-9]+){4,}", tag) for tag in tags):
+              sys.exit("Cannot order published release tags; refusing to publish.")
+          versions = [tuple(map(int, tag[1:].split("."))) for tag in tags]
+          print(str(versions[0] == max(versions)).lower())
+          ' "$GITHUB_REF_NAME" "$published")
           cd dist
           # Upload into a draft so failed uploads never publish a partial release.
           if draft=$(gh release view "$GITHUB_REF_NAME" --json isDraft --jq .isDraft); then
@@ -235,4 +247,4 @@ jobs:
             echo "Uploaded release assets differ; leaving the release in draft."
             exit 1
           fi
-          gh release edit "$GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/release-notes.md" --draft=false --verify-tag
+          gh release edit "$GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/release-notes.md" --draft=false --verify-tag --latest="$latest"
