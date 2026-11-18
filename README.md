@@ -146,42 +146,31 @@ On the designated Minecraft test host, materialize a clean server tree with:
 make materialize
 ```
 
-Do not upload the `.mrpack` to DatHost's server-ZIP field. `make release` also builds a standalone ZIP containing the complete `mods/`, `config/`, and `squaremap/` payload, without starting Minecraft. See [`docs/deployment.md`](docs/deployment.md) for import choices, exact runtime prerequisites, stopped-server upload and separate designated-host acceptance tests.
+Do not upload the `.mrpack` to DatHost's server-ZIP field. `make materialize` validates the metadata archive and downloads its exact pins into `build/server/`; it does not start Minecraft or grant redistribution permission. See [`docs/deployment.md`](docs/deployment.md) for runtime prerequisites, stopped-server transfer and separate designated-host acceptance tests.
 
 ## GitHub releases
 
 Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. For the current pack, use `v26.2.0.1.2`, for Minecraft `26.2` and pack revision `0.1.2`. `pack.toml` stores the complete version, `26.2.0.1.2`, without the leading `v`.
 
-To build and validate all three release archives, run:
+The derived distribution plan selects one public asset set:
+
+- **Metadata mode (current 26.2):** `cobbled-horizon-26.2.0.1.2.mrpack` and `.mrpack.sha256`. The no-JAR archive contains exact upstream references, configuration and finite recipient notices. The public ZIP is withheld while 29 selected mods have unresolved binary distribution obligations.
+- **Full mode (only after clearance):** the `.mrpack`, primary CurseForge-format `.zip` and combined `.sha256`. Native CurseForge references and bundled binaries have separate exact-identity/evidence checks. A validation failure never downgrades a full release to metadata.
+
+Inspect the current plan and build the metadata archive with:
 
 ```bash
-make test
-make release
+python3 scripts/distribution.py release-plan
+make validate test export check-metadata
 ```
 
-The release files are:
+`make release` builds the full public archives only when distribution checks permit it. There is no additional server-folder ZIP. `make materialize` produces the complete local folder from the mrpack instead. The host must supply Java 25, Minecraft 26.2 and Fabric Loader 0.19.5; runtime binaries, worlds and credentials are not packaged. Vanilla Java clients need no pack.
 
-```text
-dist/cobbled-horizon-26.2.0.1.2.mrpack
-dist/cobbled-horizon-26.2.0.1.2.zip
-dist/cobbled-horizon-26.2.0.1.2-server.zip
-dist/cobbled-horizon-26.2.0.1.2.sha256
-```
+Only the release owner should create and push a matching version tag after review. GitHub Actions validates source, index and the selected archives, then independently boots a folder materialized from the validated mrpack, including in metadata mode. Native acceptance checks a clean install, effective permissions, conflict/repeat/roundtrip preservation, save/exit and an offline restart. Its test-owned permission import does not change this line's manual production bootstrap.
 
-All three archives describe the same server pack. The `.mrpack` preserves the server-only flags and references pinned Modrinth downloads. The primary CurseForge-format `.zip` bundles those mod JARs under `overrides/mods/`, along with configuration overrides and a manifest. The additional `-server.zip` places the complete `mods/`, `config/`, and `squaremap/` directories at its root, with no manifest, `overrides/` wrapper or enclosing folder. It reuses the validated native export, not another resolver. The host must supply Java 25, Minecraft 26.2 and Fabric Loader 0.19.5; no runtime binaries, worlds or credentials are bundled. Vanilla Java clients need none of these archives to join.
+Publication reassesses the same frozen plan and checksum membership, uploads only its selected nonempty assets into a draft, compares the exact remote set, then publishes. Upload failures leave the draft recoverable; reruns refuse to alter published assets. Branch, pull-request and manual runs do not publish. Native evidence is a bounded log allowlist, never downloaded JARs, worlds, exports or credentials.
 
-After committing and pushing the intended release changes, create and push the matching tag:
-
-```bash
-git tag -a v26.2.0.1.2 -m "Cobbled Horizon v26.2.0.1.2"
-git push origin v26.2.0.1.2
-```
-
-GitHub Actions checks the version, tests the tooling, verifies the source index, and validates all three archives. It then creates a GitHub release with all three archives, their SHA-256 checksums, and generated release notes. Publishing uses the built-in `GITHUB_TOKEN`; no additional secrets are required. This workflow uploads to GitHub only.
-
-The workflow uploads into a draft and publishes it only after all four files are present and nonempty, with exact local and remote asset-set checks. If an upload fails, rerun the failed job to complete the draft. A rerun refuses to replace assets on an already published release. Use a new pack version and tag for a corrected release. Branch, pull request, and manual workflow runs build artifacts without publishing.
-
-Release automation performs static validation. Complete the designated-host acceptance tests before treating a release as production-ready. See [`docs/version-policy.md`](docs/version-policy.md) for the update procedure.
+Exact-head hosted validate and native-acceptance must pass before accepting the pipeline. Production cross-play, provider access, world-generation/performance and restore tests remain separate designated-host requirements. See [`docs/version-policy.md`](docs/version-policy.md).
 
 ## Updating
 
@@ -209,4 +198,4 @@ A nonzero exit means at least one baseline project remains unavailable. Staged c
 
 Jimmy McCann ([@jabez007](https://github.com/jabez007)) directs the project. See [`CONTRIBUTORS.md`](CONTRIBUTORS.md).
 
-The repository-authored tooling and documentation are MIT licensed. Referenced mods and Minecraft remain under their own licenses and terms.
+The repository-authored tooling and documentation are MIT licensed. Referenced mods and Minecraft remain under their own licenses and terms. `distribution/permissions.toml` binds exact pins, channel decisions, source duties and captured license texts. Generated notices are not permission grants; unresolved records block binary publication and require separate assessment before provider conveyance.

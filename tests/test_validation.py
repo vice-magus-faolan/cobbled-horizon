@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import contextlib
 import copy
-import importlib.util
 import io
 import json
 import pathlib
@@ -16,18 +15,8 @@ import warnings
 import zipfile
 from unittest.mock import patch
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
-
-
-def load_script(name: str):
-    path = ROOT / "scripts" / f"{name}.py"
-    spec = importlib.util.spec_from_file_location(name, path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"cannot load {path}")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[name] = module
-    spec.loader.exec_module(module)
-    return module
+from pack_fixtures import ROOT, load_script
+import distribution
 
 
 release_metadata = load_script("release_metadata")
@@ -49,6 +38,29 @@ class PackSourceTests(unittest.TestCase):
             summary.indexed_files,
             summary.baseline_selected + summary.baseline_dependencies,
         )
+
+    def test_source_entrypoint_rejects_stale_or_malformed_distribution_records(self) -> None:
+        original_load = distribution.load
+        for variant in ("missing pin", "stale identity", "missing text", "bad schema"):
+            with self.subTest(variant=variant):
+                def load(path):
+                    data = original_load(path)
+                    if path == ROOT / "distribution/permissions.toml":
+                        data = copy.deepcopy(data)
+                        if variant == "missing pin":
+                            data["components"] = data["components"][1:]
+                        elif variant == "stale identity":
+                            data["components"][0]["metafile_sha256"] = "0" * 64
+                        elif variant == "missing text":
+                            data["components"][0]["texts"] = ["0" * 64]
+                        else:
+                            data["schema"] = 999
+                    return data
+                with patch.object(distribution, "load", side_effect=load):
+                    errors, _ = check_pack.validate()
+                self.assertTrue(any(error.startswith("distribution:") for error in errors), errors)
+        errors, _ = check_pack.validate()
+        self.assertEqual([], errors)
 
     def test_friends_and_family_policy_is_pinned(self) -> None:
         waystones = json.loads((ROOT / "config/sswaystones.json").read_text())
@@ -213,6 +225,7 @@ class MrpackTests(unittest.TestCase):
             for directory in ("config", "squaremap")
             for path in (ROOT / directory).rglob("*") if path.is_file()
         }
+        self.overrides.update({"overrides/" + name: data for name, data in distribution.notice_members(ROOT).items()})
 
     def run_archive(self, index: dict, overrides: dict[str, bytes]) -> tuple[int, str]:
         with tempfile.TemporaryDirectory() as directory:
@@ -248,6 +261,38 @@ class MrpackTests(unittest.TestCase):
             with self.subTest(label=label):
                 self.assert_archive_rejected(self.index, overrides, "configuration override")
 
+    def test_worldgen_overrides_are_required_byte_for_byte(self) -> None:
+        for relative in (
+            "config/cristellib/mss/structure_placement_config.json5",
+            "config/cristellib/mss/structure_toggle_config.json5",
+            "config/cristellib/hopobettermineshaft/structure_toggle_config.json5",
+            "config/cristellib/mr_epic_structuresvillagesstandaloneedition/structure_placement_config.json5",
+        ):
+            key = "overrides/" + relative
+            self.assertIn(key, self.overrides)
+            for contents in (None, b"changed"):
+                with self.subTest(relative=relative, contents=contents):
+                    overrides = dict(self.overrides)
+                    if contents is None:
+                        del overrides[key]
+                    else:
+                        overrides[key] = contents
+                    self.assert_archive_rejected(self.index, overrides, "configuration override")
+
+    def test_indexed_runtime_policy_is_rejected(self) -> None:
+        for relative in ("config/luckperms/users.json", "config/cobbled-horizon/extra.json", "mods/luckperms/luckperms-h2.mv.db"):
+            with self.subTest(relative=relative), tempfile.TemporaryDirectory() as directory:
+                root = pathlib.Path(directory)
+                (root / "pack.toml").write_bytes((ROOT / "pack.toml").read_bytes())
+                (root / "collection.toml").write_text("selected = []\nresolved-dependency = []\n")
+                (root / "index.toml").write_text(f"[[files]]\nfile = {json.dumps(relative)}\n")
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(b"private canary")
+                errors = []
+                validate_mrpack.validate_contract({**self.index, "files": []}, {"overrides/" + relative: b"private canary"}, root, errors)
+                self.assertIn("unexpected source override: " + relative, errors)
+
     def test_incorrect_environment_is_rejected(self) -> None:
         for env in (None, {}, [], {"server": "optional", "client": "unsupported"}, {"server": "unsupported", "client": "required"}, {"server": "required", "client": "required"}):
             with self.subTest(env=env):
@@ -280,7 +325,8 @@ class MrpackTests(unittest.TestCase):
         self.assert_archive_rejected({**self.index, "files": self.index["files"] + [extra]}, self.overrides, "unexpected exported file")
         for name in ("overrides/staged/config/example.json", "server-overrides/config/justenoughbackups.json", "overrides/mods/krypton.jar", "overrides/config/floodgate/key.pem"):
             with self.subTest(name=name):
-                self.assert_archive_rejected(self.index, {**self.overrides, name: b"unexpected"}, "unexpected archive entry")
+                reason = "must not bundle JARs" if name.endswith(".jar") else "unexpected archive entry"
+                self.assert_archive_rejected(self.index, {**self.overrides, name: b"unexpected"}, reason)
 
     def test_duplicate_archive_paths_are_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

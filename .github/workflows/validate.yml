@@ -2,7 +2,7 @@ name: Build and release pack
 
 on:
   push:
-    branches: ['26.2']
+    branches: ['26.2', '26.3']
     tags: ['v*']
   pull_request:
   workflow_dispatch:
@@ -20,6 +20,8 @@ jobs:
     timeout-minutes: 30
     outputs:
       version: ${{ steps.metadata.outputs.version }}
+      cleared: ${{ steps.rights.outputs.cleared }}
+      artifact-id: ${{ steps.artifacts.outputs.artifact-id }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
@@ -49,68 +51,183 @@ jobs:
           fi
           python3 scripts/release_metadata.py "${args[@]}" >> "$GITHUB_OUTPUT"
 
-      - name: Test repository tooling
-        run: python3 -m unittest discover -s tests -v
-
       - name: Install pinned packwiz revision
         run: go install github.com/packwiz/packwiz@ef87d964f8cbd52b3b13ea42453ef322290e2b9e
+
+      - name: Validate source and test repository tooling
+        # Pins, validators and exports share one contract: run the full PR suite.
+        run: make validate test
 
       - name: Verify packwiz index is current
         run: |
           packwiz refresh --build
           git diff --exit-code -- pack.toml index.toml
 
-      - name: Export and validate all three pack archives
+      - name: Export and validate metadata-only pack
         run: |
-          make release
+          make export check-metadata
           git diff --exit-code -- pack.toml index.toml
 
-      - name: Upload validated release files
+      - name: Evaluate public distribution clearance
+        id: rights
+        shell: bash
+        run: |
+          args=()
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then
+            args+=(--tag "$GITHUB_REF_NAME")
+          fi
+          python3 scripts/distribution.py release-plan "${args[@]}" > "$RUNNER_TEMP/release-plan.json"
+          mode=$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))["mode"])' "$RUNNER_TEMP/release-plan.json")
+          if [[ "$mode" == full ]]; then
+            echo 'cleared=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'cleared=false' >> "$GITHUB_OUTPUT"
+            echo '::notice::The public ZIP is withheld; validated no-JAR metadata remains eligible after native acceptance.'
+          fi
+          {
+            echo 'paths<<RELEASE_ASSETS'
+            python3 -c 'import json, sys; print("\n".join("dist/" + name for name in json.load(open(sys.argv[1]))["assets"]))' "$RUNNER_TEMP/release-plan.json"
+            echo 'RELEASE_ASSETS'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Export and validate selected public archives
+        if: steps.rights.outputs.cleared == 'true'
+        run: |
+          make release CHANNEL=github RELEASE_PLAN="$RUNNER_TEMP/release-plan.json"
+          git diff --exit-code -- pack.toml index.toml
+
+      - name: Upload validated selected release files
+        id: artifacts
         uses: actions/upload-artifact@v7
         with:
           name: cobbled-horizon-${{ steps.metadata.outputs.version }}
-          path: |
-            dist/cobbled-horizon-${{ steps.metadata.outputs.version }}.mrpack
-            dist/cobbled-horizon-${{ steps.metadata.outputs.version }}.zip
-            dist/cobbled-horizon-${{ steps.metadata.outputs.version }}-server.zip
-            dist/cobbled-horizon-${{ steps.metadata.outputs.version }}.sha256
+          path: ${{ steps.rights.outputs.paths }}
           if-no-files-found: error
           retention-days: 14
 
+  native-acceptance:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    env:
+      NATIVE_PROJECT: ch-native-${{ github.run_id }}-${{ github.run_attempt }}
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - name: Check out matching source
+        id: source
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Download immutable validated pack artifacts
+        uses: actions/download-artifact@v8
+        with:
+          artifact-ids: ${{ needs.validate.outputs.artifact-id }}
+          merge-multiple: true
+          path: dist
+
+      - name: Validate downloaded pack artifacts
+        shell: bash
+        # Fail on download/hash/plan errors; never silently re-export a substitute.
+        run: |
+          args=()
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then
+            args+=(--tag "$GITHUB_REF_NAME")
+          fi
+          plan="$RUNNER_TEMP/native-release-plan.json"
+          python3 scripts/distribution.py release-plan "${args[@]}" > "$plan"
+          make check-release RELEASE_PLAN="$plan"
+
+      - name: Pull pinned Java 25 runtime
+        timeout-minutes: 2
+        run: docker pull eclipse-temurin:25-jdk@sha256:b8705e936964c228dfce359e63dbf08f6c69cb380ed1d576b1f6b1064f15567d
+
+      - name: Verify native first-install and restart acceptance
+        timeout-minutes: 13
+        env:
+          PACK_VERSION: ${{ needs.validate.outputs.version }}
+          NATIVE_WORK: ${{ runner.temp }}/ch-native-${{ github.run_id }}-${{ github.run_attempt }}
+          NATIVE_EVIDENCE: ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          python3 scripts/native_acceptance.py run --project "$NATIVE_PROJECT" \
+            --archive "dist/cobbled-horizon-$PACK_VERSION.mrpack" \
+            --work "$NATIVE_WORK" --evidence "$NATIVE_EVIDENCE"
+
+      - name: Remove and verify absence of owned resources
+        if: always() && steps.source.outcome == 'success'
+        timeout-minutes: 2
+        run: python3 scripts/native_acceptance.py cleanup --project "$NATIVE_PROJECT"
+
+      - name: Upload bounded native acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: native-acceptance-${{ needs.validate.outputs.version }}
+          path: |
+            ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/summary.json
+            ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/installer.log
+            ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/first-boot.log
+            ${{ runner.temp }}/ch-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/offline-second-boot.log
+          if-no-files-found: warn
+          retention-days: 7
+
   publish:
     if: github.event_name == 'push' && github.ref_type == 'tag'
-    needs: validate
+    needs: [validate, native-acceptance]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: write
     steps:
+      - name: Check out exact source for public revalidation
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
       - name: Download validated release files
         uses: actions/download-artifact@v8
         with:
           name: cobbled-horizon-${{ needs.validate.outputs.version }}
           path: dist
 
-      - name: Create and publish GitHub release
-        working-directory: dist
+      - name: Reassess, validate and publish selected GitHub release
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          RELEASE_VERSION: ${{ needs.validate.outputs.version }}
         run: |
-          basename="cobbled-horizon-$RELEASE_VERSION"
-          assets=("$basename.mrpack" "$basename.zip" "$basename-server.zip" "$basename.sha256")
-          for asset in "${assets[@]}"; do
-            test -s "$asset"
-          done
-          shopt -s nullglob dotglob
-          files=(*)
-          if (( ${#files[@]} != ${#assets[@]} )); then
-            echo "Unexpected release file set; refusing publication."
-            exit 1
-          fi
-          sha256sum --check "$basename.sha256"
+          # Never trust an upstream clearance boolean at the upload boundary.
+          plan="$RUNNER_TEMP/publish-plan.json"
+          python3 scripts/distribution.py release-plan --tag "$GITHUB_REF_NAME" > "$plan"
+          make check-release RELEASE_PLAN="$plan" RELEASE_TAG="$GITHUB_REF_NAME"
+          selected=$(python3 -c 'import json, sys; print("\n".join(json.load(open(sys.argv[1]))["assets"]))' "$plan")
+          mapfile -t assets <<< "$selected"
+          python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))["notes"])' "$plan" > "$RUNNER_TEMP/release-notes.md"
+          # GitHub's creation-time heuristic can let an older Minecraft line
+          # steal Latest. Fetch every published stable tag and compare numbers.
+          published=$(gh api 'repos/{owner}/{repo}/releases' --paginate --jq \
+            '.[] | select(.draft == false and .prerelease == false) | .tag_name')
+          latest=$(python3 -c '
+          import re, sys
+          tags = [sys.argv[1], *sys.argv[2].splitlines()]
+          if not all(re.fullmatch(r"v[0-9]+(?:\.[0-9]+){4,}", tag) for tag in tags):
+              sys.exit("Cannot order published release tags; refusing to publish.")
+          versions = [tuple(map(int, tag[1:].split("."))) for tag in tags]
+          print(str(versions[0] == max(versions)).lower())
+          ' "$GITHUB_REF_NAME" "$published")
+          cd dist
           # Upload into a draft so failed uploads never publish a partial release.
           if draft=$(gh release view "$GITHUB_REF_NAME" --json isDraft --jq .isDraft); then
             if [[ "$draft" != true ]]; then
@@ -119,7 +236,8 @@ jobs:
             fi
           else
             gh release create "$GITHUB_REF_NAME" --verify-tag --draft \
-              --title "Cobbled Horizon $GITHUB_REF_NAME" --generate-notes
+              --title "Cobbled Horizon $GITHUB_REF_NAME" \
+              --notes-file "$RUNNER_TEMP/release-notes.md"
           fi
           gh release upload "$GITHUB_REF_NAME" "${assets[@]}" --clobber
           uploaded=$(gh release view "$GITHUB_REF_NAME" --json assets --jq \
@@ -129,4 +247,4 @@ jobs:
             echo "Uploaded release assets differ; leaving the release in draft."
             exit 1
           fi
-          gh release edit "$GITHUB_REF_NAME" --draft=false --verify-tag
+          gh release edit "$GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/release-notes.md" --draft=false --verify-tag --latest="$latest"

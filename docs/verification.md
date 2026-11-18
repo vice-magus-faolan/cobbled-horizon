@@ -1,6 +1,10 @@
 # Verification record
 
-## Standalone server ZIP — 26.2.0.1.2
+## Metadata-safe release pipeline
+
+The current pipeline selects the no-JAR mrpack and its checksum while 26.2 binary redistribution obligations remain unresolved. Check the exact revision's **validate** and **native-acceptance** GitHub Actions jobs: native acceptance materializes the downloaded validated mrpack and exercises first boot, permission import/preservation and offline restart, independent of public-ZIP clearance. Synthetic controller tests alone do not establish a native boot. Provider, cross-play and restore acceptance remain separate.
+
+## Historical standalone server ZIP — 26.2.0.1.2 (retired)
 
 This pack-only patch adds `cobbled-horizon-26.2.0.1.2-server.zip` with the complete source-pinned `mods/`, `config/`, and `squaremap/` directories at its root. The native packwiz CurseForge export remains the payload producer; one shared validator checks exact membership and hashes for both ZIP layouts. Mod, loader, Minecraft and configuration pins remain unchanged.
 
