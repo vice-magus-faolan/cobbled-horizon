@@ -8,12 +8,13 @@ PACK_BASENAME := cobbled-horizon-$(PACK_VERSION)
 MRPACK := dist/$(PACK_BASENAME).mrpack
 CURSEFORGE := dist/$(PACK_BASENAME).zip
 SERVER_DIR ?= build/server
+SERVER_ZIP := build/$(PACK_BASENAME)-server.zip
 # Only an explicitly supplied plan is a frozen caller contract.
 DEFAULT_RELEASE_PLAN := $(if $(filter undefined,$(origin RELEASE_PLAN)),true,false)
 RELEASE_PLAN ?= release-plan.json
 RELEASE_TAG ?= v$(PACK_VERSION)
 
-.PHONY: validate test refresh distribution-check public-check check-release check-upload check-metadata export export-curseforge release materialize clean
+.PHONY: validate test refresh distribution-check public-check check-release check-upload check-metadata export export-curseforge release materialize server-zip clean
 
 validate:
 	python3 scripts/permission_seed.py --check
@@ -82,6 +83,11 @@ check-upload: public-check
 materialize: export
 	mkdir -p $(dir $(SERVER_DIR))
 	python3 scripts/server_folder.py materialize $(MRPACK) $(SERVER_DIR)
+
+# Owner-run installation only: never a release, Actions artifact or cache input.
+server-zip: materialize
+	mkdir -p build
+	python3 scripts/server_folder.py zip "$(SERVER_DIR)" "$(SERVER_ZIP)"
 
 clean:
 	rm -rf build dist
