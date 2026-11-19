@@ -334,9 +334,10 @@ class ServerFolderTests(unittest.TestCase):
                 self.assertEqual(original, private.read_bytes())
 
     def test_workflow_keeps_private_build_out_of_build_upload_and_cache(self):
-        # Inspect effect-bearing workflow fields, not global mentions in docs
-        # or tests: CI may run synthetic archive regressions, never this build.
+        # CI may run synthetic archive regressions, but must never reference
+        # the private ZIP anywhere in the workflow, including alternate commands.
         workflow = (ROOT / ".github/workflows/validate.yml").read_text()
+        self.assertNotRegex(workflow, r"(?i)server[-_.]zip")
         self.assertNotRegex(workflow, r"(?m)^\s*uses:\s*actions/cache(?:/|@)")
         runs = re.findall(r"(?ms)^        run: (.*?)(?=^      - name:|^  [a-z]|\Z)", workflow)
         self.assertTrue(runs)
