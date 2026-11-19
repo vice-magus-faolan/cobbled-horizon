@@ -23,16 +23,19 @@ Reconciled November 19, 2026. Evidence classes must not be conflated:
   permissions and persistence without startup seed reapplication, followed by
   explicit reconciliation. This is real native-server execution with synthetic
   identities, not a real-player, DatHost or all-configuration behavioral pass.
-- **Owner-reported deployment:** the current 26.3 pack runs on Jimmy's DatHost
-  server, as he reported on November 19, 2026. No independent live tag/config
-  readback, account allocation, networking/client test or restore drill is inferred
-  from that report.
-- **Still manual/unverified:** designated-host real Java/Bedrock login, reconnect,
-  chat and gameplay; Geyser UDP/TCP/signaling and account allocations; live account
-  permissions/OP boundaries; worldgen density/progression/performance; JEB scheduling
-  and full/differential restore drills; provider backup scope and recovery. The
-  [complete acceptance checklist](acceptance-tests.md) remains, including Epic,
-  Explorify Black Spiral, DnT, graves, waystones and villager/crop behavior.
+
+### Current deployment
+
+**Deployment.** `jabez007` runs the 26.3 pack on DatHost, as reported on November 19, 2026. The outstanding checks below haven't been run on that server yet.
+
+### Outstanding checks
+
+Designated-host real Java/Bedrock login, reconnect, chat and gameplay; Geyser
+UDP/TCP/signaling and account allocations; live account permissions/OP boundaries;
+worldgen density/progression/performance; JEB scheduling and full/differential
+restore drills; provider backup scope and recovery. The
+[complete acceptance checklist](acceptance-tests.md) remains, including Epic,
+Explorify Black Spiral, DnT, graves, waystones and villager/crop behavior.
 
 These are outstanding checks on an already-deployed pack, not prerequisites to
 that past deployment. Existing releases/assets are unchanged. Historical sections
@@ -56,7 +59,7 @@ This release corrects JEB 1.2.0.10 and Tasks 3.1.0 operator guidance, refreshes 
 
 ## Complete server-folder preparation
 
-`make materialize` uses the validated native Modrinth plan for all 32 original downloads, then validates the complete folder against selected hashes, exact configs and deterministic notices. It refuses an existing destination and exposes no partial folder after a failed download. Preparation is independent of distribution clearance; conveying that folder to a provider is not. Use the exact revision's successful hosted mrpack/native job as runtime evidence, not synthetic fixtures alone. Public checksums cover the two archives only.
+`make materialize` uses the validated native Modrinth plan for all 32 original downloads, then validates the complete folder against selected hashes, exact configs and deterministic notices. It refuses an existing destination and exposes no partial folder after a failed download. Use the exact revision's successful hosted mrpack/native job as runtime evidence, not synthetic fixtures alone. Public checksums cover the two archives only.
 
 Folder preparation neither launches Minecraft nor verifies DatHost import, Java/Bedrock gameplay or restore behavior. The separate native hosted job provisions and boots that actual folder with the retained lifecycle assertions. Earlier records below retain their historical pack identities and results; they are not runtime acceptance for changed source.
 

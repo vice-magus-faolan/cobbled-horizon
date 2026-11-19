@@ -1,10 +1,10 @@
 # Deployment
 
-These requirements apply to any selected host. Build and test a materialized server tree before upload; do not assume a provider imports packwiz or `.mrpack` files. Provider-specific offerings and account-verification questions belong in the [DatHost profile](providers/dathost.md), not in the pack configuration. Jimmy reported running his 26.3 pack on DatHost on November 19, 2026; this is owner-reported use, not independent verification of the live tag, account allocations or full acceptance. DatHost labels in `server.properties.example` and `squaremap/config.yml` are not verified allocations; apply the selected host's actual settings while preserving the security policy.
+These requirements apply to any selected host. Build and test a materialized server tree before upload; do not assume a provider imports packwiz or `.mrpack` files. Provider-specific offerings and account-verification questions belong in the [DatHost profile](providers/dathost.md), not in the pack configuration. See the [deployment report](verification.md#current-deployment). DatHost labels in `server.properties.example` and `squaremap/config.yml` are not verified allocations; apply the selected host's actual settings while preserving the security policy.
 
 ## Preflight
 
-The current 26.3 pack is already deployed on Jimmy's DatHost server. Published `v26.3.0.1.4` has successful hosted native install/restart and selected config/permission-import evidence; [the verification record](verification.md#current-263-evidence) defines its scope. Designated-host checks with real clients, Geyser networking, structure behavior and restore drills remain outstanding evidence, not conditions for a deployment that has already happened. For subsequent installations or changes, use the preflight below and preserve the 26.2 pack and its world snapshot as a separate rollback line. Also resolve the exact-pin [distribution and source-delivery obligations](../README.md#ownership-and-licensing) for the intended preparation/provider-transfer channel; archive integrity alone does not authorize sharing.
+See the [deployment report](verification.md#current-deployment) and the [verification record](verification.md#current-263-evidence) for hosted native install/restart, selected config/permission-import evidence and outstanding checks. For subsequent installations or changes, use the preflight below and preserve the 26.2 pack and its world snapshot as a separate rollback line. Private installation on the owner's own server does not require a public redistribution-clearance record. Sharing or public distribution still requires the applicable exact-pin [distribution and source-delivery obligations](../README.md#ownership-and-licensing); archive integrity alone does not authorize sharing.
 
 - Confirm Java 25 and Fabric 0.20.1 for Minecraft 26.3, or an equivalent supported installation path for those pinned versions.
 - Confirm a suitable Geyser UDP allocation and signaling arrangement as described in [Geyser networking](#geyser-networking); UDP alone is insufficient for this build.
@@ -24,29 +24,38 @@ Verification of the exact build's config migration, actual UDP/TCP listeners (or
 
 ## Build
 
-Run server materialization on the designated Minecraft test host, not on a lightweight control machine:
+Run server preparation on the designated Minecraft test host, not on a lightweight control machine:
 
 ```bash
 make test
 make validate
-make materialize
+make server-zip
 ```
 
-Materialization is local-only integrity preparation, not distribution: it validates the `.mrpack`, downloads every original pinned mod and writes indexed configs/notices to a fresh `build/server/`. It needs no distribution clearance and never starts Minecraft. An existing destination is refused, not overwritten; use a new owned inspection destination with `SERVER_DIR=build/server-inspect` when needed. The hosted native job uses this same preparation before real first-install/restart, without uploading uncleared JARs. Provider transfer conveys all selected binaries, including those only referenced in the public ZIP, and still requires separately resolved permissions. Public binary archives must pass `make check-upload` before publication.
+`make server-zip` first runs `make materialize`: it validates the `.mrpack`, downloads every original pinned mod and writes indexed configs/notices to a fresh `build/server/`. It then revalidates that folder and creates `build/cobbled-horizon-26.3.0.1.4-server.zip` with contents at the ZIP root, sorted names, fixed timestamps and 0644 file / 0755 directory modes. Preparation never starts Minecraft. Keep the folder quiescent while archiving. Neither an existing server directory nor an existing ZIP is overwritten; use a fresh owned `SERVER_DIR=build/server-inspect` if needed and move aside only a prior ZIP you own. `make materialize` remains available when only the folder is wanted.
+
+The command reports actual ZIP bytes and warns above DatHost's 100 MB (100,000,000-byte) web-upload limit. Use the [Custom upload instructions](providers/dathost.md#modpack-import-options) for this local prepared ZIP, or authenticated FTP/file-manager transfer of the extracted contents for larger files; a browser file-manager upload is not necessarily exempt from the web limit. Do not substitute the public manifest ZIP or rename a `.mrpack`. CI never builds, uploads or caches a real complete server ZIP, and the release plan never selects it. Private owner installation needs no public redistribution-clearance record; public binary archives still require `make check-upload` and applicable obligations before publication. The hosted native job materializes its selected `.mrpack` before real first-install/restart without uploading uncleared JARs.
 
 The generated server tree is `build/server/`. Inspect it before upload. It must contain the 32 active project JARs, including Explorify v1.6.6 rather than Structory, and reviewed config overrides, but no staged/client-only JARs or credentials. For pack `26.3.0.1.4`, verify the Epic override at `config/cristellib/mr_epic_structuresvillagesstandaloneedition/structure_placement_config.json5` is included with only `epic:villages` at spacing `80`, separation `22`, salt `50387312` and frequency `1.0`. Reconcile generated configs with the retained policy; distinguish the retired Lite file from the two legacy Explorify files awaiting schema review as described in [`configuration.md`](configuration.md#structure-generation).
 
-To prepare from a downloaded release, verify its checksum first and use the matching source revision's `python3 scripts/server_folder.py materialize dist/cobbled-horizon-26.3.0.1.4.mrpack build/server` after creating the `build/` parent. This validates all original pins/configs/notices, not just the public ZIP's bundled subset. `python3 scripts/server_folder.py validate build/server` checks the unmodified prepared folder before runtime provisioning. Provision Minecraft 26.3, Fabric 0.20.1 and Java 25 separately; preparation includes no runtime, launch scripts, EULA, world or host secrets.
+To prepare from a downloaded release, verify its checksum first and use the matching source revision after creating the `build/` parent:
 
-Retain recipient credits/licenses/source directions. Complete runtime acceptance and stopped-server reconciliation; overlaying a fresh folder does not remove retired JARs or protect existing host configuration. Provider import limitations remain in the [provider profile](providers/dathost.md#modpack-import-options).
+```bash
+python3 scripts/server_folder.py materialize dist/cobbled-horizon-26.3.0.1.4.mrpack build/server
+python3 scripts/server_folder.py zip build/server build/cobbled-horizon-26.3.0.1.4-server.zip
+```
+
+This validates all original pins/configs/notices, not just the public ZIP's bundled subset. `python3 scripts/server_folder.py validate build/server` checks the unmodified prepared folder before runtime provisioning. Provision Minecraft 26.3, Fabric 0.20.1 and Java 25 separately; preparation includes no runtime, launch scripts, EULA, world or host secrets.
+
+Retain recipient credits/licenses/source directions. Complete stopped-server reconciliation; overlaying a fresh folder does not remove retired JARs or protect existing host configuration. Provider import limitations remain in the [provider profile](providers/dathost.md#modpack-import-options).
 
 The 26.3.0.1.4 payload also includes the reviewed MSS/Hopo controls and the canonical/import-ready permission seed under `config/cobbled-horizon/`. Verify these exact bytes through the matching archive validator; do not copy a live LuckPerms directory into an export.
 
 ## Upload
 
-This procedure covers an operator-authorized installation or update; the current 26.3 deployment does not authorize further live changes. With the target server stopped (paths below are relative to its server root):
+This procedure covers an operator-authorized installation or update; live changes require separate authorization. With the target server stopped (paths below are relative to its server root):
 
-1. Verify a completed host backup containing the current pack, configuration and matching world snapshot, with an off-host rollback copy. Preserve the 26.2 pack/world rollback line; do not alter backup copies during reconciliation.
+1. Verify a completed host backup containing the current pack, configuration and matching world snapshot, with an off-host rollback copy. Preserve the 26.2 pack/world rollback line; do not alter backup copies during reconciliation. Before a provider's removal or Custom upload action, separately preserve world data, the generated Floodgate key and `mods/luckperms/` (backend, exports and private data). Confirm the panel's exact removal/extraction scope; if it cannot preserve host-owned data safely, use selective FTP/file-manager transfer instead.
 2. Set the server type and version to Fabric / Minecraft 26.3 with the pinned loader.
 3. Preserve the host-owned `mods/luckperms/` directory (including its configured backend, native exports and private data) separately from the mod JAR set. Reconcile or replace only the active `/mods` JAR set with the verified 32-project payload from `build/server/mods/`. Remove interim Structory, retired Creeper No Break Blocks and DnT Stronghold Lite JARs, along with superseded versions (including older Explorify), from that active set before startup. Keep the selected Explorify v1.6.6 JAR and verify the set matches the payload with no staged or extra JARs. A simple upload overlay leaves obsolete JARs installed.
 4. Reconcile `build/server/config/` into `/config` selectively. Remove the [retired Lite config](configuration.md#structure-generation) and set aside only the two named legacy Explorify active-host files, preserving rollback copies, before reviewing newly generated Explorify configs against packaged defaults. Their absence from `build/server/` does not reconcile existing host copies; Explorify is active, but the old schemas are unverified. Preserve generated Floodgate keys, host-owned secrets, other settings, backup/rollback copies, world snapshots and unrelated files. Do not replace the whole config tree or copy old settings into replacement namespaces. Preserve the Cristel/Towns and Towers policy; Nether Black Spiral generation/performance checks remain outstanding and are required before pre-generation.
@@ -67,7 +76,7 @@ If the one-time group import was applied, also restore or reconcile the LuckPerm
 
 ## Backups
 
-JEB remains the backup component in the deployed 26.3 pack. Its checked-in policy limits retained backups to 6,144 MB per world and preserves an 8,192 MB free-space reserve. Keep the independently managed daily host/provider backup layer enabled, verify its scope and restore behavior, and download an off-host snapshot before every pack or loader update. A different advertised storage allocation is not a reason to retune JEB automatically.
+JEB remains the backup component in this pack. Its checked-in policy limits retained backups to 6,144 MB per world and preserves an 8,192 MB free-space reserve. Keep the independently managed daily host/provider backup layer enabled, verify its scope and restore behavior, and download an off-host snapshot before every pack or loader update. A different advertised storage allocation is not a reason to retune JEB automatically.
 
 Previously inspected JEB versions reset automatic timers at startup and config reload; verify that behavior again for the updated pin. Coordinate explicit full backups with the host's restart schedule, and verify completion before each scheduled restart. Follow [`storage-and-recovery.md`](storage-and-recovery.md) for the operating procedure and required full and differential restore drills.
 

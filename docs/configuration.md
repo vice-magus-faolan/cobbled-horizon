@@ -1,12 +1,12 @@
 # Configuration decisions
 
-The retained overrides originated in a historical Minecraft 26.2 server boot and were then changed deliberately. The current 26.3 pack, already running on DatHost, does not ship legacy Explorify overrides or the retired Lite override; retained values are policy inputs, not proof that every updated mod accepts its schema. The [verification record](verification.md#current-263-evidence) distinguishes successful hosted config assertions from outstanding real-host checks. Restored Explorify uses packaged defaults pending generated-config review. Naturally Trimmed and Crops Love Rain were added from their documented schemas after that runtime capture. Avoid regenerating overrides blindly; review diffs when mods update their schemas. Villager Names and Collective were also added after the original runtime capture, so any configuration they generate must still be reviewed on the designated test host. Villagers Tasks exposes per-profession scoreboard controls rather than a standalone configuration file.
+The retained overrides originated in a historical Minecraft 26.2 server boot and were then changed deliberately. The 26.3 pack does not ship legacy Explorify overrides or the retired Lite override. A server upgraded from 26.2 may still have the old files. Remove or set them aside as described in the [deployment runbook](deployment.md#upload). Retained values are policy inputs, not proof that every updated mod accepts its schema. See the [deployment report](verification.md#current-deployment). The [verification record](verification.md#current-263-evidence) distinguishes successful hosted config assertions from outstanding real-host checks. Restored Explorify uses packaged defaults pending generated-config review. Naturally Trimmed and Crops Love Rain were added from their documented schemas after that runtime capture. Avoid regenerating overrides blindly; review diffs when mods update their schemas. Villager Names and Collective were also added after the original runtime capture, so any configuration they generate must still be reviewed on the designated test host. Villagers Tasks exposes per-profession scoreboard controls rather than a standalone configuration file.
 
 ## Geyser and Floodgate
 
 `config/Geyser-Fabric/config.yml` uses `auth-type: floodgate`, disables IP-address logging and metrics, and supplies Cobbled Horizon display text.
 
-Outstanding Geyser/Floodgate checks for the deployed pack, and safeguards for subsequent host changes:
+Outstanding Geyser/Floodgate checks for this pack, and safeguards for subsequent host changes:
 
 1. Verify the exact-build [Geyser network arrangement](deployment.md#geyser-networking): suitable UDP reachability and either TCP on the Bedrock port for built-in signaling, distinct from Java's TCP listener, or an explicitly configured and verified external signaling service. Use verified host allocations, not an assumed `19132` UDP-only setup.
 2. Leave `online-mode=true` in `server.properties`.
@@ -17,7 +17,7 @@ Outstanding Geyser/Floodgate checks for the deployed pack, and safeguards for su
 
 The included Floodgate configuration permits optional account linking but does not require it.
 
-The exact 26.3 Geyser pin `2.12.1-b1281` remains beta in the deployed pack. Schema migration, actual listeners and advertised addresses, signaling, login, chat and identity with real Java/Bedrock clients remain outstanding checks; earlier cross-play evidence does not establish them for this version. Retain the existing authentication/privacy policy. Follow the linked network procedure without silently enabling an external service or assuming host support.
+The exact 26.3 Geyser pin `2.12.1-b1281` remains beta in this pack. Schema migration, actual listeners and advertised addresses, signaling, login, chat and identity with real Java/Bedrock clients remain outstanding checks; earlier cross-play evidence does not establish them for this version. Retain the existing authentication/privacy policy. Follow the linked network procedure without silently enabling an external service or assuming host support.
 
 ## Server access and world interaction
 
@@ -78,7 +78,7 @@ JEB's command permission level is `4`, reserving backup and restore commands for
 
 Retention requests two full backups and sixteen differential backups, subject to their dependency chains and the 6,144 MB per-world cap. JEB preserves an 8,192 MB minimum free-space reserve. Strict integrity checking and two worker threads limit backup load.
 
-These are safety limits, not proof that recovery works. The separate-instance cold-restore drill in [`storage-and-recovery.md`](storage-and-recovery.md) remains outstanding evidence for the already-deployed pack.
+These are safety limits, not proof that recovery works. The separate-instance cold-restore drill in [`storage-and-recovery.md`](storage-and-recovery.md) remains outstanding evidence for this pack.
 
 ## Ledger (future only)
 

@@ -1,8 +1,8 @@
 # Acceptance tests
 
-Run these against a disposable world to establish the outstanding assurance for the deployed 26.3 pack and again after every mod or loader update.
+Run these against a disposable world to establish the outstanding assurance for the 26.3 pack and again after every mod or loader update.
 
-Published `v26.3.0.1.4` passed the bounded hosted native assertions described below; Jimmy's November 19, 2026 DatHost deployment report is separate, owner-reported evidence. Neither establishes real-client, host-network, gameplay/worldgen/performance or full/differential restore acceptance. See the [dated evidence](verification.md#current-263-evidence). The unchecked lists remain designated-host acceptance, not conditions for the deployment that already happened or a claim that the overlapping CI assertions have never run; historical 26.2 results do not certify this version.
+Published `v26.3.0.1.4` passed the bounded hosted native assertions described below; see the separate [deployment report](verification.md#current-deployment). Neither establishes real-client, host-network, gameplay/worldgen/performance or full/differential restore acceptance. See the [dated evidence](verification.md#current-263-evidence). The unchecked lists remain designated-host acceptance, not a claim that the overlapping CI assertions have never run; historical 26.2 results do not certify this version.
 
 All Minecraft server startup, world-generation, and gameplay tests must run on the designated, adequately resourced Minecraft test host. A control/orchestration machine may perform static validation and export only.
 

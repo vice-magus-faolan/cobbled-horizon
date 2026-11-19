@@ -4,7 +4,7 @@ Cobbled Horizon treats the selected host's verified usable filesystem quota as a
 
 ## Launch policy
 
-- **JEB is active in the deployed 26.3 pack.** The [current evidence record](verification.md#current-263-evidence) records DatHost use and bounded hosted assertions separately. Fresh full and differential restore drills remain outstanding against the updated pin; neither deployment nor retained 26.2 evidence proves recoverability.
+- **JEB is active in this pack.** See the [deployment report](verification.md#current-deployment) and [current evidence record](verification.md#current-263-evidence) for bounded hosted assertions. Fresh full and differential restore drills remain outstanding against the updated pin; neither deployment nor retained 26.2 evidence proves recoverability.
 - **Ledger is not part of the launch baseline.** For a small allowlisted server, the operational cost and unbounded-growth risk are not justified until moderation history or surgical rollback is demonstrably needed.
 - **Keep an independent daily host/provider backup layer enabled.** Its schedule, scope, retention, quota accounting and restore route remain outstanding account checks. JEB is an application-aware recovery layer, not a replacement for that backup.
 - Keep an off-host copy before every pack, loader, world-generation, or configuration migration.
@@ -27,7 +27,7 @@ The checked-in `config/justenoughbackups.json` applies this initial policy:
 
 The 6 GB cap limits retained archives; the 8 GB reserve protects operating headroom and can cause backups to fail early rather than fill the volume. JEB's preflight also accounts for the active world and temporary compression needs, so monitor failures and actual world, map, and backup sizes instead of assuming the caps guarantee capacity.[5][6]
 
-The previously inspected JEB 1.2.0.6 resets both schedule timers at server startup and config reload. Restarts less than 24 hours apart can prevent the scheduled full backup from becoming due, so the configured interval alone does not establish daily rotation.[9] Recheck these semantics with the deployed pack's 1.2.0.10+26.3; keep the conservative explicit-full-backup procedure until runtime evidence establishes otherwise.
+The previously inspected JEB 1.2.0.6 resets both schedule timers at server startup and config reload. Restarts less than 24 hours apart can prevent the scheduled full backup from becoming due, so the configured interval alone does not establish daily rotation.[9] Recheck these semantics with this pack's 1.2.0.10+26.3; keep the conservative explicit-full-backup procedure until runtime evidence establishes otherwise.
 
 ### Create full backups across restarts
 
@@ -75,7 +75,7 @@ Repeat the drill for a differential recovery point:
 7. Verify Java and Bedrock login, representative chunks, inventories, and clean shutdown.
 8. Record both backup IDs and the differential restore result in `docs/verification.md`.
 
-Do not treat archive creation as proof of recovery. These drills remain outstanding assurance for the deployed pack. If a drill fails, investigate and repair or replace the recovery path before relying on it; record the failure rather than claiming a tested backup.
+Do not treat archive creation as proof of recovery. These drills remain outstanding assurance for this pack. If a drill fails, investigate and repair or replace the recovery path before relying on it; record the failure rather than claiming a tested backup.
 
 ## Proposed Ledger deployment
 
