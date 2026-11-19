@@ -221,6 +221,8 @@ class TaggedPublisherTests(unittest.TestCase):
         root = pathlib.Path(__file__).resolve().parents[1]
         shutil.copytree(root / "scripts", self.root / "scripts", ignore=shutil.ignore_patterns("__pycache__"))
         shutil.copyfile(root / "Makefile", self.root / "Makefile")
+        # Eligibility belongs to this synthetic version, never the real pack's approval.
+        (self.root / "release-policy.toml").write_text("schema = 1\n")
         self.bin = self.root / "bin"
         self.bin.mkdir()
         self.provider = self.root / "provider.json"
@@ -287,13 +289,22 @@ class TaggedPublisherTests(unittest.TestCase):
                     if os.environ.get("PROVIDER_UPLOAD_FAIL"):
                         sys.exit(1)  # Preserve a genuinely partial upload for retry.
             elif action == "edit":
-                assert "--draft=false" in args and "--verify-tag" in args
+                assert "--verify-tag" in args
+                assert ("--draft=false" in args) != ("--draft=true" in args), args
                 latest = [value for value in args if value.startswith("--latest=")]
                 assert len(latest) == 1 and latest[0] in {"--latest=true", "--latest=false"}, args
                 state["latest"] = latest[0] == "--latest=true"
-                state["isDraft"] = False
+                state["isDraft"] = "--draft=true" in args
             else:
                 raise AssertionError(args)
+            if action in {"create", "edit"}:
+                prerelease = [value for value in args if value.startswith("--prerelease=")]
+                assert len(prerelease) == 1 and prerelease[0] in {"--prerelease=true", "--prerelease=false"}, args
+                state["prerelease"] = prerelease[0] == "--prerelease=true"
+                if action == "create":
+                    assert "--latest=false" in args, args
+                    state["latest"] = False
+                assert not (state["prerelease"] and state["latest"]), state
             if "--notes-file" in args:
                 state["notes"] = pathlib.Path(args[args.index("--notes-file") + 1]).read_text()
             path.write_text(json.dumps(state))
@@ -313,6 +324,12 @@ class TaggedPublisherTests(unittest.TestCase):
             (self.dist / (self.basename + suffix)).write_bytes(self.archives[suffix])
         self.checksum = self.basename + (".sha256" if cleared else ".mrpack.sha256")
         self.rehash()
+
+    def approve_version(self):
+        # Only synthetic owned pack versions receive approval in these tests.
+        (self.root / "release-policy.toml").write_text(
+            'schema = 1\n[production]\nversion = "26.2.0.1.0"\n'
+            'approval-reference = "https://example.invalid/owner-decision/fixture"\n')
 
     def rehash(self):
         names = sorted(path.name for path in self.dist.iterdir() if path.suffix in {".mrpack", ".zip"})
@@ -347,7 +364,11 @@ class TaggedPublisherTests(unittest.TestCase):
                     self.assertEqual(0, result.returncode, result.stdout + result.stderr)
                     state = json.loads(case.provider.read_text())
                     self.assertFalse(state["isDraft"])
-                    self.assertTrue(state["latest"])  # Empty published inventory.
+                    self.assertFalse(state["latest"])  # Default is candidate even with no stable releases.
+                    self.assertTrue(state["prerelease"])
+                    created = next(call for call in calls if call[1] == "create")
+                    self.assertIn("--prerelease=true", created)
+                    self.assertIn("--latest=false", created)
                     expected = [case.basename + suffix for suffix in
                                 ((".mrpack", ".zip", ".sha256") if cleared else (".mrpack", ".mrpack.sha256"))]
                     self.assertEqual(sorted(expected), sorted(item["name"] for item in state["assets"]))
@@ -385,15 +406,90 @@ class TaggedPublisherTests(unittest.TestCase):
                     case.setUp()
                     try:
                         case.stage(cleared)
+                        case.approve_version()
                         result, calls = case.publish(PROVIDER_RELEASE_PAGES=json.dumps(pages))
                         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
                         state = json.loads(case.provider.read_text())
                         self.assertFalse(state["isDraft"])
+                        self.assertFalse(state["prerelease"])
                         self.assertEqual(expected, state["latest"])
                         self.assertIn("--latest=" + str(expected).lower(), calls[-1])
                         self.assertEqual("api", calls[0][0])
                     finally:
                         case.doCleanups()
+
+    def test_newer_candidate_never_replaces_stable_latest_even_without_policy_file(self):
+        self.stage(True)
+        pages = [[{"tag_name": "v26.1.0.9.9", "draft": False, "prerelease": False}]]
+        policy = self.root / "release-policy.toml"
+        original = policy.read_bytes()
+        for present in (True, False):
+            with self.subTest(present=present):
+                if present:
+                    policy.write_bytes(original)
+                else:
+                    policy.unlink()
+                self.provider.unlink(missing_ok=True)
+                result, calls = self.publish(PROVIDER_RELEASE_PAGES=json.dumps(pages))
+                self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+                state = json.loads(self.provider.read_text())
+                self.assertTrue(state["prerelease"])
+                self.assertFalse(state["latest"])
+                self.assertIn("--prerelease=true", calls[-1])
+                self.assertIn("--latest=false", calls[-1])
+
+    def test_invalid_or_stale_eligibility_has_zero_provider_calls_and_preserves_draft(self):
+        self.stage(False)
+        policy = self.root / "release-policy.toml"
+        self.approve_version()
+        approved = policy.read_text()
+        # Valid owned approval contrasts each independently malformed/stale state.
+        variants = (
+            "not TOML!", "", "schema = true\n", "schema = 2\n",
+            "schema = 1\napproved = true\n", "schema = 1\nproduction = true\n",
+            approved.replace("26.2.0.1.0", "26.2.0.1.1"),
+            approved.replace("26.2.0.1.0", "26.3.0.1.0"),
+            approved.replace('version = "26.2.0.1.0"', "version = 26"),
+            approved.replace('approval-reference = "https://example.invalid/owner-decision/fixture"', 'approval-reference = " "'),
+            approved + 'unknown = "field"\n',
+        )
+        self.provider.write_text(json.dumps({"isDraft": True, "assets": [], "prerelease": False}))
+        before = self.provider.read_bytes()
+        for text in variants:
+            with self.subTest(policy=text):
+                policy.write_text(text)
+                result, calls = self.publish()
+                self.assert_no_upload(result, calls)
+                self.assertEqual([], calls)
+                self.assertEqual(before, self.provider.read_bytes())
+
+    def test_resumed_draft_reclassifies_current_policy_before_upload(self):
+        self.stage(False)
+        for approved in (True, False):
+            with self.subTest(approved=approved):
+                if approved:
+                    self.approve_version()
+                else:
+                    (self.root / "release-policy.toml").write_text("schema = 1\n")
+                self.provider.write_text(json.dumps({"isDraft": True, "assets": [],
+                                                     "prerelease": approved, "latest": False}))
+                prior = len(self.calls.read_text().splitlines()) if self.calls.exists() else 0
+                result, calls = self.publish(PROVIDER_UPLOAD_FAIL="1")
+                self.assertNotEqual(0, result.returncode, result.stdout + result.stderr)
+                state = json.loads(self.provider.read_text())
+                self.assertTrue(state["isDraft"])
+                self.assertEqual(not approved, state["prerelease"])
+                self.assertFalse(state["latest"])
+                edits = calls[prior:]
+                upload = next(index for index, call in enumerate(edits) if call[1] == "upload")
+                self.assertEqual("edit", edits[upload - 1][1])
+                self.assertIn("--draft=true", edits[upload - 1])
+                result, _ = self.publish()
+                self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+                state = json.loads(self.provider.read_text())
+                self.assertFalse(state["isDraft"])
+                self.assertEqual(not approved, state["prerelease"])
+                self.assertEqual(approved, state["latest"])
 
     def test_unavailable_or_malformed_inventory_has_no_publication_effects(self):
         self.stage(False)
@@ -578,12 +674,16 @@ class TaggedPublisherTests(unittest.TestCase):
                             state = json.loads(case.provider.read_text())
                             self.assertTrue(state["isDraft"])
                             self.assertEqual([expected[0]], [item["name"] for item in state["assets"]])
-                            self.assertFalse(any(call[1] in {"create", "edit", "delete"} for call in calls))
+                            self.assertFalse(any(call[1] in {"create", "delete"} or "--draft=false" in call for call in calls))
+                            self.assertTrue(state["prerelease"])
+                            self.assertFalse(state["latest"])
                             prior_calls = len(calls)
                         result, calls = case.publish()
                         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
                         state = json.loads(case.provider.read_text())
                         self.assertFalse(state["isDraft"])
+                        self.assertTrue(state["prerelease"])
+                        self.assertFalse(state["latest"])
                         self.assertEqual(sorted(expected), sorted(item["name"] for item in state["assets"]))
                         self.assertTrue(all(item["size"] > 0 for item in state["assets"]))
                         retry = calls[prior_calls:]
@@ -620,7 +720,7 @@ class TaggedPublisherTests(unittest.TestCase):
                                 self.assertNotIn(case.checksum, [item["name"] for item in state["assets"]])
                             elif failure == "empty":
                                 self.assertTrue(any(item["size"] == 0 for item in state["assets"]))
-                            self.assertFalse(any(call[1] in {"create", "edit", "delete"} for call in calls))
+                            self.assertFalse(any(call[1] in {"create", "delete"} or "--draft=false" in call for call in calls))
                 finally:
                     case.doCleanups()
 

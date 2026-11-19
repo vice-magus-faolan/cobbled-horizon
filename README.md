@@ -6,7 +6,7 @@
 
 A reproducible, server-side Fabric collection for a Vanilla+ Minecraft world focused on performance, exploration, and restrained quality-of-life improvements.
 
-This **development candidate** targets **Minecraft Java 26.3** with **Fabric Loader 0.20.1**. It contains 26 deliberately selected projects plus six resolved dependencies. All 32 exact artifacts have published Fabric 26.3 support; 31 are release-designated and Geyser `2.12.1-b1281` (`MJYV1WUM`) is explicitly pinned as beta. This is not a clean-boot, gameplay, Bedrock, or production-readiness claim. Just Enough Backups (JEB) retains the backup role.
+This **development candidate** targets **Minecraft Java 26.3** with **Fabric Loader 0.20.1**. It contains 26 deliberately selected projects plus six resolved dependencies. All 32 exact artifacts have published Fabric 26.3 support; 31 are release-designated and Geyser `2.12.1-b1281` (`MJYV1WUM`) is explicitly pinned as beta. The published `v26.3.0.1.4` passed hosted native install/restart, selected config and synthetic permission-import assertions. Jimmy reported running his 26.3 pack on DatHost on November 19, 2026; that report does not independently bind his live installation to a tag or certify gameplay, Bedrock, networking or restore behavior. See the [dated evidence and remaining gates](docs/verification.md#current-263-evidence). Just Enough Backups (JEB) retains the backup role.
 
 Java players should not need this pack on their clients: every packwiz entry is marked `side = "server"`. Bedrock access is provided by Geyser and Floodgate. This Geyser build requires UDP for NetherNet media and either TCP on the Bedrock port for built-in signaling, distinct from Java's TCP listener, or an explicitly configured and verified external signaling service. Host support is unverified; see [`Geyser networking`](docs/deployment.md#geyser-networking).
 
@@ -162,11 +162,11 @@ On the designated Minecraft test host, materialize a clean server tree with:
 make materialize
 ```
 
-Do not assume a provider imports `.mrpack` files. Build and test on the designated Minecraft host, then follow the provider-neutral stopped-server backup and reconciliation procedure in [`docs/deployment.md`](docs/deployment.md#upload). Overlaying the materialized directories alone does not remove retired host JARs or obsolete config files. [DatHost's candidate-provider profile](docs/providers/dathost.md) holds its advertised offering and unresolved account checks; no hosting decision or allocation is implied.
+Do not assume a provider imports `.mrpack` files. Build and test on the designated Minecraft host, then follow the provider-neutral stopped-server backup and reconciliation procedure in [`docs/deployment.md`](docs/deployment.md#upload). Overlaying the materialized directories alone does not remove retired host JARs or obsolete config files. [DatHost's provider profile](docs/providers/dathost.md) distinguishes the owner's reported use from advertised offerings and still-unverified account allocations.
 
 ## GitHub releases
 
-Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. This candidate's source version is `26.3.0.1.4`, for Minecraft `26.3` and pack revision `0.1.4`. A matching tag would be `v26.3.0.1.4`; the numeric version is not a production approval. Do not tag this development candidate until separately approved for release.
+Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. This source version is `26.3.0.1.4`, for Minecraft `26.3` and pack revision `0.1.4`. Tag `v26.3.0.1.4` is already published; do not recreate or reclassify it. Numeric identity is not production approval. Future unapproved candidates publish as **prereleases, explicitly not Latest**. Only an operator-approved, exact-version entry in `release-policy.toml` permits stable publication; source/CI success, binary clearance and an owner deployment report cannot supply that approval. See [production eligibility](docs/version-policy.md#production-eligibility).
 
 A valid matching tag selects one of two asset sets from the frozen exact-pin distribution policy:
 
@@ -194,12 +194,7 @@ The `.mrpack` preserves server-only flags and exact Modrinth downloads. The prim
 
 The `.sha256` covers both archives. Verify with `sha256sum --check cobbled-horizon-26.3.0.1.4.sha256`. Against matching source, `make check-upload` rechecks public rights for conveyed JARs, both archive contracts and checksums. For a complete local folder, `make materialize` downloads every original pinned mod from the validated `.mrpack`, preserves indexed configs/notices and refuses an existing destination. It does not require distribution clearance or launch Minecraft; transfer remains separately gated. Check that unmodified folder before runtime provisioning with `python3 scripts/server_folder.py validate build/server`. See the [deployment runbook](docs/deployment.md#build) and [DatHost import limitations](docs/providers/dathost.md#modpack-import-options).
 
-Only after source review, passing hosted checks, designated-host acceptance and explicit release approval, create and push the matching tag from the intended version line:
-
-```bash
-git tag -a v26.3.0.1.4 -m "Cobbled Horizon v26.3.0.1.4"
-git push origin v26.3.0.1.4
-```
+Only with separately authorized publication, source review and passing hosted checks, create and push a new matching tag from the intended version line. Production eligibility additionally requires designated-host acceptance and an explicit operator decision recorded for that exact version before tagging. Without that eligibility the publisher retains candidate classification even after successful checks. Never reuse a published version/tag; `v26.3.0.1.4` and its assets are historical release records, not test targets.
 
 GitHub Actions checks source/schema, versions, tests and the index independently of unresolved distribution rights. The `validate` job uploads the selected validated two- or three-file set. On PR, branch and tag runs, `native-acceptance` downloads that immutable artifact ID, verifies the same set and checksum, and materializes its very `.mrpack` into a fresh complete folder before provisioning, boot and restart. There is no second export or fallback after download/hash failure; native `summary.json` records the consumed `archive_sha256`. It does not transfer uncleared JARs through artifacts or caches; only bounded allowlisted runtime evidence leaves that job. Both tag modes require native success; public binary transfer additionally requires clearance for conveyed JARs. Publishing uses the built-in `GITHUB_TOKEN`; this workflow uploads to GitHub only and grants no CurseForge moderation approval.
 

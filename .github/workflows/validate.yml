@@ -209,6 +209,8 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           # Never trust an upstream clearance boolean at the upload boundary.
+          # CI success and binary rights do not grant production eligibility.
+          prerelease=$(python3 scripts/release_metadata.py --tag "$GITHUB_REF_NAME" --publication --field prerelease)
           plan="$RUNNER_TEMP/publish-plan.json"
           python3 scripts/distribution.py release-plan --tag "$GITHUB_REF_NAME" > "$plan"
           make check-release RELEASE_PLAN="$plan" RELEASE_TAG="$GITHUB_REF_NAME"
@@ -227,6 +229,9 @@ jobs:
           versions = [tuple(map(int, tag[1:].split("."))) for tag in tags]
           print(str(versions[0] == max(versions)).lower())
           ' "$GITHUB_REF_NAME" "$published")
+          if [[ "$prerelease" == true ]]; then
+            latest=false
+          fi
           cd dist
           # Upload into a draft so failed uploads never publish a partial release.
           if draft=$(gh release view "$GITHUB_REF_NAME" --json isDraft --jq .isDraft); then
@@ -234,8 +239,12 @@ jobs:
               echo "Release already published; refusing to replace its assets."
               exit 1
             fi
+            # A resumed draft may retain flags from a previous policy decision.
+            gh release edit "$GITHUB_REF_NAME" --draft=true --verify-tag \
+              --prerelease="$prerelease" --latest=false
           else
             gh release create "$GITHUB_REF_NAME" --verify-tag --draft \
+              --prerelease="$prerelease" --latest=false \
               --title "Cobbled Horizon $GITHUB_REF_NAME" \
               --notes-file "$RUNNER_TEMP/release-notes.md"
           fi
@@ -247,4 +256,4 @@ jobs:
             echo "Uploaded release assets differ; leaving the release in draft."
             exit 1
           fi
-          gh release edit "$GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/release-notes.md" --draft=false --verify-tag --latest="$latest"
+          gh release edit "$GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/release-notes.md" --draft=false --verify-tag --prerelease="$prerelease" --latest="$latest"

@@ -1,6 +1,6 @@
-# DatHost candidate-provider profile
+# DatHost provider profile
 
-DatHost is under consideration, not selected or deployment-approved. This profile holds provider-specific claims and unresolved account questions. The [deployment runbook](../deployment.md) remains authoritative for build, reconciliation, networking, security and rollback on any host; changing providers must not require changing the core pack or dropping those safeguards.
+Jimmy reported on **November 19, 2026** that his 26.3 pack is running on DatHost. This establishes owner-reported use, not an independently verified live tag, account entitlement, client/network pass or restore drill. Hosted native acceptance is separate evidence from disposable CI containers, not DatHost verification; see the [dated verification record](../verification.md#current-263-evidence). This profile retains provider-specific claims and unresolved account questions. The [deployment runbook](../deployment.md) remains authoritative for build, reconciliation, networking, security and rollback on any host; changing providers must not require changing the core pack or dropping those safeguards.
 
 ## Advertised offering, not verified entitlement
 
@@ -8,7 +8,7 @@ The [DatHost Minecraft hosting page](https://dathost.com/minecraft-server-hostin
 
 Do not increase JEB's checked-in **6,144 MB per-world retention cap** or reduce its **8,192 MB free-space reserve** based on that advertisement. Budget world growth, map tiles, logs, retained archives and temporary backup work against the selected account's verified usable capacity. Follow [storage and recovery](../storage-and-recovery.md), including its explicit-full-backup responsibility and real full/differential restore drills.
 
-## Account checks before selection or deployment
+## Account checks before a new deployment or production certification
 
 Record the actual answers for the selected account; a public feature listing is not acceptance:
 
@@ -30,4 +30,4 @@ Before any replacement, verify the account permissions, exact Minecraft/Fabric/J
 
 ## Acceptance remains separate
 
-No hosting account, port allocation, provider backup or MySQL service has been tested by this documentation change. Source checks and public claims do not establish clean boot, generation/performance, real Java/Bedrock joins and graves, permission boundaries or backup restoration. Complete the [acceptance tests](../acceptance-tests.md) on the designated Minecraft test host and obtain separate deployment approval before applying the [permission bootstrap](../permissions.md) and production runbook.
+No hosting account, port allocation, provider backup or MySQL service has been independently tested by this reconciliation. The successful hosted native run establishes bounded install/restart, config and synthetic permission-import behavior, not generation/performance, real Java/Bedrock joins and graves, live account permissions or backup restoration. Complete the remaining [acceptance tests](../acceptance-tests.md) on the designated Minecraft test host and obtain separate deployment approval before applying the [permission bootstrap](../permissions.md) and production runbook. Neither this report nor CI success grants future stable-release eligibility.

@@ -181,7 +181,7 @@ class PermissionSeedTests(unittest.TestCase):
     def test_native_refresh_indexes_seed_but_not_runtime_state(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = pathlib.Path(directory)
-            for name in ("pack.toml", ".packwizignore", ".gitignore"):
+            for name in ("pack.toml", ".packwizignore", ".gitignore", "release-policy.toml"):
                 shutil.copyfile(ROOT / name, root / name)
             (root / "index.toml").write_text("hash-format = \"sha256\"\n")
             for relative in permission_seed.SEED_PATHS:

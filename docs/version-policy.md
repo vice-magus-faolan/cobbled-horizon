@@ -8,6 +8,42 @@ The next pack-only patch on Minecraft 26.3 would use `26.3.0.1.5`. If Minecraft 
 
 A valid matching tag with unresolved bundled-binary obligations publishes exactly the validated no-JAR `.mrpack` and `.mrpack.sha256`; release notes explain the withheld CurseForge ZIP and name its unresolved bundled mods. With exact-pin clearance for actually conveyed JARs, it publishes exactly `.mrpack`, primary CurseForge manifest-format `.zip` and combined `.sha256`. Verified hosted references do not require our binary redistribution clearance, but every identity, mapping evidence, schema, text and archive remains validated. The existing selector owns one manifest for build/upload/draft comparison; the publisher independently reevaluates policy and validates the exact nonempty set through `make check-release`, including `make check-upload` before ZIP upload. Malformed evidence or failed archive/checksum checks are fatal, never fallback. Both modes require native success, draft-first exact-set checks and refusal to replace a published release. Old four-file drafts remain unpublished without automatic deletion. See the [release instructions](../README.md#github-releases) and [distribution obligations](../README.md#ownership-and-licensing). Publication to Modrinth or CurseForge is not configured.
 
+## Production eligibility
+
+Numeric tags do not encode release maturity. For future tags, `release-policy.toml`
+defaults to `schema = 1` with no production table: the actual publisher creates or
+resumes a draft as a **prerelease**, explicitly **non-Latest**, and retains both
+properties when publishing. A missing policy file also means candidate. Malformed,
+unknown or stale eligibility fails before any provider call rather than silently
+granting stable status. Distribution clearance still selects two or three assets
+independently; native acceptance, checksum, exact-set and no-replacement gates remain.
+
+Only after the operator explicitly approves production eligibility for an exact
+pack version, following the remaining designated-host acceptance, record that
+decision in a reviewed source change before the new tag is created:
+
+```toml
+schema = 1
+[production]
+version = "<exact pack.toml version>"
+approval-reference = "<reference to the operator's explicit production decision>"
+```
+
+The reference must be nonempty single-line text, at most 512 characters. Only these
+fields are accepted. The version must exactly match `pack.toml`; remove the table
+when preparing the next candidate or obtain a new explicit decision for its exact
+version. CI/source approval, public binary rights and an owner's deployment report
+are not production decisions. The publisher validates this recorded eligibility,
+not the truth of external approval evidence; source review must verify the actual
+operator decision. No production approval is recorded for the real 26.3 pack here.
+
+An eligible release is stable but becomes Latest only when its numeric tag is at
+least every published stable tag across all provider pages. An older approved line
+cannot displace a newer stable release; even a newer candidate cannot take Latest.
+Draft retry reapplies the current classification before upload and final publication.
+This policy acts only on future publication attempts, not existing published releases:
+`v26.3.0.1.4` was published stable/Latest before this policy and is not reclassified.
+
 ## Version branches
 
 `26.2` retains the original Minecraft 26.2 line. `26.3` is the default development line; it is not production-approved merely because it is the default. Topic pull requests target their intended version branch. Backport a shared fix deliberately in a separate reviewed change; never synchronize the lines wholesale or replace retained 26.2 pins with 26.3 artifacts. The former `main` and `upgrade/minecraft-26.3` branch names are historical, not operational targets.
@@ -46,12 +82,12 @@ Staged pins retain historical bytes, including 26.2 builds; they are excluded fr
 5. Run `packwiz refresh --build`.
 6. Run useful development checks (`make validate`, `make test`); commit the coherent source and obtain independent exact-commit source review. Publish the reviewed topic PR and require its exact-head hosted `validate` and `native-acceptance` jobs, including real all-pin exports, native install/restart and validated no-JAR metadata artifacts. Separately require public clearance and `make release CHANNEL=github` / `make check-upload` before transferring the complete binary archive/checksum set; source-only success and private boot are not public rights clearance.
 7. Separately authorize and complete all designated-host runtime acceptance against a disposable world copy. Source approval and hosted static checks do not satisfy this step.
-8. Only with separate release approval, push the matching release tag. Unresolved binary obligations select metadata/checksum only; resolved public obligations permit the complete binary set. Retain the selected published assets and checksums as the release record. Back up production before any separately authorized deployment.
+8. Only with separate publication authorization, push a new matching release tag. Production eligibility requires the distinct exact-version operator decision above; otherwise it remains a prerelease/non-Latest candidate. Unresolved binary obligations select metadata/checksum only; resolved public obligations permit the complete binary set. Retain the selected published assets and checksums as the release record. Back up production before any separately authorized deployment.
 9. Deploy only after its gates pass, verify, and retain the previous known-good pack and matching world snapshot for rollback.
 
 ## 26.3 candidate readiness
 
-Pack `26.3.0.1.4` corrects JEB/Tasks operator guidance, refreshes pinned MSS/Hopo schemas and packages a one-time group-only LuckPerms seed with an import-ready gzip. All mod/runtime pins, Moog rarity inputs and the separate 26.2 line are unchanged. Native loader/import verification and exact-head hosted archive checks remain required; source configuration is not runtime acceptance.
+Pack `26.3.0.1.4` corrects JEB/Tasks operator guidance, refreshes pinned MSS/Hopo schemas and packages a one-time group-only LuckPerms seed with an import-ready gzip. All mod/runtime pins, Moog rarity inputs and the separate 26.2 line are unchanged. Its published tag passed hosted archive and bounded native install/restart/config/import assertions; Jimmy separately reported DatHost use on November 19, 2026. See the [dated verification record](verification.md#current-263-evidence) for exact source/run and remaining designated-host gates. Neither evidence class grants blanket production eligibility or certifies later changed source.
 
 Pack `26.3.0.1.3` adds the standalone server archive without changing mod pins, runtime versions or configuration. Pack `26.3.0.1.2` introduced Epic's placement policy through the existing Cristel auto-config mechanism: `epic:villages` uses spacing `80`, separation `22`, salt `50387312` and frequency `1.0`. All mod/loader pins and other structure tuning remain unchanged. The 75% reduction is in Epic candidate-grid positions per area, not measured settlements. Verify actual config loading, fixed-seed fresh-chunk density/proximity, generation cost and Java/Bedrock interaction before deployment or pre-generation; existing chunks are not retroactively changed. See [configuration rationale](configuration.md#structure-generation).
 
@@ -61,6 +97,6 @@ Use:
 python3 scripts/check_target_readiness.py --minecraft 26.3
 ```
 
-A successful lookup is necessary but not sufficient. The selected host must meet the [provider-neutral deployment requirements](deployment.md#preflight); a candidate-provider advertisement is not account acceptance. A successful clean boot, Java/Bedrock testing, world-generation inspection and full/differential backup restoration must all pass before production. No server launch, world mutation or migration is implied by the source update.
+A successful lookup is necessary but not sufficient. The selected host must meet the [provider-neutral deployment requirements](deployment.md#preflight); a provider advertisement or deployment report is not account acceptance. Hosted clean boot does not replace designated-host Java/Bedrock testing, world-generation inspection or full/differential backup restoration. All remain required before production certification. No new server launch, world mutation or migration is implied by this policy.
 
 Geyser/Floodgate remain hard runtime gates for Bedrock support despite the accepted beta pin. JEB must pass fresh full and differential restore drills; recheck scheduling across restarts. Creeper No Break must preserve entity damage/knockback and unrelated mob-griefing behavior. Explorify v1.6.6 restores the original project selection in place of interim Structory without adding Formations. Use its packaged placement defaults, review generated schemas rather than transplanting legacy Explorify configs, and explicitly measure Nether Black Spiral generation/performance with the structure enabled. Standalone DnT replaces retired Lite, not the broad DnT collection. Its exact 3.0.1 archive has [historical static evidence of no custom enchantment registry definitions](configuration.md#structure-generation), not a runtime pass; verify Eyes of Ender, stronghold portals, progression, vanilla-enchanted loot and first-generation stalls without transplanting the retired Lite override. Structures require fresh chunks, density/performance and cross-play checks before pre-generation. Krypton, Fast Noise, ScalableLux and Spiral Tower Villages remain staged; future-only projects do not block the active candidate.
