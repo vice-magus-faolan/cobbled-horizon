@@ -4,7 +4,7 @@ DatHost documents Fabric support, manual uploads and server-pack ZIP import. Pre
 
 ## Modpack import options
 
-Use the prepared `-server.zip` under **Mods & Plugins → Custom upload**, not the public CurseForge-format manifest ZIP or a renamed `.mrpack`. DatHost's URL importer selects the newest server pack, not necessarily the linked version. See the [DatHost import guide](providers/dathost.md#modpack-import-options) for the inspected provider instructions, the 100 MB web-upload limit and authenticated FTP/file-manager fallback.
+Use the prepared `-server.zip` under **Mods & Plugins → Custom upload**, not the public CurseForge-format manifest ZIP or a renamed `.mrpack`. DatHost's URL importer selects the newest server pack, not necessarily the linked version.
 
 Private installation on the owner's own server does not require a public redistribution-clearance record; public sharing remains separately gated. Vanilla Java clients need no client pack, and Bedrock access retains the Geyser/Floodgate contract. No CurseForge listing or upload is configured.
 
