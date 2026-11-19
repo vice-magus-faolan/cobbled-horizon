@@ -1,0 +1,43 @@
+# DatHost provider profile
+
+This profile records provider-specific claims and unresolved account checks for the 26.2 line. The [deployment runbook](../deployment.md) remains authoritative for build, reconciliation, security and rollback. Documentation and source checks are not deployment approval or live account acceptance.
+
+## Advertised offering, not verified entitlement
+
+The [DatHost Minecraft hosting page](https://dathost.com/minecraft-server-hosting), retrieved **2026-11-11**, advertises **60 GB included NVMe storage**, daily backups and an included MySQL database. This supersedes the older 30 GB assumption in these runbooks; it is neither a measured account quota nor a new pack limit. Actual allocation, backup scope/retention/quota accounting, database access and port allocations remain unverified.
+
+Do not increase JEB's checked-in **6,144 MB per-world retention cap** or reduce its **8,192 MB free-space reserve** based on that advertisement. Budget world growth, map tiles, logs, retained archives and temporary backup work against the account's verified usable capacity. Follow [storage and recovery](../storage-and-recovery.md), including its explicit-full-backup responsibility and real full/differential restore drills.
+
+## Account checks before deployment
+
+Record the actual answers for the selected account; a public feature listing is not acceptance:
+
+- **Runtime and panel:** Can the account install Minecraft 26.2, Fabric Loader 0.19.5 and Java 25 without silently updating pins? Verify the supported installation path and disable automatic mod/server-version updates.
+- **Upload and control:** Verify authenticated panel/file-transfer access to the actual server root, selective mods/config/squaremap upload, console commands, clean stop/start and rollback restoration. Check the documented [import choices](#modpack-import-options) against the actual account before using them. Preserve host-managed settings, secrets and Floodgate keys.
+- **Game ports:** Obtain the actual Java TCP and reachable Geyser UDP allocations. Verify real Java and Bedrock joins against this line's selected pins; a generic provider offer is insufficient.
+- **Map endpoint:** Verify the squaremap HTTP allocation or proxy and intentionally public player-tracker exposure. A game port does not establish an HTTP endpoint or login boundary.
+- **Storage:** Verify usable quota and whether worlds, map tiles, logs, temporary work, JEB archives, provider snapshots or database storage share it. Do not treat advertised 60 GB as entitlement.
+- **Daily backups:** Confirm schedule, retention, quota accounting, world/config/mod/key scope, consistency, off-host access and separate-instance restoration. Assign responsibility for failure detection and recovery. Do not infer database coverage or a tested restore from the advertisement.
+- **MySQL, future only:** If Ledger promotion is separately approved, verify compatible MySQL version, capacity/quota, credentials workflow, network reachability, access restrictions, latency and database-aware backup/restore. The advertised included service does not establish any of these. Use [Ledger's promotion gates](../storage-and-recovery.md#ledger-promotion-gates); do not upload or activate Ledger at launch.
+
+## Modpack import options
+
+DatHost's [Minecraft: Installing Modpacks](https://help.dathost.net/article/179-minecraft-mods-modpacks) guide, checked again **2026-11-19**, describes three methods. Its CurseForge URL importer under **Mods & Plugins → Mods & Modpacks** selects the **newest available server pack**, even when the copied link points to an older version. A URL therefore does not pin an older release. The guide says Modrinth URLs are not accepted by that CurseForge field. Methods 2 and 3 use a prepared server-pack ZIP under **Mods & Plugins → Custom upload**; a `.mrpack` or this pack's public CurseForge-format manifest ZIP is not that server-folder archive.
+
+For a private installation on the owner's own server, prepare the exact selected payload on the designated Minecraft host:
+
+```bash
+make server-zip
+```
+
+This materializes and validates a fresh `build/server/`, then creates `build/cobbled-horizon-26.2.0.1.3-server.zip`. Contents sit at the ZIP root: all 32 pinned JARs in `mods/`, reviewed `config/` and `squaremap/` overrides, and recipient notices. It contains no Minecraft/Fabric runtime, world, Floodgate key or live LuckPerms data. Names, timestamps and permissions are normalized; existing folder and ZIP destinations are refused. Use a fresh owned `SERVER_DIR` if a preparation folder already exists, and move aside only a prior ZIP you own rather than expecting overwrite. See [build instructions](../deployment.md#build), including the matching-source route for a downloaded release.
+
+After the stopped-server safeguards below, choose **Custom upload** and select this local `-server.zip`, not the public manifest ZIP or renamed `.mrpack`. The command reports its actual byte size and warns above **100 MB** (100,000,000 bytes). DatHost's [file-upload reference](https://dathost.net/reference/post_game_server_files_item), checked **2026-11-19**, documents the 100 MB web limit and FTP for larger files. For a larger pack, or when safe Custom-upload preservation cannot be established, use authenticated FTP/file-manager transfer of the inspected extracted contents under the [selective reconciliation procedure](../deployment.md#upload); the same web limit may apply to a file manager's browser upload. Do not split, omit or replace pinned mods to fit the limit.
+
+Before any replacement, **stop the instance** and verify a completed off-host backup of the current pack, configuration and matching **world data**, preserving the **Floodgate key** and **`mods/luckperms/`** backend/exports/private data separately. DatHost's guide calls for removing an installed modpack before Custom upload; verify that action's exact scope before using it. Never delete a world, key, host setting or LuckPerms directory as part of clearing the old mod JAR set. If the panel cannot preserve these safely, use selective transfer instead. Reconcile retired JARs and configs rather than overlaying blindly, then follow the remaining [upload, acceptance and rollback steps](../deployment.md#upload).
+
+Private owner installation does not require a public redistribution-clearance record. This is not permission to publish the complete ZIP or share it with others: public archive clearance, notices and source-delivery obligations remain enforced. `make server-zip` is local-only; CI never builds, uploads or caches a real complete server ZIP, and the release plan never selects it. Runtime provisioning/account compatibility and CurseForge moderation remain separate. Java clients remain vanilla; Bedrock joins retain the Geyser/Floodgate contract.
+
+## Acceptance remains separate
+
+No hosting account, port allocation, provider backup or MySQL service has been tested by this documentation change. Source checks and public claims do not establish clean boot, generation/performance, real Java/Bedrock joins and graves, permission boundaries or backup restoration. Complete the [acceptance tests](../acceptance-tests.md) on the designated Minecraft test host and obtain separate deployment approval before applying the [permission bootstrap](../permissions.md) and production runbook.

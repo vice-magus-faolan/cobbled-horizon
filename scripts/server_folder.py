@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
-"""Materialize a complete server folder from a validated no-JAR .mrpack.
+"""Prepare a complete server folder or private installation ZIP from pinned inputs.
 
-Preparation checks integrity, not distribution clearance. It neither installs
-Minecraft nor grants permission to transfer the resulting binaries elsewhere.
+Preparation checks integrity, not public distribution clearance. It neither
+installs Minecraft nor grants permission to redistribute the resulting binaries.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
+import os
 import pathlib
 import shutil
+import stat
 import tempfile
 import urllib.request
 import zipfile
@@ -18,6 +20,7 @@ import validate_curseforge
 import validate_mrpack
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+WEB_UPLOAD_LIMIT = 100_000_000  # DatHost's documented 100 MB web-upload limit.
 
 
 def validate_directory(path: pathlib.Path, source_root: pathlib.Path = ROOT) -> list[str]:
@@ -83,6 +86,37 @@ def materialize(mrpack: pathlib.Path, destination: pathlib.Path, source_root: pa
         candidate.rename(destination)
 
 
+def server_zip(directory: pathlib.Path, destination: pathlib.Path, source_root: pathlib.Path = ROOT) -> int:
+    """Archive a validated, quiescent folder; never replace an existing path.
+
+    Stage beside the destination and link exclusively only after ZIP closure.
+    This prevents both partial archives and a concurrent creator being clobbered.
+    """
+    if destination.exists() or destination.is_symlink():
+        raise FileExistsError("server ZIP destination must be fresh: " + str(destination))
+    errors = validate_directory(directory, source_root)
+    if errors:
+        raise ValueError("invalid server folder: " + "; ".join(errors))
+    with tempfile.TemporaryDirectory(dir=destination.parent, prefix=".server-zip-") as staging:
+        candidate = pathlib.Path(staging) / "server.zip"
+        with zipfile.ZipFile(candidate, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            for path in sorted(directory.rglob("*"), key=lambda item: item.relative_to(directory).as_posix()):
+                is_directory = path.is_dir()
+                name = path.relative_to(directory).as_posix() + ("/" if is_directory else "")
+                info = zipfile.ZipInfo(name, (1980, 1, 1, 0, 0, 0))
+                info.create_system = 3
+                info.external_attr = ((stat.S_IFDIR | 0o755) if is_directory else (stat.S_IFREG | 0o644)) << 16
+                info.external_attr |= 0x10 if is_directory else 0
+                info.compress_type = zipfile.ZIP_DEFLATED
+                if is_directory:
+                    archive.writestr(info, b"")
+                else:
+                    with path.open("rb") as reader, archive.open(info, "w", force_zip64=True) as writer:
+                        shutil.copyfileobj(reader, writer)
+        os.link(candidate, destination)
+        return destination.stat().st_size
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
@@ -91,10 +125,19 @@ def main() -> int:
     prepare.add_argument("destination", type=pathlib.Path)
     validate = commands.add_parser("validate", help="check an unmodified materialized folder before runtime provisioning")
     validate.add_argument("directory", type=pathlib.Path)
+    archive = commands.add_parser("zip", help="write a validated folder as a private owner-installation ZIP")
+    archive.add_argument("directory", type=pathlib.Path)
+    archive.add_argument("destination", type=pathlib.Path)
     args = parser.parse_args()
     try:
         if args.command == "materialize":
             materialize(args.mrpack, args.destination, ROOT)
+            errors = []
+        elif args.command == "zip":
+            size = server_zip(args.directory, args.destination, ROOT)
+            print(f"Private server ZIP: {args.destination} ({size} bytes)")
+            if size > WEB_UPLOAD_LIMIT:
+                print("WARNING: exceeds DatHost's 100 MB web-upload limit; use FTP or the provider file manager's large-file transfer route.")
             errors = []
         else:
             errors = validate_directory(args.directory, ROOT)
@@ -105,7 +148,7 @@ def main() -> int:
         print(f"ERROR: {error}")
     if errors:
         return 1
-    print("PASS: complete server folder membership, hashes, configs and notices match source; not transfer clearance")
+    print("PASS: complete server folder membership, hashes, configs and notices match source; not public redistribution clearance")
     return 0
 
 
