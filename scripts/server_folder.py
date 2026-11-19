@@ -137,7 +137,7 @@ def main() -> int:
             size = server_zip(args.directory, args.destination, ROOT)
             print(f"Private server ZIP: {args.destination} ({size} bytes)")
             if size > WEB_UPLOAD_LIMIT:
-                print("WARNING: exceeds DatHost's 100 MB web-upload limit; use FTP or the provider file manager's large-file transfer route.")
+                print("WARNING: exceeds DatHost's 100 MB web-upload limit. Upload the extracted server folder over FTP instead.")
             errors = []
         else:
             errors = validate_directory(args.directory, ROOT)

@@ -18,7 +18,7 @@ This candidate corrects JEB 1.2.0.10 and Tasks 3.1.0 operator guidance, refreshe
 
 ## Complete server-folder preparation
 
-`make materialize` uses the validated native Modrinth plan for all 32 original downloads, then validates the complete folder against selected hashes, exact configs and deterministic notices. It refuses an existing destination and exposes no partial folder after a failed download. Preparation is independent of distribution clearance; conveying that folder to a provider is not. Use the exact revision's successful hosted mrpack/native job as runtime evidence, not synthetic fixtures alone. Public checksums cover the two archives only.
+`make materialize` uses the validated native Modrinth plan for all 32 original downloads, then validates the complete folder against selected hashes, exact configs and deterministic notices. It refuses an existing destination and exposes no partial folder after a failed download. Use the exact revision's successful hosted mrpack/native job as runtime evidence, not synthetic fixtures alone. Public checksums cover the two archives only.
 
 Folder preparation neither launches Minecraft nor verifies DatHost import, Java/Bedrock gameplay or restore behavior. The separate native hosted job provisions and boots that actual folder with the retained lifecycle assertions. Earlier records below retain their historical pack identities and results; they are not runtime acceptance for changed source.
 
