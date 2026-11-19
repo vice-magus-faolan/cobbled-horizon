@@ -100,7 +100,7 @@ Fabric API is the only explicitly selected platform library. Polymer, Cristel Li
 - Universal Graves retains 75% of XP, protects graves for one hour, and expires them after 24 real-time hours.
 - squaremap enables only the Overworld, limits zoom, reduces background rendering pressure, and intentionally retains its live player tracker. The tracker becomes public to anyone who can reach the configured map endpoint.
 - JEB uses 24-hour full and three-hour differential intervals, a 6 GB retention cap, an 8 GB free-space reserve, and operator-level-4 commands. Startup resets the timers, so deployment requires an initial full backup and explicit daily full backups coordinated with host restarts. Production launch requires full and differential restore drills.
-- Ledger remains future-only. If promoted, it will use bounded retention and preferably DatHost's included MySQL service rather than the 30 GB game filesystem.
+- Ledger remains future-only. If promoted, it will use bounded retention and a verified, separately budgeted MySQL service rather than unbounded event-store growth on the game filesystem. DatHost's hosting page retrieved **2026-11-11** advertises **60 GB included NVMe storage** and an included database, not verified account capacity or backup coverage; see the [provider profile](docs/providers/dathost.md). JEB's configured retention cap and reserve remain unchanged.
 - PvP remains enabled, world spawn has a 16-block protection radius, and only the owner is a Minecraft operator. Helpers inherit the ordinary-player policy without operator status; the baseline grants them no additional nodes, and any future support capability must be added as an explicit LuckPerms node.
 - Same-dimension waystone travel costs two XP levels, has a 30-second PvP/PvE combat lock, and allows ten player-owned waystones per player. Only the owner may create global/server-owned waystones.
 - Server-Side Waystones 1.3.2 has no hard cross-dimension switch or strictly private owner-only mode. Survival cross-dimension travel is made infeasible with the maximum XP cost, while creative-owner bypass and physical discovery of player waystones are documented limitations.
@@ -111,8 +111,9 @@ See [`docs/configuration.md`](docs/configuration.md) for the rationale and unres
 
 - Python 3.11+
 - [packwiz](https://packwiz.infra.link/)
-- [mrpack-install](https://github.com/nothub/mrpack-install) for local server materialization
 - Java 25 on the designated Minecraft test/deployment host
+
+Server-folder preparation uses the repository's Python materializer; it needs no separate mrpack installer.
 
 Do not start Minecraft server processes on lightweight control machines. Exporting and static validation are safe there; server materialization and boot tests belong on the designated, adequately resourced Minecraft test host.
 
@@ -140,13 +141,15 @@ The export lands at:
 dist/cobbled-horizon-26.2.0.1.3.mrpack
 ```
 
-On the designated Minecraft test host, materialize a clean server tree with:
+On the designated Minecraft test host, prepare a private server ZIP with:
 
 ```bash
-make materialize
+make server-zip
 ```
 
-Do not upload the `.mrpack` to DatHost's server-ZIP field. `make materialize` validates the metadata archive and downloads its exact pins into `build/server/`; it does not start Minecraft or grant redistribution permission. See [`docs/deployment.md`](docs/deployment.md) for runtime prerequisites, stopped-server transfer and separate designated-host acceptance tests.
+This first materializes and validates a fresh `build/server/`, then creates `build/cobbled-horizon-26.2.0.1.3-server.zip` with contents at the ZIP root, sorted names, fixed timestamps and normalized permissions. Existing folder and ZIP destinations are refused; keep the folder unchanged while archiving. `make materialize` remains available for folder-only preparation. Private installation on the owner's own server does not require a public redistribution-clearance record; that is not a public redistribution grant.
+
+For DatHost, select this prepared `-server.zip` under **Mods & Plugins → Custom upload**, not the public CurseForge-format manifest ZIP or a renamed `.mrpack`. The command reports actual bytes and warns above the documented **100 MB** (100,000,000 bytes) web-upload limit; use authenticated FTP/file-manager transfer of the extracted contents for larger files, not another browser upload subject to the same limit. Before replacement, stop the instance and verify an off-host backup of the pack, configuration and matching world data, separately preserving the Floodgate key and `mods/luckperms/` data. Verify the panel's removal scope; use selective transfer if Custom upload cannot preserve host-owned files safely. Overlaying directories alone does not remove retired JARs or obsolete configs. Follow the [stopped-server reconciliation procedure](docs/deployment.md#upload) and [DatHost import guidance](docs/providers/dathost.md#modpack-import-options). Runtime/account compatibility remains unverified; these commands do not install or start Minecraft. CI never builds, uploads or caches a real complete server ZIP, and releases never select it.
 
 ## GitHub releases
 
@@ -164,7 +167,7 @@ python3 scripts/distribution.py release-plan
 make validate test release
 ```
 
-`make release` builds the full public archives only when distribution checks permit it. There is no additional server-folder ZIP. `make materialize` produces the complete local folder from the mrpack instead. The host must supply Java 25, Minecraft 26.2 and Fabric Loader 0.19.5; runtime binaries, worlds and credentials are not packaged. Vanilla Java clients need no pack.
+`make release` builds the full public archives only when distribution checks permit it; neither its asset set nor its checksum selects the local `-server.zip`. `make materialize` produces the complete local folder from the mrpack, and `make server-zip` additionally packages it for private owner installation. The host must supply Java 25, Minecraft 26.2 and Fabric Loader 0.19.5; runtime binaries, worlds and credentials are not packaged. Vanilla Java clients need no pack.
 
 Only the release owner should create and push a matching version tag after review. GitHub Actions validates source, index and the selected archives, then independently boots a folder materialized from the validated mrpack, including in metadata mode. Native acceptance checks a clean install, effective permissions, conflict/repeat/roundtrip preservation, save/exit and an offline restart. Its test-owned permission import does not change this line's manual production bootstrap.
 
@@ -189,6 +192,7 @@ A nonzero exit means at least one baseline project remains unavailable. Staged c
 - [`docs/configuration.md`](docs/configuration.md)
 - [`docs/permissions.md`](docs/permissions.md)
 - [`docs/deployment.md`](docs/deployment.md)
+- [`docs/providers/dathost.md`](docs/providers/dathost.md)
 - [`docs/storage-and-recovery.md`](docs/storage-and-recovery.md)
 - [`docs/acceptance-tests.md`](docs/acceptance-tests.md)
 - [`docs/version-policy.md`](docs/version-policy.md)
@@ -198,4 +202,4 @@ A nonzero exit means at least one baseline project remains unavailable. Staged c
 
 Jimmy McCann ([@jabez007](https://github.com/jabez007)) directs the project. See [`CONTRIBUTORS.md`](CONTRIBUTORS.md).
 
-The repository-authored tooling and documentation are MIT licensed. Referenced mods and Minecraft remain under their own licenses and terms. `distribution/permissions.toml` binds exact pins, channel decisions, source duties and captured license texts. Generated notices are not permission grants; unresolved records block binary publication and require separate assessment before provider conveyance.
+The repository-authored tooling and documentation are MIT licensed. Referenced mods and Minecraft remain under their own licenses and terms. `distribution/permissions.toml` binds exact pins, channel decisions, source duties and captured license texts. Generated notices are not permission grants; unresolved records block public binary publication. Private owner installation does not require that public clearance record and grants no public redistribution rights.
