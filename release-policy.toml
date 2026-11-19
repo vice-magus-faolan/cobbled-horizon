@@ -1,3 +1,0 @@
-# Future tags are candidates unless an operator records explicit production eligibility.
-# See docs/version-policy.md. CI success and deployment reports are not approval.
-schema = 1

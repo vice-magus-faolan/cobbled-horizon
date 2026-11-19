@@ -11,7 +11,7 @@ Reconciled November 19, 2026. Evidence classes must not be conflated:
   [Workflow run 44190025103](https://github.com/vice-magus-faolan/cobbled-horizon/actions/runs/44190025103)
   succeeded with jobs `validate` (`134416621616`), `native-acceptance`
   (`134417269399`) and `publish` (`134418409229`). These are existing release
-  properties, not a new production approval or permission to alter that release.
+  properties, not permission to alter that release.
 - **Native assertions:** the same `scripts/native_acceptance.py` is retained in
   this source. The run validated the selected artifact/checksum and materialized
   its actual `.mrpack`; provisioned the pinned Minecraft/Fabric under Java 25;
@@ -23,9 +23,10 @@ Reconciled November 19, 2026. Evidence classes must not be conflated:
   permissions and persistence without startup seed reapplication, followed by
   explicit reconciliation. This is real native-server execution with synthetic
   identities, not a real-player, DatHost or all-configuration behavioral pass.
-- **Owner-reported:** Jimmy reported on November 19, 2026 that his 26.3 pack is
-  running on DatHost. No independent live tag/config readback, account allocation,
-  networking/client test or restore drill is inferred from that report.
+- **Owner-reported deployment:** the current 26.3 pack runs on Jimmy's DatHost
+  server, as he reported on November 19, 2026. No independent live tag/config
+  readback, account allocation, networking/client test or restore drill is inferred
+  from that report.
 - **Still manual/unverified:** designated-host real Java/Bedrock login, reconnect,
   chat and gameplay; Geyser UDP/TCP/signaling and account allocations; live account
   permissions/OP boundaries; worldgen density/progression/performance; JEB scheduling
@@ -33,10 +34,9 @@ Reconciled November 19, 2026. Evidence classes must not be conflated:
   [complete acceptance checklist](acceptance-tests.md) remains, including Epic,
   Explorify Black Spiral, DnT, graves, waystones and villager/crop behavior.
 
-Future publication uses [version-bound production eligibility](version-policy.md#production-eligibility):
-absent approval means prerelease/non-Latest even with green CI or owner-reported use.
-Existing releases/assets are unchanged. Historical sections below retain their dated
-scope and are not retroactively certified by this evidence.
+These are outstanding checks on an already-deployed pack, not prerequisites to
+that past deployment. Existing releases/assets are unchanged. Historical sections
+below retain their dated scope and are not retroactively certified by this evidence.
 
 ## Distribution-aware source and export checks
 
@@ -50,9 +50,9 @@ The mixed hosted-reference/override regressions use project-owned synthetic byte
 
 Known external full license/NOTICE/author-exception texts are content-addressed; original embedded licenses remain preserved inside unmodified hash-validated JARs. Exact source candidates and unresolved source/nested/shaded duties remain explicit. Historical published assets and historical checks below are not retroactively corrected or licensed by these source safeguards.
 
-## First-server setup candidate 26.3.0.1.4
+## First-server setup 26.3.0.1.4
 
-This candidate corrects JEB 1.2.0.10 and Tasks 3.1.0 operator guidance, refreshes MSS/Hopo controls against their pinned resources, and ships a readable group-only LuckPerms policy plus an import-ready gzip generated from the same bytes. Mod/runtime pins and Moog rarity inputs are unchanged. Static policy/index/archive regressions do not prove native loading, merge semantics or effective role security. Use the exact revision's successful hosted export/native jobs for private verification, and separately cleared downloadable archives/checksums for public delivery. The published tag's native config/import/roundtrip evidence is now recorded [above](#current-263-evidence); wider gameplay, cross-play and restore acceptance remains separate, and changed source still needs its own exact-head hosted checks. Historical records below do not certify this candidate.
+This release corrects JEB 1.2.0.10 and Tasks 3.1.0 operator guidance, refreshes MSS/Hopo controls against their pinned resources, and ships a readable group-only LuckPerms policy plus an import-ready gzip generated from the same bytes. Mod/runtime pins and Moog rarity inputs are unchanged. Static policy/index/archive regressions do not prove native loading, merge semantics or effective role security. Use the exact revision's successful hosted export/native jobs for private verification, and separately cleared downloadable archives/checksums for public delivery. The published tag's native config/import/roundtrip evidence is now recorded [above](#current-263-evidence); wider gameplay, cross-play and restore acceptance remains separate, and changed source still needs its own exact-head hosted checks. Historical records below do not certify this release.
 
 ## Complete server-folder preparation
 

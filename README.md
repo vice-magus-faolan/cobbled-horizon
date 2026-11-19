@@ -6,14 +6,14 @@
 
 A reproducible, server-side Fabric collection for a Vanilla+ Minecraft world focused on performance, exploration, and restrained quality-of-life improvements.
 
-This **development candidate** targets **Minecraft Java 26.3** with **Fabric Loader 0.20.1**. It contains 26 deliberately selected projects plus six resolved dependencies. All 32 exact artifacts have published Fabric 26.3 support; 31 are release-designated and Geyser `2.12.1-b1281` (`MJYV1WUM`) is explicitly pinned as beta. The published `v26.3.0.1.4` passed hosted native install/restart, selected config and synthetic permission-import assertions. Jimmy reported running his 26.3 pack on DatHost on November 19, 2026; that report does not independently bind his live installation to a tag or certify gameplay, Bedrock, networking or restore behavior. See the [dated evidence and remaining gates](docs/verification.md#current-263-evidence). Just Enough Backups (JEB) retains the backup role.
+This server pack targets **Minecraft Java 26.3** with **Fabric Loader 0.20.1**. It contains 26 deliberately selected projects plus six resolved dependencies. All 32 exact artifacts have published Fabric 26.3 support; 31 are release-designated and Geyser `2.12.1-b1281` (`MJYV1WUM`) is explicitly pinned as beta. The published `v26.3.0.1.4` passed hosted native install/restart, selected config and synthetic permission-import assertions. The current 26.3 pack runs on Jimmy's DatHost server, as he reported on November 19, 2026; that report does not independently bind his live installation to a tag or certify gameplay, Bedrock, networking or restore behavior. See the [dated evidence and outstanding checks](docs/verification.md#current-263-evidence). Just Enough Backups (JEB) retains the backup role.
 
 Java players should not need this pack on their clients: every packwiz entry is marked `side = "server"`. Bedrock access is provided by Geyser and Floodgate. This Geyser build requires UDP for NetherNet media and either TCP on the Bedrock port for built-in signaling, distinct from Java's TCP listener, or an explicitly configured and verified external signaling service. Host support is unverified; see [`Geyser networking`](docs/deployment.md#geyser-networking).
 
 ## Version branches
 
 - `26.2` preserves the original Minecraft 26.2 pack line.
-- `26.3` is the default development line for the Minecraft 26.3 candidate. The branch name alone does not establish that the upgrade has been merged or runtime-tested.
+- `26.3` is the default version line for the Minecraft 26.3 pack running on DatHost. Each subsequent source change still needs its own review and verification.
 - Target pull requests at the intended version branch; backport shared fixes deliberately rather than automatically synchronizing the two lines.
 
 See [`docs/version-policy.md`](docs/version-policy.md) for pack update and acceptance requirements.
@@ -110,10 +110,10 @@ Fabric API is the only explicitly selected platform library. Polymer, Cristel Li
 - Naturally Trimmed uses only vanilla trim materials and patterns. Trimmed equipment remains uncommon: 75% of eligible mobs receive no trims, each remaining armor piece has a 35% chance, loot uses 15%, and level-three-or-higher trades use 10%.
 - Crops Love Rain gives directly rain-exposed crops and cocoa a 1-in-10 extra-stage chance per applicable random tick; slower-growing plants use 1-in-15. Bamboo's rain bonus is disabled because the mod checks global rain rather than direct exposure for bamboo.
 - Moog's spacing is scoped by namespace: Soaring Structures uses `2.0`, while Ocean Structures uses `3.0`. The universal multiplier remains `1.0` so future Moog packs do not inherit either rarity policy.
-- Epic Villages Standalone preserves vanilla villages. Its Cristel placement override uses spacing `80` and separation `22`, retaining salt `50387312` and frequency `1.0`: 75% fewer Epic candidate-grid positions per area than the shipped `40`/`11` policy, not measured settlement totals or guaranteed cross-mod separation. Existing chunks are unchanged; config loading, fresh-chunk density and performance still require acceptance before deployment.
+- Epic Villages Standalone preserves vanilla villages. Its Cristel placement override uses spacing `80` and separation `22`, retaining salt `50387312` and frequency `1.0`: 75% fewer Epic candidate-grid positions per area than the shipped `40`/`11` policy, not measured settlement totals or guaranteed cross-mod separation. Existing chunks are unchanged; actual config loading, fresh-chunk density and performance remain outstanding checks.
 - Universal Graves retains 75% of XP, protects graves for one hour, and expires them after 24 real-time hours.
 - squaremap enables only the Overworld, limits zoom, reduces background rendering pressure, and intentionally retains its live player tracker. The tracker becomes public to anyone who can reach the configured map endpoint.
-- JEB uses 24-hour full and three-hour differential intervals, a 6 GB retention cap, an 8 GB free-space reserve, and operator-level-4 commands. Startup resets the timers, so deployment requires an initial full backup and explicit daily full backups coordinated with host restarts. Production launch requires full and differential restore drills.
+- JEB uses 24-hour full and three-hour differential intervals, a 6 GB retention cap, an 8 GB free-space reserve, and operator-level-4 commands. The operating procedure requires an initial full backup and explicit daily full backups coordinated with host restarts because startup can reset the timers. Exact-pin scheduling checks and full and differential restore drills remain outstanding evidence.
 - Ledger remains future-only. If promoted, it will use bounded retention and a verified, separately budgeted MySQL service rather than unbounded growth on the game filesystem; provider availability is not assumed.
 - PvP remains enabled, world spawn has a 16-block protection radius, and only the owner is a Minecraft operator. Helpers inherit the ordinary-player policy without operator status; the baseline grants them no additional nodes, and any future support capability must be added as an explicit LuckPerms node.
 - Same-dimension waystone travel costs two XP levels, has a 30-second PvP/PvE combat lock, and allows ten player-owned waystones per player. Only the owner may create global/server-owned waystones.
@@ -166,7 +166,7 @@ Do not assume a provider imports `.mrpack` files. Build and test on the designat
 
 ## GitHub releases
 
-Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. This source version is `26.3.0.1.4`, for Minecraft `26.3` and pack revision `0.1.4`. Tag `v26.3.0.1.4` is already published; do not recreate or reclassify it. Numeric identity is not production approval. Future unapproved candidates publish as **prereleases, explicitly not Latest**. Only an operator-approved, exact-version entry in `release-policy.toml` permits stable publication; source/CI success, binary clearance and an owner deployment report cannot supply that approval. See [production eligibility](docs/version-policy.md#production-eligibility).
+Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. This source version is `26.3.0.1.4`, for Minecraft `26.3` and pack revision `0.1.4`. Tag `v26.3.0.1.4` is already published; do not recreate it or alter its release assets. Numeric identity alone does not prove every runtime behavior.
 
 A valid matching tag selects one of two asset sets from the frozen exact-pin distribution policy:
 
@@ -194,13 +194,13 @@ The `.mrpack` preserves server-only flags and exact Modrinth downloads. The prim
 
 The `.sha256` covers both archives. Verify with `sha256sum --check cobbled-horizon-26.3.0.1.4.sha256`. Against matching source, `make check-upload` rechecks public rights for conveyed JARs, both archive contracts and checksums. For a complete local folder, `make materialize` downloads every original pinned mod from the validated `.mrpack`, preserves indexed configs/notices and refuses an existing destination. It does not require distribution clearance or launch Minecraft; transfer remains separately gated. Check that unmodified folder before runtime provisioning with `python3 scripts/server_folder.py validate build/server`. See the [deployment runbook](docs/deployment.md#build) and [DatHost import limitations](docs/providers/dathost.md#modpack-import-options).
 
-Only with separately authorized publication, source review and passing hosted checks, create and push a new matching tag from the intended version line. Production eligibility additionally requires designated-host acceptance and an explicit operator decision recorded for that exact version before tagging. Without that eligibility the publisher retains candidate classification even after successful checks. Never reuse a published version/tag; `v26.3.0.1.4` and its assets are historical release records, not test targets.
+Only with separately authorized publication, source review and passing hosted checks, create and push a new matching tag from the intended version line. Never reuse a published version/tag; `v26.3.0.1.4` and its assets are historical release records, not test targets.
 
 GitHub Actions checks source/schema, versions, tests and the index independently of unresolved distribution rights. The `validate` job uploads the selected validated two- or three-file set. On PR, branch and tag runs, `native-acceptance` downloads that immutable artifact ID, verifies the same set and checksum, and materializes its very `.mrpack` into a fresh complete folder before provisioning, boot and restart. There is no second export or fallback after download/hash failure; native `summary.json` records the consumed `archive_sha256`. It does not transfer uncleared JARs through artifacts or caches; only bounded allowlisted runtime evidence leaves that job. Both tag modes require native success; public binary transfer additionally requires clearance for conveyed JARs. Publishing uses the built-in `GITHUB_TOKEN`; this workflow uploads to GitHub only and grants no CurseForge moderation approval.
 
 The workflow uses one asset manifest from `scripts/distribution.py release-plan`. Default Make plans are regenerated for current policy/tag on each build/check; an explicit `RELEASE_PLAN=...` is frozen and must match exactly. The publish job reevaluates the frozen policy and exact tag, then `make check-release` validates the same selected nonempty files and exact checksum membership. Full mode must pass `make check-upload` before any ZIP upload; metadata mode passes `make check-metadata`. Release notes deliberately use the plan's recipient-facing distribution explanation, not generated GitHub changelog notes. Uploads go into a draft, which becomes public only after its complete nonempty asset set matches that manifest. Unexpected draft assets are not deleted automatically. If an upload fails, rerun the failed job to complete the draft. A rerun refuses to replace assets on an already published release. Use a new pack version and tag for a corrected release. Branch, pull request and manual runs upload eligible artifacts but do not create releases.
 
-Release automation also requires the hosted native first-install/restart checks described in [`docs/acceptance-tests.md`](docs/acceptance-tests.md#automated-gates). A green job is not Java/Bedrock client, gameplay, density, backup-restore or production certification; complete the remaining designated-host acceptance tests before production. See [`docs/version-policy.md`](docs/version-policy.md) for the update procedure.
+Release automation also requires the hosted native first-install/restart checks described in [`docs/acceptance-tests.md`](docs/acceptance-tests.md#automated-gates). A green job is not Java/Bedrock client, gameplay, density or backup-restore evidence; those designated-host checks remain outstanding for the deployed pack. See [`docs/version-policy.md`](docs/version-policy.md) for the update procedure.
 
 ## Updating
 
@@ -214,14 +214,14 @@ python3 scripts/check_target_readiness.py --minecraft 26.3
 
 A nonzero exit means at least one baseline project has no matching published file or its lookup failed. Staged candidates are reported separately and do not block the baseline. The checker queries all published versions of each project, not the selected lock ID. `--release-only` filters those results to release-designated Fabric files for the target Minecraft version; `--baseline-only` suppresses staged reporting.
 
-This is an upgrade-discovery check, not an audit of pinned-pack stability: a later upstream release can make `--release-only` green while this pack still pins the Geyser beta `2.12.1-b1281`. That pin remains explicitly beta and is not deployment-approved. Exact selected artifacts require the separate metadata/hash audit and acceptance gates in [`docs/version-policy.md`](docs/version-policy.md#exact-pins); the candidate-specific beta exception does not relax release-only filtering or permit other prereleases. Retained staged pins have not been refreshed or activated for 26.3.
+This is an upgrade-discovery check, not an audit of pinned-pack stability: a later upstream release can make `--release-only` green while this pack still pins the Geyser beta `2.12.1-b1281`. That pin remains explicitly beta in the deployed pack. Exact selected artifacts require the separate metadata/hash audit and runtime checks in [`docs/version-policy.md`](docs/version-policy.md#exact-pins); the exact-pin beta exception does not relax release-only filtering or permit other prereleases. Retained staged pins have not been refreshed or activated for 26.3.
 
 ## Documentation
 
 - [`docs/configuration.md`](docs/configuration.md)
 - [`docs/permissions.md`](docs/permissions.md)
 - [`docs/deployment.md`](docs/deployment.md)
-- [`docs/providers/dathost.md`](docs/providers/dathost.md) — candidate provider, not deployment approval
+- [`docs/providers/dathost.md`](docs/providers/dathost.md) — current provider, advertised offerings and outstanding account checks
 - [`docs/storage-and-recovery.md`](docs/storage-and-recovery.md)
 - [`docs/acceptance-tests.md`](docs/acceptance-tests.md)
 - [`docs/version-policy.md`](docs/version-policy.md)

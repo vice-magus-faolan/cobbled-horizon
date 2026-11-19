@@ -1,12 +1,12 @@
 # Storage, backups, and optional event logging
 
-Cobbled Horizon treats the selected host's verified usable filesystem quota as a shared failure budget for the world, pregenerated chunks, squaremap tiles, logs, temporary backup work, and retained backups. Provider advertisements are not account entitlements; see the [DatHost candidate profile](providers/dathost.md) for its dated offering and unresolved account checks.
+Cobbled Horizon treats the selected host's verified usable filesystem quota as a shared failure budget for the world, pregenerated chunks, squaremap tiles, logs, temporary backup work, and retained backups. Provider advertisements are not account entitlements; see the [current DatHost provider profile](providers/dathost.md) for its dated offering and unresolved account checks.
 
 ## Launch policy
 
-- **JEB is active in the 26.3 development candidate.** It is configured conservatively, but it is not production-proven until fresh full and differential restore drills pass against the updated pin. Retained 26.2 evidence does not prove this candidate.
+- **JEB is active in the deployed 26.3 pack.** The [current evidence record](verification.md#current-263-evidence) records DatHost use and bounded hosted assertions separately. Fresh full and differential restore drills remain outstanding against the updated pin; neither deployment nor retained 26.2 evidence proves recoverability.
 - **Ledger is not part of the launch baseline.** For a small allowlisted server, the operational cost and unbounded-growth risk are not justified until moderation history or surgical rollback is demonstrably needed.
-- **Keep an independent daily host/provider backup layer enabled.** Verify its schedule, scope, retention, quota accounting and restore route before launch. JEB is an application-aware recovery layer, not a replacement for that backup.
+- **Keep an independent daily host/provider backup layer enabled.** Its schedule, scope, retention, quota accounting and restore route remain outstanding account checks. JEB is an application-aware recovery layer, not a replacement for that backup.
 - Keep an off-host copy before every pack, loader, world-generation, or configuration migration.
 
 ## JEB configuration
@@ -27,11 +27,11 @@ The checked-in `config/justenoughbackups.json` applies this initial policy:
 
 The 6 GB cap limits retained archives; the 8 GB reserve protects operating headroom and can cause backups to fail early rather than fill the volume. JEB's preflight also accounts for the active world and temporary compression needs, so monitor failures and actual world, map, and backup sizes instead of assuming the caps guarantee capacity.[5][6]
 
-The previously inspected JEB 1.2.0.6 resets both schedule timers at server startup and config reload. Restarts less than 24 hours apart can prevent the scheduled full backup from becoming due, so the configured interval alone does not establish daily rotation.[9] Recheck these semantics with the candidate's 1.2.0.10+26.3; keep the conservative explicit-full-backup procedure until runtime evidence establishes otherwise.
+The previously inspected JEB 1.2.0.6 resets both schedule timers at server startup and config reload. Restarts less than 24 hours apart can prevent the scheduled full backup from becoming due, so the configured interval alone does not establish daily rotation.[9] Recheck these semantics with the deployed pack's 1.2.0.10+26.3; keep the conservative explicit-full-backup procedure until runtime evidence establishes otherwise.
 
 ### Create full backups across restarts
 
-Complete these steps before admitting players:
+For a new installation, complete these steps before admitting players. On the existing deployment, verify the recorded backup state rather than assuming these operations have already succeeded:
 
 1. Run `/jeb create full initial-baseline` from the server console.
 2. Wait for JEB to report successful completion.
@@ -49,7 +49,7 @@ After an unexpected restart, check the last successful full-backup time. If the 
 
 - Inspect `/jeb next` after startup and after `/jeb config reload`.
 - Alert on backup failures, overdue recovery points during active play, less than 8 GB free space, or unexpected storage growth.
-- Confirm the selected host's backup retention, restore scope, quota accounting and off-host access before launch; assign a responsible operator and test restoration rather than assuming the advertised service is sufficient.
+- Confirm the current host's backup retention, restore scope, quota accounting and off-host access; assign a responsible operator and test restoration rather than assuming the advertised service is sufficient.
 - Do not increase JEB retention without a storage-budget review.
 
 ### Required cold-restore drill
@@ -75,13 +75,13 @@ Repeat the drill for a differential recovery point:
 7. Verify Java and Bedrock login, representative chunks, inventories, and clean shutdown.
 8. Record both backup IDs and the differential restore result in `docs/verification.md`.
 
-Do not treat archive creation as proof of recovery. If this drill fails, JEB remains installed for investigation but production launch is blocked until it is fixed or replaced.
+Do not treat archive creation as proof of recovery. These drills remain outstanding assurance for the deployed pack. If a drill fails, investigate and repair or replace the recovery path before relying on it; record the failure rather than claiming a tested backup.
 
 ## Proposed Ledger deployment
 
 Ledger logs server-side world changes for inspection, search, and rollback.[1] Its default `autoPurgeDays = -1` means actions are never purged automatically, which is unacceptable on this storage-constrained deployment.[2]
 
-Ledger may be promoted only after its gate in `candidates.toml` passes. The preferred architecture is Ledger plus Ledger Databases using a verified, separately budgeted MySQL service, keeping event-store growth off the game filesystem.[3] This can be a provider-managed service or a separately approved database host; neither is assumed available. Verify compatibility, capacity, latency, backup and connectivity before selection. The [DatHost candidate profile](providers/dathost.md) records its advertised database offer and account questions, not a service guarantee.
+Ledger may be promoted only after its gate in `candidates.toml` passes. The preferred architecture is Ledger plus Ledger Databases using a verified, separately budgeted MySQL service, keeping event-store growth off the game filesystem.[3] This can be a provider-managed service or a separately approved database host; neither is assumed available. Verify compatibility, capacity, latency, backup and connectivity before selection. The [DatHost provider profile](providers/dathost.md) records its advertised database offer and account questions, not a service guarantee.
 
 Proposed `config/ledger.toml` additions, using runtime-injected values rather than committed credentials:
 

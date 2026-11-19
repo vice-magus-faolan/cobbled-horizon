@@ -1,6 +1,6 @@
 # DatHost provider profile
 
-Jimmy reported on **November 19, 2026** that his 26.3 pack is running on DatHost. This establishes owner-reported use, not an independently verified live tag, account entitlement, client/network pass or restore drill. Hosted native acceptance is separate evidence from disposable CI containers, not DatHost verification; see the [dated verification record](../verification.md#current-263-evidence). This profile retains provider-specific claims and unresolved account questions. The [deployment runbook](../deployment.md) remains authoritative for build, reconciliation, networking, security and rollback on any host; changing providers must not require changing the core pack or dropping those safeguards.
+DatHost is the current provider: Jimmy reported on **November 19, 2026** that his 26.3 pack is running there. This establishes owner-reported use, not an independently verified live tag, account entitlement, client/network pass or restore drill. Hosted native acceptance is separate evidence from disposable CI containers, not DatHost verification; see the [dated verification record](../verification.md#current-263-evidence). This profile retains provider-specific claims and unresolved account questions. The [deployment runbook](../deployment.md) remains authoritative for build, reconciliation, networking, security and rollback on any host; changing providers must not require changing the core pack or dropping those safeguards.
 
 ## Advertised offering, not verified entitlement
 
@@ -8,7 +8,7 @@ The [DatHost Minecraft hosting page](https://dathost.com/minecraft-server-hostin
 
 Do not increase JEB's checked-in **6,144 MB per-world retention cap** or reduce its **8,192 MB free-space reserve** based on that advertisement. Budget world growth, map tiles, logs, retained archives and temporary backup work against the selected account's verified usable capacity. Follow [storage and recovery](../storage-and-recovery.md), including its explicit-full-backup responsibility and real full/differential restore drills.
 
-## Account checks before a new deployment or production certification
+## Outstanding account checks
 
 Record the actual answers for the selected account; a public feature listing is not acceptance:
 
@@ -30,4 +30,4 @@ Before any replacement, verify the account permissions, exact Minecraft/Fabric/J
 
 ## Acceptance remains separate
 
-No hosting account, port allocation, provider backup or MySQL service has been independently tested by this reconciliation. The successful hosted native run establishes bounded install/restart, config and synthetic permission-import behavior, not generation/performance, real Java/Bedrock joins and graves, live account permissions or backup restoration. Complete the remaining [acceptance tests](../acceptance-tests.md) on the designated Minecraft test host and obtain separate deployment approval before applying the [permission bootstrap](../permissions.md) and production runbook. Neither this report nor CI success grants future stable-release eligibility.
+No hosting account, port allocation, provider backup or MySQL service has been independently tested by this reconciliation. The successful hosted native run establishes bounded install/restart, config and synthetic permission-import behavior, not generation/performance, real Java/Bedrock joins and graves, live account permissions or backup restoration. The remaining [acceptance tests](../acceptance-tests.md) are outstanding evidence for the already-deployed pack, not a prerequisite to that past deployment. Perform those checks on the designated Minecraft test host; any subsequent live changes, including the [permission bootstrap](../permissions.md), still need operator authorization and the runbook's backup/preservation safeguards.

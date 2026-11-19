@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read release identity and version-bound publication eligibility."""
+"""Read release identity from pack.toml and optionally verify a Git tag."""
 
 from __future__ import annotations
 
@@ -41,48 +41,22 @@ def metadata(
     }
 
 
-def publication_prerelease(version: str, policy: dict) -> str:
-    """Only an explicit approval for this exact version permits stable publication."""
-    if set(policy) - {"schema", "production"} or type(policy.get("schema")) is not int or policy["schema"] != 1:
-        raise ValueError("invalid release policy schema or unknown fields")
-    if "production" not in policy:
-        return "true"
-    approval = policy["production"]
-    if not isinstance(approval, dict) or set(approval) != {"version", "approval-reference"}:
-        raise ValueError("production eligibility requires version and approval-reference")
-    if approval["version"] != version:
-        raise ValueError("production eligibility is stale: version must match pack.toml exactly")
-    reference = approval["approval-reference"]
-    if not isinstance(reference, str) or not reference.strip() or len(reference) > 512 or any(ord(char) < 32 for char in reference):
-        raise ValueError("production approval-reference must be nonempty single-line text (at most 512 characters)")
-    return "false"
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--tag")
     parser.add_argument("--expected-minecraft", help="independent version branch (PR base or push branch)")
-    parser.add_argument("--publication", action="store_true", help="validate release-policy.toml and include prerelease classification")
-    parser.add_argument("--field", choices=("version", "minecraft", "tag", "basename", "prerelease"))
+    parser.add_argument("--field", choices=("version", "minecraft", "tag", "basename"))
     args = parser.parse_args()
     try:
         with (ROOT / "pack.toml").open("rb") as handle:
             values = metadata(tomllib.load(handle), args.tag, args.expected_minecraft)
-        if args.publication:
-            path = ROOT / "release-policy.toml"
-            try:
-                with path.open("rb") as handle:
-                    policy = tomllib.load(handle)
-            except FileNotFoundError:
-                policy = {"schema": 1}  # Absence never grants production eligibility.
-            values["prerelease"] = publication_prerelease(values["version"], policy)
-        if args.field:
-            print(values[args.field])
-        else:
-            for key, value in values.items():
-                print(f"{key}={value}")
-    except (OSError, KeyError, TypeError, ValueError) as exc:
+    except (KeyError, TypeError, ValueError) as exc:
         parser.error(str(exc))
+    if args.field:
+        print(values[args.field])
+    else:
+        for key, value in values.items():
+            print(f"{key}={value}")
     return 0
 
 
