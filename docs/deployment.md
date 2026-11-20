@@ -4,7 +4,7 @@ DatHost documents Fabric support, manual uploads and server-pack ZIP import. Pre
 
 ## Modpack import options
 
-Use the prepared `-server.zip` under **Mods & Plugins → Custom upload**, not the public CurseForge-format manifest ZIP or a renamed `.mrpack`. DatHost's URL importer selects the newest server pack, not necessarily the linked version.
+Use the prepared `-server.zip` under **Mods & Plugins → Custom upload**, not a renamed `.mrpack`. DatHost's URL importer selects the newest server pack, not necessarily the linked version.
 
 Private installation on the owner's own server does not require a public redistribution-clearance record; public sharing remains separately gated. Vanilla Java clients need no client pack, and Bedrock access retains the Geyser/Floodgate contract. No CurseForge listing or upload is configured.
 
@@ -23,10 +23,10 @@ Before Custom upload, verify the panel's removal scope and preserve the matching
 
 ## Build
 
-Use source matching the selected release. Download the full release's mrpack, ZIP and combined checksum into `dist/`, then verify the checksums before preparing the mrpack:
+Use source matching the selected release. Download its `.mrpack` and `.mrpack.sha256` into `dist/`, then verify the checksum before preparing the mrpack. Historical releases retain their original assets; use their supplied checksum rather than assuming the new two-file contract applies retroactively:
 
 ```bash
-(cd dist && sha256sum --check cobbled-horizon-26.2.0.1.3.sha256)
+(cd dist && sha256sum --check cobbled-horizon-26.2.0.1.3.mrpack.sha256)
 mkdir -p build
 python3 scripts/server_folder.py materialize dist/cobbled-horizon-26.2.0.1.3.mrpack build/server
 python3 scripts/server_folder.py zip build/server build/cobbled-horizon-26.2.0.1.3-server.zip
@@ -40,7 +40,7 @@ make validate test server-zip
 
 This uses `make export` and the existing materializer, validates all pinned files, then creates `build/cobbled-horizon-26.2.0.1.3-server.zip`. `make materialize` remains the folder-only route. The generated `build/server/` contains all 32 source-pinned JARs, configuration, squaremap and recipient notices, with no manifest wrapper, staged/client-only JARs, runtime binaries or credentials. ZIP contents are at the root, with sorted names, fixed timestamps and normalized permissions. Existing folder and ZIP destinations are refused; use fresh owned destinations and leave the folder unchanged while archiving. The command reports actual bytes and warns strictly above 100,000,000 bytes. Use authenticated FTP/file-manager transfer of extracted contents for larger packs; a browser file manager may share the web limit.
 
-Preparation never installs or starts Minecraft. Inspect the complete folder before transfer and complete the designated-host acceptance tests before production use. Private owner installation is not permission to publish the complete ZIP: public archive clearance, notices and source-delivery obligations remain enforced. CI never builds, uploads or caches a real complete server ZIP, and the release plan never selects it.
+Preparation never installs or starts Minecraft. Inspect the complete folder before transfer and complete the designated-host acceptance tests before production use. Private owner installation is not permission to publish the complete ZIP: applicable permissions, notices and source-delivery obligations still apply. The public pipeline publishes only the no-JAR `.mrpack` and its checksum. CI never builds, uploads or caches a real complete server ZIP, and the release plan never selects it.
 
 ## Upload
 

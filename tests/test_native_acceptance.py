@@ -202,7 +202,7 @@ class NativeAcceptanceTests(unittest.TestCase):
         work.mkdir()
         summary = {}
         with patch.object(native, "ROOT", fixture.root), \
-                patch.object(native.server_folder.urllib.request, "urlopen", side_effect=[io.BytesIO(fixture.fixture.fixture.mod), io.BytesIO(fixture.fixture.override_bytes)]), \
+                patch.object(native.server_folder.urllib.request, "urlopen", side_effect=[io.BytesIO(fixture.fixture.mod), io.BytesIO(fixture.fixture.override_bytes)]), \
                 patch.object(native, "provision", side_effect=RuntimeError("stop before runtime")) as provision:
             with self.assertRaisesRegex(RuntimeError, "stop before runtime"):
                 native.native_run(fixture.source, work, "ch-native-1-1", summary)

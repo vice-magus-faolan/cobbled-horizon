@@ -12,6 +12,19 @@ make validate
 make export check-metadata
 ```
 
+`make release` always selects exactly the validated no-JAR `.mrpack` and its
+`.mrpack.sha256`, regardless of unresolved binary redistribution obligations.
+Tagged releases require successful hosted native acceptance.
+
+The hosted `native-acceptance` job downloads the immutable artifact ID produced by
+`validate`, checks those exact two files and the mrpack checksum, then materializes
+that very `.mrpack` into a fresh complete server folder before provisioning,
+boot and restart. Download/hash failures are fatal, never a reason to re-export.
+`summary.json` records the consumed `archive_sha256`. Only bounded allowlisted
+runtime evidence leaves that job, never JARs, worlds or credentials. Its synthetic
+permission import does not replace this line's manual production bootstrap.
+These automated checks do not establish the client, gameplay or restore results below.
+
 ## Server lifecycle
 
 - [ ] Clean server reaches `Done` with no missing dependency or wrong-version error.
