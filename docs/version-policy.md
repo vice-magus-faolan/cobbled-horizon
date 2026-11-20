@@ -51,7 +51,7 @@ Staged pins retain historical bytes, including 26.2 builds; they are excluded fr
 
 ## Current 26.3 deployment and outstanding evidence
 
-Pack `26.3.0.1.5` adds stable server-only Mc2Discord 4.4.0 and an inert advancement-only example, with private runtime configuration excluded from source and archives. Existing pins, worldgen, permission policy and 26.2 remain unchanged. See the [private activation guide](discord-journal.md); real pinned-artifact no-token hosted boots and later approved live event delivery are distinct gates.
+Pack `26.3.0.1.5` adds stable server-only Mc2Discord 4.4.0 and an inert example for one-way advancement, death, join and leave posts, with private runtime configuration excluded from source and archives. Existing pins, worldgen, permission policy and 26.2 remain unchanged. See the [private activation guide](discord-journal.md); real pinned-artifact no-token hosted boots and later approved live event delivery are distinct gates.
 
 Pack `26.3.0.1.4` corrects JEB/Tasks operator guidance, refreshes pinned MSS/Hopo schemas and packages a one-time group-only LuckPerms seed with an import-ready gzip. All mod/runtime pins, Moog rarity inputs and the separate 26.2 line are unchanged. Its published tag passed hosted archive and bounded native install/restart/config/import assertions. See the [deployment report](verification.md#current-deployment) and [dated verification record](verification.md#current-263-evidence) for exact source/run and outstanding designated-host checks. Neither evidence class certifies later changed source or untested behavior.
 

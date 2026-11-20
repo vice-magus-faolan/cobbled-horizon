@@ -5,7 +5,7 @@ token = ""
 
 [[Channels.Channel]]
 id = 0
-subscriptions = ["player_advancement"]
+subscriptions = ["player_advancement", "player_death", "player_connect", "player_disconnect"]
 mode = "PLAIN_TEXT"
 silent = true
 

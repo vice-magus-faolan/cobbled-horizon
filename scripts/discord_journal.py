@@ -7,7 +7,8 @@ RUNTIME = "config/mc2discord.toml"
 # Exact SerdeKey names from upstream c4b1698. No real identities or grants.
 POLICY = {
     "General": {"token": ""},
-    "Channels": {"Channel": [{"id": 0, "subscriptions": ["player_advancement"],
+    "Channels": {"Channel": [{"id": 0, "subscriptions": ["player_advancement", "player_death",
+                                                     "player_connect", "player_disconnect"],
                               "mode": "PLAIN_TEXT", "silent": True}]},
     "Commands": {"slash_command": False,
                  "Permission": [{"id": 0, "permission_level": -1, "commands": []}]},
@@ -48,4 +49,4 @@ def policy_errors(config: dict, *, normalized: bool = False) -> list[str]:
         # Reject unknown fields too: misspelled keys and hidden credentials must
         # not turn a published template into an apparently safe activation file.
         valid = config == expected and contains_policy(config, expected)
-    return [] if valid else ["Mc2Discord must retain the credential-free advancement-only policy"]
+    return [] if valid else ["Mc2Discord must retain the credential-free one-way activity policy"]

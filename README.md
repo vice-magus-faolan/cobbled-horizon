@@ -60,7 +60,7 @@ partial JSON. Use `--repository PATH` to read another local repository.
 - Chunky
 - squaremap
 - Just Enough Backups (JEB)
-- [Mc2Discord](docs/discord-journal.md) — dormant; private advancement-only activation required
+- [Mc2Discord](docs/discord-journal.md) — dormant; private activation required for advancement, death, join and leave posts
 
 ### Quality of life and exploration
 

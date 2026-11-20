@@ -28,6 +28,10 @@ PRIVATE = ("config/mc2discord.toml", "config/mc2discord.toml.bak",
 class DiscordJournalTests(unittest.TestCase):
     def test_authored_policy_and_exact_server_pin(self):
         config = tomllib.loads((ROOT / journal.TEMPLATE).read_text())
+        self.assertEqual(
+            ["player_advancement", "player_death", "player_connect", "player_disconnect"],
+            config["Channels"]["Channel"][0]["subscriptions"],
+        )
         self.assertEqual([], journal.policy_errors(config))
         pin = tomllib.loads((ROOT / "mods/mc2discord.pw.toml").read_text())
         self.assertEqual("server", pin["side"])
@@ -56,9 +60,10 @@ class DiscordJournalTests(unittest.TestCase):
             (("Misc", "allowed_mention"), ["USER"]),
             (("Misc", "relay_bot_messages"), True),
         )
-        changes += tuple((("Channels", "Channel", 0, "subscriptions"), [name])
+        changes += tuple((("Channels", "Channel", 0, "subscriptions"),
+                          ["player_advancement", "player_death", "player_connect", "player_disconnect", name])
                          for name in ("info", "chat", "discord", "minecraft", "command", "logs",
-                                      "account_linking", "player_connect", "player_disconnect", "player_death"))
+                                      "account_linking", "*"))
         for path, value in changes:
             config = copy.deepcopy(journal.POLICY)
             target = config
@@ -74,8 +79,23 @@ class DiscordJournalTests(unittest.TestCase):
         config["fake_disable_flag"] = True
         self.assertTrue(journal.policy_errors(config))
 
+    def test_incomplete_activity_subscriptions_are_rejected(self):
+        requested = ["player_advancement", "player_death", "player_connect", "player_disconnect"]
+        for omitted in requested:
+            config = copy.deepcopy(journal.POLICY)
+            config["Channels"]["Channel"][0]["subscriptions"] = [
+                event for event in requested if event != omitted
+            ]
+            for normalized in (False, True):
+                with self.subTest(omitted=omitted, normalized=normalized):
+                    self.assertTrue(journal.policy_errors(config, normalized=normalized))
+
     def test_normalization_allows_comments_and_disabled_account_omission_not_policy_loss(self):
         config = copy.deepcopy(journal.POLICY)
+        # Independent human-requested contract, not a positive derived from POLICY.
+        config["Channels"]["Channel"][0]["subscriptions"] = [
+            "player_advancement", "player_death", "player_connect", "player_disconnect"
+        ]
         config["Channels"]["Channel"][0]["comment"] = "native comment"
         config["lang"] = "en_us"
         del config["Account"]  # Upstream OnlyIf(Features.account_linking).
@@ -152,9 +172,11 @@ class DiscordJournalTests(unittest.TestCase):
                         output + "Mc2Discord started as bot"):
                 with self.subTest(output=bad), self.assertRaises(ValueError):
                     native.check_discord_dormant(server, bad, normalized=True)
-            target.write_text(template.replace("slash_command = false", "slash_command = true"))
-            with self.assertRaisesRegex(ValueError, "parser changed"):
-                native.check_discord_dormant(server, output, normalized=True)
+            for drift in (template.replace("slash_command = false", "slash_command = true"),
+                          template.replace('"player_disconnect"', '"player_disconnect", "chat"')):
+                target.write_text(drift)
+                with self.subTest(drift=drift), self.assertRaisesRegex(ValueError, "parser changed"):
+                    native.check_discord_dormant(server, output, normalized=True)
             with patch.object(check_pack, "ROOT", server):
                 errors = []
                 check_pack.validate_no_secrets(errors)

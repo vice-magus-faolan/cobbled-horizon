@@ -9,11 +9,16 @@ before PR acceptance. Source/config checks alone are not that runtime result.
 
 ## What the reviewed policy permits
 
-Only announced player advancements go from Minecraft to the selected Discord
-text channel (`subscriptions = ["player_advancement"]`). There are no rankings,
-chat relays, private-message relays, console/log feeds or automated build detection.
-Join, leave, death, startup and shutdown posts are off. Do not add `info`: it
-subscribes to several of those event types. Do not empty the channel list:
+Announced player advancements, deaths, joins and leaves go from Minecraft to the
+selected Discord text channel, using exactly:
+
+```toml
+subscriptions = ["player_advancement", "player_death", "player_connect", "player_disconnect"]
+```
+
+There are no rankings, chat relays, private-message relays, console/log feeds or
+automated build detection. Startup and shutdown posts are off. Do not add `info`:
+it also subscribes to unselected event types. Do not empty the channel list:
 upstream replaces an empty list with broad `info`, `chat` and `command` defaults.
 
 The complete template disables slash commands, status channels, account linking,
@@ -29,7 +34,8 @@ network-level write-only client or a claim that Discord sends it no messages.
 
 1. Obtain approval for bot provisioning, Discord/channel permissions, credentials,
    server configuration/restart and a live event test. None is performed by this
-   pack PR. Agree with players on advancement/name disclosure and channel access.
+   pack PR. Agree with players on advancement, death, join/leave and name disclosure
+   and channel access.
 2. Use a **dedicated** bot application. Grant only View Channel and Send Messages
    in one ordinary text channel; deny access elsewhere. `PLAIN_TEXT` needs no
    Administrator, Manage Webhooks, Manage Roles, Manage Nicknames, Manage Channels
@@ -50,16 +56,16 @@ network-level write-only client or a claim that Discord sends it no messages.
    ID and set `General.token` last. Leave permission/account IDs at zero and all
    other controls unchanged. Never paste tokens, real IDs or private files into
    chat, Git, PRs, archives, logs or support bundles.
-5. Restart only under that separate approval. Verify one announced advancement
-   arrives as a bot text message. Contrast ordinary Minecraft chat, `/tell`,
-   player commands, joins/deaths, Discord chat, `!stop`, slash commands and a DM
+5. Restart only under that separate approval. Verify an announced advancement,
+   a death, a join and a leave each arrive as bot text messages. Contrast ordinary
+   Minecraft chat, `/tell`, player commands, Discord chat, `!stop`, slash commands and a DM
    containing `!code`: none may relay, execute game actions or link accounts.
    Confirm no roles, nicknames, whitelist or OP change. Check normal server use
    and a second restart. Record the actual result privately; a mocked event or
    credential-free boot is not a successful Discord-delivery test.
 
 For a later deliberate event-policy change, obtain approval and review both the
-subscription and privacy implications; joins/deaths remain off in this baseline.
+subscription and privacy implications; only the four listed events are selected.
 To pause under an approved configuration change, empty the private token and
 restart; retain the complete safe policy. Overlay updates ship only the example,
 so they cannot replace a private token file. Git/packwiz exclude Mc2Discord-named

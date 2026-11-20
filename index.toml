@@ -66,7 +66,7 @@ hash = "6cf6f83720071fd1657c8e79b357caf68d40f410ae123e5f922483eb1d1d25be"
 
 [[files]]
 file = "config/mc2discord.example.toml"
-hash = "42b7b4372ed56b69c2986c768ca2e78b91e9315fa4c1dd51731c41f1d775d15e"
+hash = "e83dbf94096266609443f7cb9c60c5f3fa358098b984cc4413f00dd6b5ee0f85"
 
 [[files]]
 file = "config/moogs_structures.json"
