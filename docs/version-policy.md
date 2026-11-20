@@ -2,11 +2,11 @@
 
 ## Release versions
 
-`pack.toml` is the source of truth for release versions and artifact names. Its `version` is `<Minecraft version>.<pack major>.<pack minor>.<pack patch>`, currently `26.2.0.1.3`. Git tags add a leading `v`, giving `v26.2.0.1.3`. The Minecraft prefix must match `versions.minecraft` exactly. Both exported manifests retain the complete pack version.
+`pack.toml` is the source of truth for release versions and artifact names. Its `version` is `<Minecraft version>.<pack major>.<pack minor>.<pack patch>`, currently `26.2.0.1.3`. Git tags add a leading `v`, giving `v26.2.0.1.3`. The Minecraft prefix must match `versions.minecraft` exactly. The exported mrpack retains the complete pack version.
 
 For the next pack-only patch on Minecraft 26.2, use `26.2.0.1.4`. If Minecraft gains another version component, keep the complete prefix, for example `26.2.1.0.1.0` for Minecraft 26.2.1 and pack revision 0.1.0. Release tags currently accept numeric versions only, without prerelease suffixes.
 
-Pushing a matching tag publishes only the derived distribution plan's assets, after validate and native acceptance succeed. Current 26.2 selects full mode: the `.mrpack`, primary CurseForge-format `.zip` and combined `.sha256`, never an additional server-folder ZIP. Metadata mode remains a fallback for well-formed unresolved bundled obligations and selects the no-JAR `.mrpack` and `.mrpack.sha256`. See the [release instructions](../README.md#github-releases). Publication to Modrinth or CurseForge is not configured.
+A valid matching tag always publishes exactly the validated no-JAR `.mrpack` and `.mrpack.sha256`, regardless of unresolved binary redistribution obligations. Release notes explain original-host downloads, configs and recipient notices. The selector owns one manifest for build/upload/draft comparison; the publisher independently reevaluates records and the exact tag, then validates the exact nonempty set, checksum and archive through `make check-release`. Invalid records, stale identities, missing/corrupt texts and failed archive/checksum checks are fatal. Hosted validate and native acceptance, draft-first exact-set checks and refusal to replace a published release remain required. Drafts with unexpected assets stay unpublished without automatic deletion. Existing releases retain their historical assets. See the [release instructions](../README.md#github-releases). Publication to Modrinth or CurseForge is not configured.
 
 ## Production pins
 
@@ -33,7 +33,7 @@ The Minecraft and Fabric Loader versions are pinned in `pack.toml`. Do not broad
 4. Review changelogs, dependencies, environment metadata, and licenses.
 5. Run `packwiz refresh --build`.
 6. Run all automated and manual acceptance tests against a disposable copied world.
-7. Inspect `python3 scripts/distribution.py release-plan`. Use `make export check-metadata` for metadata mode, or `make release` after full clearance. Commit and push the source; require exact-head validate and native-acceptance before the release owner tags it. Retain the selected published archives and checksum as the release record.
+7. Inspect `python3 scripts/distribution.py release-plan` and use `make release` / `make check-release` for the exact public mrpack/checksum contract. Commit the coherent source and obtain independent exact-commit review; publish the reviewed topic PR and require exact-head validate and native-acceptance before the release owner creates a separately authorized new matching tag. Retain the published mrpack and checksum as the release record; never reuse a published tag or alter its historical assets.
 8. Back up production before deployment.
 9. Deploy, verify, and retain the previous known-good pack for rollback.
 
