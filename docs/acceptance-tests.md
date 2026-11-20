@@ -14,15 +14,13 @@ make validate
 make export check-metadata
 ```
 
-Public ZIP export via `make release` additionally requires clearance for every bundled
-JAR. Unresolved bundled obligations select only the validated no-JAR `.mrpack` and
-`.mrpack.sha256`; the cleared set is `.mrpack`, the primary CurseForge ZIP and the
-combined `.sha256`. Both tagged-release modes require successful hosted native
-acceptance.
+`make release` always selects exactly the validated no-JAR `.mrpack` and its
+`.mrpack.sha256`, regardless of unresolved binary redistribution obligations.
+Tagged releases require successful hosted native acceptance.
 
 The hosted `native-acceptance` job downloads the immutable artifact ID produced by
-`validate`, revalidates its exact selected files and checksum (combined in full mode,
-per-mrpack in metadata mode), then materializes that very `.mrpack` into a fresh
+`validate`, revalidates those exact two files and the mrpack checksum, then
+materializes that very `.mrpack` into a fresh
 complete server folder. Download/hash failures are fatal, never a reason to re-export.
 `summary.json` records the consumed `archive_sha256`. It does not rebuild or
 substitute mods. In one disposable non-root Java 25 container

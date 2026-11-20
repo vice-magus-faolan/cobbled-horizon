@@ -16,7 +16,6 @@ import tempfile
 import urllib.request
 import zipfile
 
-import validate_curseforge
 import validate_mrpack
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -26,7 +25,7 @@ WEB_UPLOAD_LIMIT = 100_000_000  # DatHost's documented 100 MB web-upload limit.
 def validate_directory(path: pathlib.Path, source_root: pathlib.Path = ROOT) -> list[str]:
     """Require exactly the pinned mods, indexed configs and recipient notices."""
     errors: list[str] = []
-    hashes = validate_curseforge.payload_hashes(source_root, errors)
+    hashes = validate_mrpack.payload_hashes(source_root, errors)
     directories = {str(parent) for name in hashes for parent in pathlib.PurePosixPath(name).parents if str(parent) != "."}
     if not path.is_dir() or path.is_symlink():
         return ["server folder must be a regular directory"]
@@ -54,7 +53,7 @@ def materialize(mrpack: pathlib.Path, destination: pathlib.Path, source_root: pa
     if destination.exists() or destination.is_symlink():
         raise FileExistsError("server destination must be fresh: " + str(destination))
     index, contents = validate_mrpack.read_index(mrpack)
-    pack = validate_curseforge.load_toml(source_root / "pack.toml")
+    pack = validate_mrpack.load_toml(source_root / "pack.toml")
     errors, _, entries = validate_mrpack.validate_index(index, contents, pack["versions"]["minecraft"], "fabric", source_root)
     if errors:
         raise ValueError("invalid materialization plan: " + "; ".join(errors))

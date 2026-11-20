@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Exact-pin distribution decisions and deterministic recipient notices.
+"""Exact-pin permission records, recipient notices and the public release contract.
 
-Integrity validators are intentionally separate from permission decisions. A
-successful structural check never grants permission to upload an archive.
+Integrity checks preserve attribution and source access. A no-JAR public release
+never grants permission to redistribute the binaries downloaded by its recipient.
 """
 from __future__ import annotations
 
@@ -77,13 +77,12 @@ def records(root: pathlib.Path) -> list[dict]:
 
 
 def selected(root: pathlib.Path) -> list[tuple[dict, dict]]:
-    """Bind every indexed active mod to original download and updater identity."""
+    """Bind every indexed active mod to its original download identity."""
     inventory = records(root)
     by_identity = {(item["project"], item["version"], item["sha512"]): item for item in inventory}
     line = load(root / "pack.toml")["versions"]["minecraft"]
     result = []
     targets = set()
-    references = set()
     for entry in load(root / "index.toml")["files"]:
         if not entry.get("metafile"):
             continue
@@ -96,21 +95,12 @@ def selected(root: pathlib.Path) -> list[tuple[dict, dict]]:
         record = by_identity[key]
         require(line in record["lines"], f"permission line mismatch: {relative}")
         require(mod["side"] == record["side"] and mod["download"]["hash-format"] == "sha512" and hashlib.sha256((root / relative).read_bytes()).hexdigest() == record["metafile_sha256"], f"stale permission download identity: {relative}")
-        hosted = mod.get("update", {}).get("curseforge")
-        require(hosted == record.get("hosted"), f"unverified hosted mapping: {relative}")
         filename = mod["filename"]
         require(isinstance(filename, str) and bool(filename) and
                 not any(char in filename for char in "/\\:\x00") and filename not in {".", ".."},
                 f"unsafe mod filename: {relative}")
         require(filename not in targets, f"duplicate selected target: {filename}")
         targets.add(filename)
-        if hosted is not None:
-            require(isinstance(hosted, dict) and set(hosted) == {"project-id", "file-id"} and
-                    all(type(value) is int and value > 0 for value in hosted.values()), "invalid native CurseForge mapping")
-            reference = (hosted["project-id"], hosted["file-id"])
-            require(reference not in references, "duplicate native CurseForge reference")
-            references.add(reference)
-            check_hosted_evidence(mod, record)
         result.append((mod, record))
     require(bool(result), "no selected distribution components")
     return result
@@ -128,71 +118,24 @@ def check_source(source: dict) -> None:
         require(bool(source.get("directions")) and bool(source.get("verified_at")), "source requires equivalent-access directions and availability verification")
 
 
-def check_hosted_evidence(mod: dict, record: dict) -> None:
-    evidence = record.get("hosted_evidence")
-    require(isinstance(evidence, dict), f"missing structured hosted mapping evidence: {record['name']}")
-    hosted = mod["update"]["curseforge"]
-    url = f"https://www.curseforge.com/api/v1/mods/{hosted['project-id']}/files/{hosted['file-id']}/download"
-    require(evidence.get("url") == url and evidence.get("at") and
-            re.fullmatch(r"[0-9a-f]{64}", evidence.get("sha256", "")) and
-            evidence.get("sha512") == mod["download"]["hash"],
-            f"hosted mapping evidence must bind selected download SHA-512: {record['name']}")
-
-
-def uncleared_components(items: list[tuple[dict, dict]], channel: str) -> list[dict]:
-    """Separate valid unresolved obligations from corrupt policy/identity evidence.
-
-    Validate every component, then assess redistribution only for conveyed JARs.
-    References do not convey binaries, but never bypass identity/evidence checks.
-    """
-    require(channel in CHANNELS, f"unknown distribution channel: {channel}")
-    failures = []
-    for mod, record in items:
-        source = record["source"]
-        if "curseforge" in mod.get("update", {}):
-            continue  # Native CF exporter conveys this exact verified reference.
-        unresolved = (record["channels"][channel] != "allowed" or record["pending"] or
-                      record["nested"] != "verified" or source["status"] == "unknown" or not record["texts"])
-        if unresolved or (channel == "curseforge" and record.get("platform") != "verified"):
-            failures.append(record)
-    return failures
-
-
-def clearance(root: pathlib.Path, channel: str) -> list[tuple[dict, dict]]:
-    items = selected(root)
-    failures = uncleared_components(items, channel)
-    require(not failures, "distribution not cleared for " + channel + ":\n" + "\n".join(
-        f"{record['name']} {record['version']}: {record['channels'][channel]}; {record['conditions']}" for record in failures))
-    return items
-
-
 def release_plan(root: pathlib.Path, tag: str | None = None) -> dict:
-    """The single public asset contract; policy errors are never a fallback."""
+    """The single public asset contract; invalid records and tags remain fatal."""
     from release_metadata import metadata
     identity = metadata(load(root / "pack.toml"), tag)
-    blockers = uncleared_components(selected(root), "github")
+    selected(root)
     basename = identity["basename"]
-    suffixes = (".mrpack", ".mrpack.sha256") if blockers else (".mrpack", ".zip", ".sha256")
-    notes = ("Distribution obligations are fulfilled for the JARs actually bundled in the CurseForge ZIP. "
-             "Exact hosted references do not grant binary redistribution rights.")
-    if blockers:
-        names = sorted(f"{item['name']} ({item['project']}/{item['version']})" for item in blockers)
-        notes = ("Metadata-only release: the CurseForge ZIP is withheld because "
-                 "binary redistribution obligations remain unresolved for these bundled mods:\n\n" +
-                 "\n".join("- " + name for name in names) +
-                 "\n\nThe no-JAR .mrpack contains upstream download references, configuration and recipient notices; "
-                 "it does not grant redistribution permission for the referenced binaries.")
-    return {"schema": 1, "tag": identity["tag"], "mode": "metadata" if blockers else "full",
-            "assets": [basename + suffix for suffix in suffixes], "checksum": basename + suffixes[-1],
+    return {"schema": 1, "tag": identity["tag"],
+            "assets": [basename + ".mrpack", basename + ".mrpack.sha256"],
+            "checksum": basename + ".mrpack.sha256",
             "policy_sha256": hashlib.sha256((root / "distribution/permissions.toml").read_bytes()).hexdigest(),
-            "notes": notes}
+            "notes": "The no-JAR .mrpack downloads each mod from its original host and includes the pack's configs and recipient notices. "
+                     "It does not grant redistribution permission for the downloaded binaries."}
 
 
 def verify_release(root: pathlib.Path, plan: dict, directory: pathlib.Path, tag: str | None = None) -> None:
-    """Reassess policy, then require exactly the selected nonempty checksum set.
+    """Reassess source/tag, then require the exact nonempty checksum set.
 
-    Archive semantics remain in Make's existing check-metadata/check-upload
-    consumers. In particular a failing ZIP check must not select another mode.
+    Archive semantics remain in Make's check-metadata consumer.
     """
     require(plan == release_plan(root, tag), "release plan differs from current source/policy/tag")
     require({path.name for path in directory.iterdir()} == set(plan["assets"]), "unexpected release file set")
@@ -211,8 +154,7 @@ def notice_members(root: pathlib.Path) -> dict[str, bytes]:
     """Use a finite member contract; never copy the policy directory wholesale.
 
     Structural-only fixtures without policy intentionally have no notice members.
-    Binary publication entrypoints also call clearance. Metadata-only exports
-    and ephemeral verification retain unresolved notices without granting rights.
+    Unresolved notices are retained without granting binary redistribution rights.
     """
     if not (root / "distribution/permissions.toml").exists():
         return {}
@@ -235,11 +177,6 @@ def notice_members(root: pathlib.Path) -> dict[str, bytes]:
     return members
 
 
-def add_notices(path: pathlib.Path, root: pathlib.Path, channel: str) -> None:
-    clearance(root, channel)
-    write_notices(path, root)
-
-
 def write_notices(path: pathlib.Path, root: pathlib.Path) -> None:
     """Write finite notices for integrity-only preparation, not upload clearance."""
     members = notice_members(root)
@@ -253,8 +190,7 @@ def write_notices(path: pathlib.Path, root: pathlib.Path) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("schema", "check", "notices", "status", "verification-notices", "metadata-notices", "release-plan", "verify-release"))
-    parser.add_argument("--channel", choices=sorted(CHANNELS))
+    parser.add_argument("command", choices=("schema", "status", "metadata-notices", "release-plan", "verify-release"))
     parser.add_argument("--archive", type=pathlib.Path)
     parser.add_argument("--tag")
     parser.add_argument("--plan", type=pathlib.Path)
@@ -272,25 +208,16 @@ def main() -> int:
         elif args.command == "status":
             items = selected(ROOT)
             for channel in sorted(CHANNELS):
-                print(f"{channel}: {sum(item['channels'][channel] == 'allowed' for _, item in items)}/{len(items)} records allowed (all obligations still required)")
-        elif args.command in {"verification-notices", "metadata-notices"}:
+                print(f"{channel}: {sum(item['channels'][channel] == 'allowed' for _, item in items)}/{len(items)} records allowed (descriptive only; public assets contain no JARs)")
+        elif args.command == "metadata-notices":
             require(args.archive is not None, "archive is required")
-            if args.command == "metadata-notices":
-                require(args.archive.suffix.lower() == ".mrpack", "metadata-only notices require a .mrpack")
+            require(args.archive.suffix.lower() == ".mrpack", "metadata-only notices require a .mrpack")
             write_notices(args.archive, ROOT)
-            if args.command == "metadata-notices":
-                import validate_mrpack
-                index, contents = validate_mrpack.read_index(args.archive)
-                minecraft = load(ROOT / "pack.toml")["versions"]["minecraft"]
-                errors, _, _ = validate_mrpack.validate_index(index, contents, minecraft, "fabric", ROOT)
-                require(not errors, "invalid metadata-only archive: " + "; ".join(errors))
-        else:
-            require(args.channel is not None, "explicit distribution channel is required")
-            if args.command == "check":
-                clearance(ROOT, args.channel)
-            else:
-                require(args.archive is not None, "archive is required")
-                add_notices(args.archive, ROOT, args.channel)
+            import validate_mrpack
+            index, contents = validate_mrpack.read_index(args.archive)
+            minecraft = load(ROOT / "pack.toml")["versions"]["minecraft"]
+            errors, _, _ = validate_mrpack.validate_index(index, contents, minecraft, "fabric", ROOT)
+            require(not errors, "invalid metadata-only archive: " + "; ".join(errors))
     except (OSError, ValueError, KeyError, TypeError, zipfile.BadZipFile) as exc:
         print(f"ERROR: distribution: {exc}")
         return 1

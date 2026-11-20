@@ -24,6 +24,55 @@ def safe_relative(path: str) -> bool:
         part not in ("", ".", "..") for part in path.split("/"))
 
 
+def load_toml(path: pathlib.Path) -> dict:
+    with path.open("rb") as handle:
+        return tomllib.load(handle)
+
+
+def mod_payload(source_root: pathlib.Path, relative: str, errors: list[str]) -> tuple[str, str]:
+    mod = load_toml(source_root / relative)
+    if mod.get("side") != "server":
+        errors.append(f"validator requires server-only Modrinth pins: {relative}")
+    if mod["download"]["hash-format"] != "sha512":
+        errors.append(f"validator requires SHA-512 pins: {relative}")
+    filename = mod["filename"]
+    if not safe_relative(filename) or "/" in filename:
+        raise ValueError(f"unsafe mod filename: {relative}")
+    return "mods/" + filename, mod["download"]["hash"]
+
+
+def payload_hashes(source_root: pathlib.Path, errors: list[str]) -> dict[str, str]:
+    """Derive the complete server payload, including deterministic notices."""
+    expected_hashes: dict[str, str] = {}
+    for entry in load_toml(source_root / "index.toml")["files"]:
+        relative = entry["file"]
+        if not safe_relative(relative):
+            raise ValueError(f"unsafe source path: {relative}")
+        if entry.get("metafile"):
+            if pathlib.PurePosixPath(relative).parent != pathlib.PurePosixPath("mods"):
+                raise ValueError(f"unexpected mod metadata path: {relative}")
+            target, digest = mod_payload(source_root, relative, errors)
+        else:
+            if not is_pack_override(relative):
+                errors.append(f"unexpected source override: {relative}")
+            target = relative
+            digest = hashlib.sha512((source_root / relative).read_bytes()).hexdigest()
+        if target in expected_hashes:
+            errors.append(f"duplicate source target: {target}")
+        expected_hashes[target] = digest
+
+    for directory in ("config", "squaremap"):
+        for config in (source_root / directory).rglob("*"):
+            if config.is_file() and config.relative_to(source_root).as_posix() not in expected_hashes:
+                errors.append(f"source config is not indexed: {config.relative_to(source_root)}")
+    from distribution import notice_members
+    for name, data in notice_members(source_root).items():
+        if name in expected_hashes:
+            errors.append(f"duplicate generated target: {name}")
+        expected_hashes[name] = hashlib.sha512(data).hexdigest()
+    return expected_hashes
+
+
 def read_index(source: pathlib.Path) -> tuple[dict, dict[str, bytes]]:
     if source.suffix.lower() != ".mrpack":
         raise ValueError("validation requires a .mrpack archive, including its configuration overrides")
