@@ -200,6 +200,6 @@ A nonzero exit means at least one baseline project remains unavailable. Staged c
 
 ## Ownership and licensing
 
-Jimmy McCann ([@jabez007](https://github.com/jabez007)) directs the project. See [`CONTRIBUTORS.md`](CONTRIBUTORS.md).
+[@jabez007](https://github.com/jabez007) directs the project. See [`CONTRIBUTORS.md`](CONTRIBUTORS.md).
 
 The repository-authored tooling and documentation are MIT licensed. Referenced mods and Minecraft remain under their own licenses and terms. `distribution/permissions.toml` binds exact pins, channel decisions, source duties and captured license texts. Generated notices are not permission grants; unresolved records block public binary publication. Private owner installation does not require that public clearance record and grants no public redistribution rights.
