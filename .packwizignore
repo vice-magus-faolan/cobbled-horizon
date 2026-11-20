@@ -21,6 +21,9 @@ server.properties.example
 .packwizignore
 
 # Never distribute runtime state or secrets
+config/**/*mc2discord*
+!config/mc2discord.example.toml
+m2d-*
 config/floodgate/key.pem
 config/Geyser-Fabric/key.pem
 config/Geyser-Fabric/saved-refresh-tokens.json

@@ -184,7 +184,7 @@ class PermissionSeedTests(unittest.TestCase):
             for name in ("pack.toml", ".packwizignore", ".gitignore"):
                 shutil.copyfile(ROOT / name, root / name)
             (root / "index.toml").write_text("hash-format = \"sha256\"\n")
-            for relative in permission_seed.SEED_PATHS:
+            for relative in permission_seed.SEED_PATHS | {"config/mc2discord.example.toml"}:
                 target = root / relative
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((ROOT / relative).read_bytes())
@@ -192,6 +192,9 @@ class PermissionSeedTests(unittest.TestCase):
                 "mods/luckperms/luckperms-h2.mv.db", "mods/luckperms/config.yml",
                 "mods/luckperms/exports/private.json.gz", "config/luckperms/users.json",
                 "config/cobbled-horizon/extra.json", "config/floodgate/key.pem", "config/Geyser-Fabric/saved-refresh-tokens.json",
+                "config/mc2discord.toml", "config/mc2discord.toml.bak", "config/.mc2discord.toml",
+                "config/backups/mc2discord.toml", "m2d-linked-players.json", "m2d-hidden-players.json",
+                "config/backups/mc2discord.example.toml",
             )
             for relative in private:
                 target = root / relative
@@ -200,7 +203,7 @@ class PermissionSeedTests(unittest.TestCase):
             result = subprocess.run(["packwiz", "refresh", "--build"], cwd=root, capture_output=True, text=True, timeout=30)
             self.assertEqual(0, result.returncode, result.stdout + result.stderr)
             index = tomllib.loads((root / "index.toml").read_text())
-            self.assertEqual(permission_seed.SEED_PATHS, {entry["file"] for entry in index["files"]})
+            self.assertEqual(permission_seed.SEED_PATHS | {"config/mc2discord.example.toml"}, {entry["file"] for entry in index["files"]})
 
 
 if __name__ == "__main__":
