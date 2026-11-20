@@ -10,9 +10,13 @@ import tomllib
 import unittest
 from unittest.mock import patch
 
-import test_server_pack
+from pack_fixtures import ROOT, load_script
+import check_pack
+import permission_seed
+import server_folder
+import test_server_folder
 import test_validation
-from test_validation import ROOT, check_pack, load_script, permission_seed, validate_mrpack
+import validate_mrpack
 
 journal = load_script("discord_journal")
 native = load_script("native_acceptance")
@@ -82,27 +86,44 @@ class DiscordJournalTests(unittest.TestCase):
         config["Commands"]["slash_command"] = 0  # bool/int equality is not enough.
         self.assertTrue(journal.policy_errors(config, normalized=True))
 
-    def test_private_paths_are_rejected_even_when_indexed_into_all_three_contracts(self):
+    def test_private_paths_are_rejected_by_mrpack_folder_and_private_zip_even_when_indexed(self):
         mr = test_validation.MrpackTests()
         mr.setUp()
-        fixture = test_server_pack.ServerPackTests()
-        fixture.setUp()
-        self.addCleanup(fixture.doCleanups)
         for relative in PRIVATE:
             with self.subTest(relative=relative):
+                fixture = test_server_folder.ServerFolderTests()
+                fixture.setUp()
+                self.addCleanup(fixture.doCleanups)
+                fixture.materialize()
                 self.assertFalse(permission_seed.is_pack_override(relative))
                 mr.assert_archive_rejected(mr.index, {**mr.overrides, "overrides/" + relative: b"private canary"},
                                            "unexpected archive entry")
+                private = fixture.output / relative
+                private.parent.mkdir(parents=True, exist_ok=True)
+                private.write_bytes(b"private canary")
+                self.assertIn("unexpected server entry: " + relative,
+                              server_folder.validate_directory(fixture.output, fixture.root))
+                archive = fixture.root / "private.zip"
+                with self.assertRaisesRegex(ValueError, "unexpected server entry: " + relative):
+                    server_folder.server_zip(fixture.output, archive, fixture.root)
+                self.assertFalse(archive.exists())
                 target = fixture.root / relative
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(b"private canary")
                 original = (fixture.root / "index.toml").read_text()
                 (fixture.root / "index.toml").write_text(original + f"[[files]]\nfile = {json.dumps(relative)}\n")
-                fixture.fixture.files["overrides/" + relative] = b"private canary"
-                self.assertIn("unexpected source override: " + relative, fixture.fixture.validate())
-                fixture.write_server({**fixture.payload, relative: b"private canary"})
+                fixture.write_mrpack({**fixture.contents, "overrides/" + relative: b"private canary"})
+                destination = fixture.root / "refused"
+                with patch.object(server_folder.urllib.request, "urlopen") as download:
+                    with self.assertRaisesRegex(ValueError, "unexpected source override: " + relative):
+                        server_folder.materialize(fixture.source, destination, fixture.root)
+                download.assert_not_called()
+                self.assertFalse(destination.exists())
                 self.assertIn("unexpected source override: " + relative,
-                              test_server_pack.server_pack.validate_archive(fixture.output, fixture.root))
+                              server_folder.validate_directory(fixture.output, fixture.root))
+                with self.assertRaisesRegex(ValueError, "unexpected source override: " + relative):
+                    server_folder.server_zip(fixture.output, archive, fixture.root)
+                self.assertFalse(archive.exists())
                 # A source-index insertion must not turn the mrpack deny into an allow.
                 with tempfile.TemporaryDirectory() as directory:
                     root = Path(directory)
@@ -116,9 +137,6 @@ class DiscordJournalTests(unittest.TestCase):
                     validate_mrpack.validate_contract({**mr.index, "files": []},
                                                      {"overrides/" + relative: b"private canary"}, root, errors)
                     self.assertIn("unexpected source override: " + relative, errors)
-                (fixture.root / "index.toml").write_text(original)
-                del fixture.fixture.files["overrides/" + relative]
-                target.unlink()
 
     def test_native_guard_rejects_missing_mod_guard_login_and_parser_drift(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -1,14 +1,67 @@
 # Verification record
 
-## First-server setup candidate 26.3.0.1.4
+## Current 26.3 evidence
 
-This candidate corrects JEB 1.2.0.10 and Tasks 3.1.0 operator guidance, refreshes MSS/Hopo controls against their pinned resources, and ships a readable group-only LuckPerms policy plus an import-ready gzip generated from the same bytes. Mod/runtime pins and Moog rarity inputs are unchanged. Static policy/index/archive regressions do not prove native loading, merge semantics or effective role security. Use this exact revision's successful hosted `Build and release pack` / `validate` build and downloadable three-archive/checksum set for final export evidence. Native config loading and permission-import roundtrip remain pending until independently recorded; wider gameplay, cross-play and restore acceptance remains separate. Historical records below do not certify this candidate.
+Reconciled November 19, 2026. Evidence classes must not be conflated:
 
-## Standalone server archive
+- **Hosted and published:** [v26.3.0.1.4](https://github.com/vice-magus-faolan/cobbled-horizon/releases/tag/v26.3.0.1.4)
+  (release `449277512`) was published November 17, 2026 at `22:29:33Z`, non-draft,
+  non-prerelease and Latest at reconciliation preflight. Its exact tag source is
+  `dd8b40ecc017f3e98e739e83d8ae70729d6f3f02`.
+  [Workflow run 44190025103](https://github.com/vice-magus-faolan/cobbled-horizon/actions/runs/44190025103)
+  succeeded with jobs `validate` (`134416621616`), `native-acceptance`
+  (`134417269399`) and `publish` (`134418409229`). These are existing release
+  properties, not permission to alter that release.
+- **Native assertions:** the same `scripts/native_acceptance.py` is retained in
+  this source. The run validated the selected artifact/checksum and materialized
+  its actual `.mrpack`; provisioned the pinned Minecraft/Fabric under Java 25;
+  reached readiness, saved all dimensions and exited cleanly on first boot and
+  an offline restart. It checked MSS/Hopo generated placement/toggle values, no
+  missing-set/config recovery and Moog namespace migration. LuckPerms assertions
+  covered fresh group import, conflicts, unrelated group/user/context preservation,
+  deliberate repeat, export/import roundtrip, effective synthetic-account waystone
+  permissions and persistence without startup seed reapplication, followed by
+  explicit reconciliation. This is real native-server execution with synthetic
+  identities, not a real-player, DatHost or all-configuration behavioral pass.
 
-Pack `26.3.0.1.3` adds a root-layout `-server.zip` without changing the 26.3 mod pins, configuration bytes or Minecraft/Fabric versions. The existing hosted `Build and release pack` workflow runs `make release`: it checks both native exports, derives the standalone payload from the validated CurseForge ZIP, and validates its exact root membership and source hashes before writing checksums for all three archives. Its downloadable artifact contains those archives and the checksum file. Use the exact revision's successful hosted build and artifacts as full-export evidence, not the synthetic archive fixtures alone.
+### Current deployment
 
-This packaging path neither launches Minecraft nor verifies DatHost import, Java/Bedrock gameplay or restore behavior. Earlier records below retain their historical pack identities and results; they are not runtime acceptance for this candidate.
+**Deployment.** `jabez007` runs the 26.3 pack on DatHost, as reported on November 19, 2026. The outstanding checks below haven't been run on that server yet.
+
+### Outstanding checks
+
+Designated-host real Java/Bedrock login, reconnect, chat and gameplay; Geyser
+UDP/TCP/signaling and account allocations; live account permissions/OP boundaries;
+worldgen density/progression/performance; JEB scheduling and full/differential
+restore drills; provider backup scope and recovery. The
+[complete acceptance checklist](acceptance-tests.md) remains, including Epic,
+Explorify Black Spiral, DnT, graves, waystones and villager/crop behavior.
+
+These are outstanding checks on an already-deployed pack, not prerequisites to
+that past deployment. Existing releases/assets are unchanged. Historical sections
+below retain their dated scope and are not retroactively certified by this evidence.
+
+## Distribution-aware source and export checks
+
+Source validation and public distribution are separate gates. `make validate test` checks the active exact-pin records, required text bytes/provenance and existing source/archive contracts without pretending unresolved rights are allowed. The hosted `Build and release pack` / `validate` job refresh-checks the index and runs this source/test feedback even while public clearance is unresolved. See [ownership and licensing](../README.md#ownership-and-licensing) for the authoritative channel/notice/source contract.
+
+Real export/runtime evidence comes from the exact revision's successful hosted `validate` and `native-acceptance` jobs: native downloads validate's immutable artifact ID, verifies the exact set and selected checksum, and materializes that very `.mrpack` before provisioning, first install and restart. Its `summary.json` records `archive_sha256`; download/hash failure never re-exports a substitute. No uncleared JAR artifact/cache transfer is used. A tag with unresolved bundled obligations selects exactly the validated no-JAR `.mrpack` and `.mrpack.sha256`; release notes name its unresolved bundled mods. With clearance for conveyed JARs, the set is exactly `.mrpack`, primary CurseForge ZIP and combined `.sha256`. Both modes require native success. Neither private boot nor metadata export grants binary redistribution rights.
+
+`scripts/distribution.py release-plan` owns the selected asset manifest. The publisher reevaluates the exact source policy/tag and runs `make check-release` against the downloaded exact nonempty set and checksum membership; full mode must pass the existing `make check-upload` before any ZIP upload, while metadata mode must pass `make check-metadata`. Invalid policy/identity/text/archive/checksum inputs fail, never downgrade. Draft publication compares that same selected manifest with the provider's complete nonempty asset set and refuses already published reruns. Production selector/Make/publisher tests use bounded synthetic provider transport for both modes and no-upload failures; these tests are not live tag acceptance. Actual tagged publication remains a separately approved operation.
+
+The mixed hosted-reference/override regressions use project-owned synthetic bytes and exercise complete mrpack-to-folder materialization, exact configs/notices, fresh destinations, type/traversal/duplicate/private-path rejection and failed-download cleanup. They are not real third-party runtime evidence or permission. Referenced unresolved versus bundled unresolved cases exercise the real selector and publisher; wrong/missing/digest-mismatched mapping evidence stays fatal. Official CF downloads independently match the selected SHA-512 for Fabric API, the four mapped ARR projects and Forge: Explorify `698309/9509145`, Collective `342584/9394030`, Villager Names `345854/9272149`, DnT Stronghold `920416/8926271` and Forge Config API Port `547434/8938808`. Forge's official endpoint was retrieved with `curl --fail --location --max-time 45`; `sha512sum` matched the unchanged original pin `b9339c21e14beec2eae0ca215317284bcaacef72e1d1dee8b3dfbe2de0eefaa758a172446df85419b6534557c479abe972d7d21f4ec194f2d436f9ed4329cb9f` and `sha256sum` returned `95cc2bd7a943f910a54baf2f65acde301dcfb3d8aeff2c989c04c416d5a4a1cd` (609574 bytes). The native partition remains six references and 26 bundled JARs; no pin or mapping changes. Forge's matching MPL-covered source and access directions are supplied; unavailable external build-logic is a rebuild limitation, not a missing redistribution grant. The ZIP still references its already-approved official file rather than bundling it. Geyser's actual native notices/runtime exceptions and covered-source directions, and distinct Polymer 0.18.6 / Waystones 0.18.2 MIT module terms and Patbox credit, are supplied through the existing ledger and recipient notices. Only the four ARR records remain uncleared on GitHub; all are manifest references, not bundled copies. The current plan therefore selects full mode and the three-file set; require the exact-head hosted validate/native jobs for delivery evidence.
+
+Known external full license/NOTICE/author-exception texts are content-addressed; original embedded licenses remain preserved inside unmodified hash-validated JARs. Exact source candidates and unresolved source/nested/shaded duties remain explicit. Historical published assets and historical checks below are not retroactively corrected or licensed by these source safeguards.
+
+## First-server setup 26.3.0.1.4
+
+This release corrects JEB 1.2.0.10 and Tasks 3.1.0 operator guidance, refreshes MSS/Hopo controls against their pinned resources, and ships a readable group-only LuckPerms policy plus an import-ready gzip generated from the same bytes. Mod/runtime pins and Moog rarity inputs are unchanged. Static policy/index/archive regressions do not prove native loading, merge semantics or effective role security. Use the exact revision's successful hosted export/native jobs for private verification, and separately cleared downloadable archives/checksums for public delivery. The published tag's native config/import/roundtrip evidence is now recorded [above](#current-263-evidence); wider gameplay, cross-play and restore acceptance remains separate, and changed source still needs its own exact-head hosted checks. Historical records below do not certify this release.
+
+## Complete server-folder preparation
+
+`make materialize` uses the validated native Modrinth plan for all 32 original downloads, then validates the complete folder against selected hashes, exact configs and deterministic notices. It refuses an existing destination and exposes no partial folder after a failed download. Use the exact revision's successful hosted mrpack/native job as runtime evidence, not synthetic fixtures alone. Public checksums cover the two archives only.
+
+Folder preparation neither launches Minecraft nor verifies DatHost import, Java/Bedrock gameplay or restore behavior. The separate native hosted job provisions and boots that actual folder with the retained lifecycle assertions. Earlier records below retain their historical pack identities and results; they are not runtime acceptance for changed source.
 
 ## Fabric 26.3 development candidate
 

@@ -8,6 +8,7 @@ import hashlib
 import json
 import pathlib
 import re
+import stat
 import tomllib
 import zipfile
 
@@ -19,8 +20,57 @@ VALID_ENVIRONMENTS = {"required", "optional", "unsupported"}
 
 
 def safe_relative(path: str) -> bool:
-    candidate = pathlib.PurePosixPath(path)
-    return bool(path) and not candidate.is_absolute() and ".." not in candidate.parts and "\\" not in path and ":" not in path
+    return bool(path) and not any(char in path for char in "\\:\x00") and all(
+        part not in ("", ".", "..") for part in path.split("/"))
+
+
+def load_toml(path: pathlib.Path) -> dict:
+    with path.open("rb") as handle:
+        return tomllib.load(handle)
+
+
+def mod_payload(source_root: pathlib.Path, relative: str, errors: list[str]) -> tuple[str, str]:
+    mod = load_toml(source_root / relative)
+    if mod.get("side") != "server":
+        errors.append(f"validator requires server-only Modrinth pins: {relative}")
+    if mod["download"]["hash-format"] != "sha512":
+        errors.append(f"validator requires SHA-512 pins: {relative}")
+    filename = mod["filename"]
+    if not safe_relative(filename) or "/" in filename:
+        raise ValueError(f"unsafe mod filename: {relative}")
+    return "mods/" + filename, mod["download"]["hash"]
+
+
+def payload_hashes(source_root: pathlib.Path, errors: list[str]) -> dict[str, str]:
+    """Derive the complete server payload, including deterministic notices."""
+    expected_hashes: dict[str, str] = {}
+    for entry in load_toml(source_root / "index.toml")["files"]:
+        relative = entry["file"]
+        if not safe_relative(relative):
+            raise ValueError(f"unsafe source path: {relative}")
+        if entry.get("metafile"):
+            if pathlib.PurePosixPath(relative).parent != pathlib.PurePosixPath("mods"):
+                raise ValueError(f"unexpected mod metadata path: {relative}")
+            target, digest = mod_payload(source_root, relative, errors)
+        else:
+            if not is_pack_override(relative):
+                errors.append(f"unexpected source override: {relative}")
+            target = relative
+            digest = hashlib.sha512((source_root / relative).read_bytes()).hexdigest()
+        if target in expected_hashes:
+            errors.append(f"duplicate source target: {target}")
+        expected_hashes[target] = digest
+
+    for directory in ("config", "squaremap"):
+        for config in (source_root / directory).rglob("*"):
+            if config.is_file() and config.relative_to(source_root).as_posix() not in expected_hashes:
+                errors.append(f"source config is not indexed: {config.relative_to(source_root)}")
+    from distribution import notice_members
+    for name, data in notice_members(source_root).items():
+        if name in expected_hashes:
+            errors.append(f"duplicate generated target: {name}")
+        expected_hashes[name] = hashlib.sha512(data).hexdigest()
+    return expected_hashes
 
 
 def read_index(source: pathlib.Path) -> tuple[dict, dict[str, bytes]]:
@@ -30,6 +80,13 @@ def read_index(source: pathlib.Path) -> tuple[dict, dict[str, bytes]]:
         names = archive.namelist()
         if len(names) != len(set(names)):
             raise ValueError("archive contains duplicate paths")
+        if any(name.lower().endswith(".jar") for name in names):
+            raise ValueError("metadata-only .mrpack must not bundle JARs")
+        for entry in archive.infolist():
+            kind = stat.S_IFMT(entry.external_attr >> 16)
+            expected = stat.S_IFDIR if entry.is_dir() else stat.S_IFREG
+            if not safe_relative(entry.filename.removesuffix("/")) or kind not in (0, expected):
+                raise ValueError("unsafe archive entry path/type: " + entry.filename)
         contents = {name: archive.read(name) for name in names}
         return json.loads(contents["modrinth.index.json"]), contents
 
@@ -126,6 +183,8 @@ def validate_contract(index: dict, archive_files: dict[str, bytes], source_root:
                 relative = path.relative_to(source_root).as_posix()
                 if "overrides/" + relative not in expected_overrides:
                     errors.append(f"source config is not indexed: {relative}")
+    from distribution import notice_members
+    expected_overrides.update({"overrides/" + name: data for name, data in notice_members(source_root).items()})
     allowed = {"modrinth.index.json", *expected_overrides}
     allowed_directories = {"overrides/"}
     for path in expected_overrides:
@@ -177,7 +236,7 @@ def validate_index(index: dict, archive_files: dict[str, bytes], minecraft: str,
     if not required_server_files:
         errors.append("pack must contain required server mods")
     for name in archive_files:
-        if not safe_relative(name):
+        if not safe_relative(name.removesuffix("/")):
             errors.append(f"archive contains unsafe path: {name!r}")
     if not errors:
         validate_contract(index, archive_files, source_root, errors)
@@ -218,7 +277,7 @@ def main() -> int:
         print(f"ERROR: {error}")
     if errors:
         return 1
-    print(f"PASS: {len(required_server_files)} required server file(s); pins and configuration overrides match source")
+    print(f"PASS: metadata-only .mrpack; no bundled JARs; {len(required_server_files)} pinned server download(s); overrides and notices match source")
     return 0
 
 

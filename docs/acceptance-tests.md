@@ -1,8 +1,8 @@
 # Acceptance tests
 
-Run these against a disposable world before production and again after every mod or loader update.
+Run these against a disposable world to establish the outstanding assurance for the 26.3 pack and again after every mod or loader update.
 
-The 26.3 candidate has no runtime pass. Its Geyser beta and changed structure composition require fresh evidence; historical 26.2 results do not satisfy these gates.
+Published `v26.3.0.1.4` passed the bounded hosted native assertions described below; see the separate [deployment report](verification.md#current-deployment). Neither establishes real-client, host-network, gameplay/worldgen/performance or full/differential restore acceptance. See the [dated evidence](verification.md#current-263-evidence). The unchecked lists remain designated-host acceptance, not a claim that the overlapping CI assertions have never run; historical 26.2 results do not certify this version.
 
 All Minecraft server startup, world-generation, and gameplay tests must run on the designated, adequately resourced Minecraft test host. A control/orchestration machine may perform static validation and export only.
 
@@ -11,11 +11,19 @@ All Minecraft server startup, world-generation, and gameplay tests must run on t
 ```bash
 make test
 make validate
-make release
+make export check-metadata
 ```
 
-The hosted `native-acceptance` job consumes the same run's validated server ZIP;
-it does not rebuild or substitute mods. In one disposable non-root Java 25 container
+`make release` always selects exactly the validated no-JAR `.mrpack` and its
+`.mrpack.sha256`, regardless of unresolved binary redistribution obligations.
+Tagged releases require successful hosted native acceptance.
+
+The hosted `native-acceptance` job downloads the immutable artifact ID produced by
+`validate`, revalidates those exact two files and the mrpack checksum, then
+materializes that very `.mrpack` into a fresh
+complete server folder. Download/hash failures are fatal, never a reason to re-export.
+`summary.json` records the consumed `archive_sha256`. It does not rebuild or
+substitute mods. In one disposable non-root Java 25 container
 at a time (4 GB heap, no published ports), the first boot permits public dependency
 bootstrap and the second runs offline. It checks Minecraft readiness, MSS/Hopo and
 Moog policy, fresh group creation, native import/repeat/conflict/roundtrip preservation,
@@ -109,6 +117,6 @@ Do not run final Chunky pre-generation until this section passes and the seed is
 - [ ] A differential backup is restored with its base full archive into a fresh disposable instance; changes made after the full backup are present.
 - [ ] Java and Bedrock login, representative chunks, inventory, and a clean shutdown pass after restoration.
 - [ ] The restore result is recorded in `docs/verification.md`; archive creation alone is not a pass.
-- [ ] The selected host's independent daily backup layer is enabled; schedule, responsible operator, retention, quota accounting, world/config/key scope and off-host access are confirmed, and restoration is tested. Advertised provider backups do not substitute for either JEB restore drill. Resolve any [candidate-provider questions](providers/dathost.md) against the actual selected account.
+- [ ] The selected host's independent daily backup layer is enabled; schedule, responsible operator, retention, quota accounting, world/config/key scope and off-host access are confirmed, and restoration is tested. Advertised provider backups do not substitute for either JEB restore drill. Resolve the [outstanding provider questions](providers/dathost.md) against the actual DatHost account.
 
 Ledger is not a launch test because it is not active. If it is later promoted, add tests for database loss/latency, bounded queue shutdown, purge, inspect, rollback, permissions, and database-aware restoration before deployment.

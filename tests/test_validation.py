@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import contextlib
 import copy
-import importlib.util
 import io
 import json
 import pathlib
@@ -16,18 +15,8 @@ import warnings
 import zipfile
 from unittest.mock import patch
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
-
-
-def load_script(name: str):
-    path = ROOT / "scripts" / f"{name}.py"
-    spec = importlib.util.spec_from_file_location(name, path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"cannot load {path}")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[name] = module
-    spec.loader.exec_module(module)
-    return module
+from pack_fixtures import ROOT, load_script
+import distribution
 
 
 release_metadata = load_script("release_metadata")
@@ -51,6 +40,29 @@ class PackSourceTests(unittest.TestCase):
             summary.indexed_files,
             summary.baseline_selected + summary.baseline_dependencies,
         )
+
+    def test_source_entrypoint_rejects_stale_or_malformed_distribution_records(self) -> None:
+        original_load = distribution.load
+        for variant in ("missing pin", "stale identity", "missing text", "bad schema"):
+            with self.subTest(variant=variant):
+                def load(path):
+                    data = original_load(path)
+                    if path == ROOT / "distribution/permissions.toml":
+                        data = copy.deepcopy(data)
+                        if variant == "missing pin":
+                            data["components"] = data["components"][1:]
+                        elif variant == "stale identity":
+                            data["components"][0]["metafile_sha256"] = "0" * 64
+                        elif variant == "missing text":
+                            data["components"][0]["texts"] = ["0" * 64]
+                        else:
+                            data["schema"] = 999
+                    return data
+                with patch.object(distribution, "load", side_effect=load):
+                    errors, _ = check_pack.validate()
+                self.assertTrue(any(error.startswith("distribution:") for error in errors), errors)
+        errors, _ = check_pack.validate()
+        self.assertEqual([], errors)  # Unresolved rights are valid source data, not public clearance.
 
     def test_friends_and_family_policy_is_pinned(self) -> None:
         waystones = json.loads((ROOT / "config/sswaystones.json").read_text())
@@ -243,6 +255,7 @@ class MrpackTests(unittest.TestCase):
             for directory in ("config", "squaremap")
             for path in (ROOT / directory).rglob("*") if path.is_file()
         }
+        self.overrides.update({"overrides/" + name: data for name, data in distribution.notice_members(ROOT).items()})
 
     def run_archive(self, index: dict, overrides: dict[str, bytes]) -> tuple[int, str]:
         with tempfile.TemporaryDirectory() as directory:
@@ -343,7 +356,8 @@ class MrpackTests(unittest.TestCase):
         self.assert_archive_rejected({**self.index, "files": self.index["files"] + [extra]}, self.overrides, "unexpected exported file")
         for name in ("overrides/staged/config/example.json", "server-overrides/config/justenoughbackups.json", "overrides/mods/krypton.jar", "overrides/config/floodgate/key.pem"):
             with self.subTest(name=name):
-                self.assert_archive_rejected(self.index, {**self.overrides, name: b"unexpected"}, "unexpected archive entry")
+                reason = "must not bundle JARs" if name.endswith(".jar") else "unexpected archive entry"
+                self.assert_archive_rejected(self.index, {**self.overrides, name: b"unexpected"}, reason)
 
     def test_duplicate_archive_paths_are_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

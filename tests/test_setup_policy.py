@@ -16,7 +16,8 @@ import tomllib
 import unittest
 from unittest.mock import patch
 
-from test_validation import ROOT, permission_seed
+from pack_fixtures import ROOT
+import permission_seed
 
 
 class WorldgenPolicyTests(unittest.TestCase):

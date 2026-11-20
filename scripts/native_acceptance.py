@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Hosted native acceptance of the same validated server ZIP; never a deployment tool."""
+"""Hosted native acceptance from the validated .mrpack; never a deployment tool."""
 
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ import zipfile
 
 import discord_journal
 import permission_seed
-import server_pack
+import server_folder
 
 ROOT = Path(__file__).resolve().parents[1]
 JAVA_IMAGE = "eclipse-temurin:25-jdk@sha256:b8705e936964c228dfce359e63dbf08f6c69cb380ed1d576b1f6b1064f15567d"
@@ -57,14 +57,6 @@ def cleanup(project: str) -> None:
             arguments.append("--all")
         require(not docker(*arguments), f"owned {resource} resources remain")
 
-
-def extract_server(archive: Path, destination: Path, source_root: Path = ROOT) -> None:
-    """Existing exact membership/hash/type validator runs before any extraction."""
-    errors = server_pack.validate_archive(archive, source_root)
-    require(not errors, "invalid server archive: " + "; ".join(errors))
-    destination.mkdir()  # Must be a fresh owned directory, never an existing server.
-    with zipfile.ZipFile(archive) as payload:
-        payload.extractall(destination)
 
 
 def check_worldgen(server: Path, console: str, source_root: Path = ROOT) -> None:
@@ -355,8 +347,9 @@ def check_discord_dormant(server: Path, output: str, *, normalized: bool = False
 def native_run(archive: Path, work: Path, project: str, summary: dict) -> None:
     deadline = time.monotonic() + 720
     server = work / "server"
-    extract_server(archive, server)
+    server_folder.materialize(archive, server, ROOT)
     require(not (server / discord_journal.RUNTIME).exists(), "archive overwrites private Discord config")
+    summary["preparation"] = "validated mrpack to complete server folder"
     with archive.open("rb") as stream:
         summary["archive_sha256"] = hashlib.file_digest(stream, "sha256").hexdigest()
     provision(server, project, work, deadline)
@@ -429,7 +422,7 @@ def main() -> int:
     try:
         native_run(args.archive, args.work, args.project, summary)
         summary["passed"] = True
-    except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as exc:
+    except (OSError, ValueError, RuntimeError, zipfile.BadZipFile, subprocess.SubprocessError) as exc:
         summary["error"] = str(exc)
         if isinstance(exc, subprocess.CalledProcessError):
             summary["stderr"] = (exc.stderr or "")[-4096:]

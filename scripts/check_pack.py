@@ -12,6 +12,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 
 import discord_journal
+import distribution
 from permission_seed import is_pack_override
 from release_metadata import metadata as release_metadata
 
@@ -393,6 +394,11 @@ def validate() -> tuple[list[str], ValidationSummary]:
     validate_metadata(errors, active, ROOT / "mods")
     validate_metadata(errors, staged, ROOT / "staged/mods")
     indexed = validate_index(errors)
+    # Source validity can describe unresolved rights, but must bind every pin and text.
+    try:
+        distribution.selected(ROOT)
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        errors.append(f"distribution: {exc}")
     validate_configs(errors)
     validate_no_secrets(errors)
     summary = ValidationSummary(

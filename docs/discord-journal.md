@@ -63,9 +63,9 @@ subscription and privacy implications; joins/deaths remain off in this baseline.
 To pause under an approved configuration change, empty the private token and
 restart; retain the complete safe policy. Overlay updates ship only the example,
 so they cannot replace a private token file. Git/packwiz exclude Mc2Discord-named
-config copies/backups and `m2d-*` identity stores; all three archive validators
-also reject them if accidentally indexed. Keep private backups outside the source
-and export roots regardless of ignore rules. Rotate an exposed token promptly
+config copies/backups and `m2d-*` identity stores. The mrpack validator and private
+server-folder/ZIP preparation also reject them if accidentally indexed. Keep private
+backups outside the source and export roots regardless of ignore rules. Rotate an exposed token promptly
 through a separately authorized recovery action.
 
 A voluntary `#builds`/screenshot channel and an approved Squaremap link can help

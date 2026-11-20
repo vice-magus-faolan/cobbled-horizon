@@ -14,8 +14,9 @@ import time
 import unittest
 from unittest.mock import Mock, patch
 
-import test_server_pack
-from test_validation import ROOT, load_script, permission_seed
+import test_server_folder
+from pack_fixtures import ROOT, load_script
+import permission_seed
 
 native = load_script("native_acceptance")
 READY_LINE = "[12:00:00] [Server thread/INFO]: Done (1.2s)! For help, type \"help\"\n"
@@ -193,22 +194,32 @@ class NativeAcceptanceTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "recovery file"):
                 native.check_worldgen(server, READY_LINE)
 
-    def test_archive_is_validated_before_any_extraction(self):
-        fixture = test_server_pack.ServerPackTests()
+    def test_native_prepares_the_complete_mrpack_folder_before_provisioning(self):
+        fixture = test_server_folder.ServerFolderTests()
         fixture.setUp()
         self.addCleanup(fixture.doCleanups)
-        fixture.write_server(fixture.payload)
-        destination = fixture.root / "runtime"
-        native.extract_server(fixture.output, destination, fixture.root)
-        self.assertEqual(fixture.fixture.mod, (destination / "mods/test.jar").read_bytes())
-        with self.assertRaises(FileExistsError):
-            native.extract_server(fixture.output, destination, fixture.root)
-        fixture.write_server({**fixture.payload, "../escaped": b"bad"})
-        other = fixture.root / "invalid-runtime"
-        with self.assertRaisesRegex(ValueError, "invalid server archive"):
-            native.extract_server(fixture.output, other, fixture.root)
-        self.assertFalse(other.exists())
-        self.assertFalse((fixture.root / "escaped").exists())
+        work = fixture.root / "native-work"
+        work.mkdir()
+        summary = {}
+        with patch.object(native, "ROOT", fixture.root), \
+                patch.object(native.server_folder.urllib.request, "urlopen", side_effect=[io.BytesIO(fixture.fixture.mod), io.BytesIO(fixture.fixture.override_bytes)]), \
+                patch.object(native, "provision", side_effect=RuntimeError("stop before runtime")) as provision:
+            with self.assertRaisesRegex(RuntimeError, "stop before runtime"):
+                native.native_run(fixture.source, work, "ch-native-1-1", summary)
+        self.assertEqual(work / "server", provision.call_args.args[0])
+        self.assertEqual([], native.server_folder.validate_directory(work / "server", fixture.root))
+        self.assertEqual("validated mrpack to complete server folder", summary["preparation"])
+        fixture.write_mrpack({**fixture.contents, "../escape": b"bad"})
+        other = fixture.root / "invalid-work"
+        other.mkdir()
+        with patch.object(native, "ROOT", fixture.root), patch.object(native, "provision") as provision, \
+                patch.object(native.server_folder.urllib.request, "urlopen") as download:
+            with self.assertRaises(ValueError):
+                native.native_run(fixture.source, other, "ch-native-1-1", {})
+        provision.assert_not_called()
+        download.assert_not_called()
+        self.assertFalse((other / "server").exists())
+        self.assertFalse((fixture.root / "escape").exists())
 
     def test_cleanup_queries_failure_and_leftovers_never_prove_absence(self):
         with patch.object(native, "docker", side_effect=["owned", "", "", "", ""]) as docker:

@@ -133,7 +133,7 @@ metafile = true
 
 [[files]]
 file = "mods/collective.pw.toml"
-hash = "d147550d4e0d203ddacd0600da57d11866e21bc590dac66d18eb1254bd6a6dcd"
+hash = "b61c53b16ca95e95f95de738c7004b217821786b11a8b8fd837f0aece0a7c1c0"
 metafile = true
 
 [[files]]
@@ -153,7 +153,7 @@ metafile = true
 
 [[files]]
 file = "mods/dungeons-and-taverns-stronghold-overhaul.pw.toml"
-hash = "025dd50dcae7c6fb3aa068c768cbddc96772e645b41b085e9215f731a6b3057b"
+hash = "7b81d0259194144cb62c7c44d4c0126f90ddcd8d3e13aebc6a24a6c3cf718804"
 metafile = true
 
 [[files]]
@@ -163,12 +163,12 @@ metafile = true
 
 [[files]]
 file = "mods/explorify.pw.toml"
-hash = "e2de9f52fa87712f0b9c2354ad29b628e7e0bbac908b68c501857af72bed023d"
+hash = "873a037ea2c574e8fe8d497c30d299e417fa5b293f2cfa12f8f4feccc0d3cac5"
 metafile = true
 
 [[files]]
 file = "mods/fabric-api.pw.toml"
-hash = "a09bcba54a5bb4c8716edaecf7afb4b8f913215d5fb252ded96e14328ac3e931"
+hash = "ceaabcc1b7bcfacf4bfe22b0d29a76e8b29695e2ea8c493995c147fdf1db80b8"
 metafile = true
 
 [[files]]
@@ -183,7 +183,7 @@ metafile = true
 
 [[files]]
 file = "mods/forge-config-api-port.pw.toml"
-hash = "8099f8d9657f3762d4d4ac43101ed4a61d274525642775c0ed813b99e3f539c3"
+hash = "b59b1cd5a2205ba0ffa92c581f70085eb4d4ee5a750bfaf16f61e8c067304423"
 metafile = true
 
 [[files]]
@@ -273,7 +273,7 @@ metafile = true
 
 [[files]]
 file = "mods/villager-names-serilum.pw.toml"
-hash = "05d23bf4c8101f1101718d89772f29083f9fd9d11fc962553dcfb8c2244617d2"
+hash = "e698caef826437c85831777b6f4c77dfc69e0276c61b4771e0dd566a852a4cb4"
 metafile = true
 
 [[files]]
