@@ -11,7 +11,7 @@ Cobbled Horizon treats the selected host's verified usable filesystem quota as a
 
 ## Personal loot retention
 
-SlashLoot retains dimension-scoped private inventories separately from vanilla slots. Upstream cleanup removes orphaned source records, not ordinary storage or chunks. Active source/player records can still grow without an age/size retention cap. Monitor those bytes without changing the JEB caps/reserve. Retain the complete matching world and dimensions in consistent backups; no complete all-player escrow exporter or lossless uninstall is supplied. [Source-marker loss, destructive prune/forget and activation gates](slashloot.md#retention-removal-and-administration) are mandatory operational considerations, not ordinary storage cleanup.
+SlashLoot retains dimension-scoped private inventories separately from vanilla slots. Upstream cleanup removes orphaned source records, not ordinary storage or chunks. That cleanup distinction is not a blanket storage-interaction guarantee: a tableless half joined to an eligible loot chest has an unresolved [mixed-double preservation limitation](slashloot.md#mixed-double-chests-unresolved-preservation-gate), which must be assessed before live activation. Active source/player records can still grow without an age/size retention cap. Monitor those bytes without changing the JEB caps/reserve. Retain the complete matching world and dimensions in consistent backups; no complete all-player escrow exporter or lossless uninstall is supplied. [Source-marker loss, destructive prune/forget and activation gates](slashloot.md#retention-removal-and-administration) are mandatory operational considerations, not ordinary storage cleanup.
 
 ## JEB configuration
 
