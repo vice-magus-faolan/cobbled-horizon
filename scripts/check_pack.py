@@ -11,7 +11,9 @@ import tomllib
 from collections.abc import Iterable
 from dataclasses import dataclass
 
+import discord_journal
 import distribution
+from permission_seed import is_pack_override
 from release_metadata import metadata as release_metadata
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -328,6 +330,7 @@ def validate_configs(errors: list[str]) -> None:
     if crops_love_rain != expected_rain_policy:
         errors.append("Crops Love Rain must retain the exposed-crop policy with bamboo disabled")
     validate_jeb_config(errors)
+    errors.extend(discord_journal.policy_errors(load_toml(ROOT / discord_journal.TEMPLATE)))
 
 
 def validate_jeb_config(errors: list[str]) -> None:
@@ -369,6 +372,9 @@ def validate_no_secrets(errors: list[str]) -> None:
     for path in ROOT.rglob("*"):
         if ".git" in path.parts or not path.is_file():
             continue
+        relative = path.relative_to(ROOT).as_posix()
+        if relative.startswith(("config/", "m2d-")) and not is_pack_override(relative):
+            errors.append(f"runtime state must not exist in the source tree: {relative}")
         try:
             text = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:

@@ -308,15 +308,20 @@ class DistributionTests(unittest.TestCase):
                                      output.read_text().splitlines())
                     self.assertEqual(set(expected), {path.name for path in dist.iterdir()})
 
-    def test_curated_inventory_has_both_lines_and_inactive_prospective_record(self):
+    def test_curated_inventory_has_both_lines_and_263_only_journal(self):
         inventory = distribution.records(ROOT)
         identities = {(item["project"], item["version"], item["sha512"]) for item in inventory}
         self.assertEqual(len(inventory), len(identities))
         self.assertEqual(62, len(inventory))
-        for line in ("26.2", "26.3"):
-            self.assertEqual(32, sum(line in item["lines"] for item in inventory))
-        self.assertEqual(["Cfbcv7uF"], [item["project"] for item in inventory if "prospective" in item["lines"]])
-        self.assertNotIn("Cfbcv7uF", {item["project"] for _, item in distribution.selected(ROOT)})
+        for line, count in (("26.2", 32), ("26.3", 33)):
+            self.assertEqual(count, sum(line in item["lines"] for item in inventory))
+        journal = next(item for item in inventory if item["project"] == "Cfbcv7uF")
+        self.assertEqual(["26.3"], journal["lines"])
+        self.assertNotIn("26.2", journal["lines"])
+        self.assertEqual("GaUQd96e", journal["version"])
+        self.assertEqual({"github": "conditional", "curseforge": "conditional", "private": "conditional"},
+                         journal["channels"])
+        self.assertIn("Cfbcv7uF", {item["project"] for _, item in distribution.selected(ROOT)})
 
     def test_uncleared_metadata_export_rejects_jars_and_private_members(self):
         self.prepare_archives()

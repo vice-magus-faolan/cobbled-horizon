@@ -20,6 +20,7 @@ import tomllib
 import urllib.request
 import zipfile
 
+import discord_journal
 import permission_seed
 import server_folder
 
@@ -331,10 +332,23 @@ def first_boot(console: Console, server: Path) -> dict:
     return saved
 
 
+def check_discord_dormant(server: Path, output: str, *, normalized: bool = False) -> None:
+    """Check actual pinned-mod startup, then its native rewritten config policy."""
+    require("mc2discord 4.4.0" in output, "pinned Mc2Discord was not loaded")
+    require("Invalid Discord bot token" in output, "missing-token guard was not exercised")
+    require("Mc2Discord started as" not in output, "Discord unexpectedly logged in")
+    config = tomllib.loads((server / discord_journal.RUNTIME).read_text())
+    require(config.get("General", {}).get("token") == "", "native Discord token is not empty")
+    if normalized:
+        require(not discord_journal.policy_errors(config, normalized=True),
+                "native Mc2Discord parser changed the one-way policy")
+
+
 def native_run(archive: Path, work: Path, project: str, summary: dict) -> None:
     deadline = time.monotonic() + 720
     server = work / "server"
     server_folder.materialize(archive, server, ROOT)
+    require(not (server / discord_journal.RUNTIME).exists(), "archive overwrites private Discord config")
     summary["preparation"] = "validated mrpack to complete server folder"
     with archive.open("rb") as stream:
         summary["archive_sha256"] = hashlib.file_digest(stream, "sha256").hexdigest()
@@ -344,12 +358,16 @@ def native_run(archive: Path, work: Path, project: str, summary: dict) -> None:
         saved = first_boot(console, server)
         console.stop(name)
         check_worldgen(server, console.output)
+        check_discord_dormant(server, console.output)
+        summary["discord_missing_config_no_token_first_boot"] = "passed"
         summary["first_install_and_import_repeat_conflict_roundtrip_preservation"] = "passed"
     finally:
         console.close()
     # On failure main records the product error before its guaranteed cleanup.
     cleanup(project)
     require((server / "world/level.dat").is_file(), "world was not saved")
+    # Only this disposable fixture replaces generated defaults, never a live file.
+    shutil.copyfile(server / discord_journal.TEMPLATE, server / discord_journal.RUNTIME)
     name, console = boot(project, "offline-second-boot", server, work, deadline, True)
     try:
         console.wait(READY, seconds=180)
@@ -362,6 +380,8 @@ def native_run(archive: Path, work: Path, project: str, summary: dict) -> None:
         check_effective(console)
         console.stop(name)
         check_worldgen(server, console.output)
+        check_discord_dormant(server, console.output, normalized=True)
+        summary["discord_template_no_token_native_parser_offline_restart"] = "passed"
         summary["offline_second_boot_save_exit_no_startup_reapplication"] = "passed"
     finally:
         console.close()

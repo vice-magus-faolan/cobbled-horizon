@@ -6,7 +6,7 @@
 
 A reproducible, server-side Fabric collection for a Vanilla+ Minecraft world focused on performance, exploration, and restrained quality-of-life improvements.
 
-This server pack targets **Minecraft Java 26.3** with **Fabric Loader 0.20.1**. It contains 26 deliberately selected projects plus six resolved dependencies. All 32 exact artifacts have published Fabric 26.3 support; 31 are release-designated and Geyser `2.12.1-b1281` (`MJYV1WUM`) is explicitly pinned as beta. The published `v26.3.0.1.4` passed hosted native install/restart, selected config and synthetic permission-import assertions. See the [deployment report and outstanding checks](docs/verification.md#current-deployment). Just Enough Backups (JEB) retains the backup role.
+This **development candidate** targets **Minecraft Java 26.3** with **Fabric Loader 0.20.1**. It contains 27 deliberately selected projects plus six resolved dependencies. All 33 exact artifacts have published Fabric 26.3 support; 32 are release-designated and Geyser `2.12.1-b1281` (`MJYV1WUM`) is explicitly pinned as beta. The published `v26.3.0.1.4` passed hosted native install/restart, selected config and synthetic permission-import assertions; that evidence does not certify this changed candidate. See the [deployment report and outstanding checks](docs/verification.md#current-deployment). Just Enough Backups (JEB) retains the backup role.
 
 Java players should not need this pack on their clients: every packwiz entry is marked `side = "server"`. Bedrock access is provided by Geyser and Floodgate. This Geyser build requires UDP for NetherNet media and either TCP on the Bedrock port for built-in signaling, distinct from Java's TCP listener, or an explicitly configured and verified external signaling service. Host support is unverified; see [`Geyser networking`](docs/deployment.md#geyser-networking).
 
@@ -60,6 +60,7 @@ partial JSON. Use `--repository PATH` to read another local repository.
 - Chunky
 - squaremap
 - Just Enough Backups (JEB)
+- [Mc2Discord](docs/discord-journal.md) — dormant; private activation required for advancement, death, join and leave posts
 
 ### Quality of life and exploration
 
@@ -94,9 +95,9 @@ Packwiz writes the same `.pw.toml` shape for a project whether it was selected d
 
 This repository keeps the two concerns separate:
 
-- [`collection.toml`](collection.toml) defines the active baseline: 26 selected projects and six resolved dependencies.
+- [`collection.toml`](collection.toml) defines the active baseline: 27 selected projects and six resolved dependencies.
 - [`candidates.toml`](candidates.toml) defines staged and future projects, why they are inactive, and the evidence required to promote them.
-- `mods/*.pw.toml` is the machine-maintained baseline lock layer. It contains the 32 projects exported by the standard pack.
+- `mods/*.pw.toml` is the machine-maintained baseline lock layer. It contains the 33 projects exported by the standard pack.
 - `staged/mods/*.pw.toml` retains five pinned candidate records outside packwiz's active index.
 
 Fabric API is the only explicitly selected platform library. Polymer, Cristel Lib, Cloth Config API, Forge Config API Port, Moog's Structure Lib, and Collective close baseline dependencies. ZConfig is staged beside Fast Noise. Cristel Lib demonstrates why dependency chains matter: Towns and Towers requires Cristel Lib, which in turn requires Cloth Config API and Fabric API. Explorify requires Fabric API; its Cristel Lib integration is optional. Crops Love Rain requires Forge Config API Port and Fabric API. Villager Names requires Collective.
@@ -152,8 +153,8 @@ tag runs instead retain the exact release-tag check.
 `make export check-metadata` produces and validates a metadata-only archive, independently of JAR redistribution clearance. It contains exact download references, approved configuration overrides and finite recipient notices, never bundled JARs or private runtime files. The archive and its separate `.mrpack.sha256` checksum land at:
 
 ```text
-dist/cobbled-horizon-26.3.0.1.4.mrpack
-dist/cobbled-horizon-26.3.0.1.4.mrpack.sha256
+dist/cobbled-horizon-26.3.0.1.5.mrpack
+dist/cobbled-horizon-26.3.0.1.5.mrpack.sha256
 ```
 
 On the designated Minecraft test host, prepare a private server ZIP with:
@@ -162,13 +163,13 @@ On the designated Minecraft test host, prepare a private server ZIP with:
 make server-zip
 ```
 
-This first materializes and validates a fresh `build/server/`, then creates `build/cobbled-horizon-26.3.0.1.4-server.zip` with contents at the ZIP root, sorted names, fixed timestamps and normalized permissions. Existing folder and ZIP destinations are refused; keep the folder unchanged while archiving. `make materialize` remains available for folder-only preparation. Private installation on the owner's own server does not require a public redistribution-clearance record; that is not a public redistribution grant.
+This first materializes and validates a fresh `build/server/`, then creates `build/cobbled-horizon-26.3.0.1.5-server.zip` with contents at the ZIP root, sorted names, fixed timestamps and normalized permissions. Existing folder and ZIP destinations are refused; keep the folder unchanged while archiving. `make materialize` remains available for folder-only preparation. Private installation on the owner's own server does not require a public redistribution-clearance record; that is not a public redistribution grant.
 
 For DatHost, select this prepared `-server.zip` under **Mods & Plugins → Custom upload**, not a renamed `.mrpack`. The command reports actual bytes and warns above the documented **100 MB** web-upload limit; use authenticated FTP/file-manager transfer of the extracted contents for larger files, not another browser upload subject to the same limit. Before replacement, stop the instance and verify an off-host backup of the pack, configuration and matching world data, separately preserving the Floodgate key and `mods/luckperms/` data. Verify the panel's removal scope; use selective transfer if Custom upload cannot preserve host-owned files safely. Overlaying directories alone does not remove retired JARs or obsolete configs. Follow the [stopped-server reconciliation procedure](docs/deployment.md#upload) and [DatHost import guidance](docs/providers/dathost.md#modpack-import-options). Runtime/account compatibility remains unverified; these commands do not install or start Minecraft. CI never builds, uploads or caches a real complete server ZIP, and releases never select it.
 
 ## GitHub releases
 
-Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. This source version is `26.3.0.1.4`, for Minecraft `26.3` and pack revision `0.1.4`. Tag `v26.3.0.1.4` is already published; do not recreate it or alter its release assets. Numeric identity alone does not prove every runtime behavior.
+Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. This candidate's source version is `26.3.0.1.5`, for Minecraft `26.3` and pack revision `0.1.5`. A matching tag would be `v26.3.0.1.5`; the numeric version is not a production approval. Do not tag this development candidate until separately approved for release.
 
 A valid matching tag always selects exactly the validated no-JAR `.mrpack` and its `.mrpack.sha256`, regardless of unresolved binary redistribution obligations. Malformed records, stale identity, corrupt/missing required texts, invalid archives and checksum errors remain fatal. Native first-install/restart acceptance and separate release approval are still required.
 

@@ -16,7 +16,12 @@ SEED_PATHS = {SEED_SOURCE, SEED_IMPORT}
 
 
 def is_pack_override(relative: str) -> bool:
-    """Admit only the two policy encodings, never LuckPerms runtime state."""
+    """Admit authored overrides, never mutable permission or Discord state."""
+    if relative == "config/mc2discord.example.toml":
+        return True
+    if any("mc2discord" in part.lower() or part.startswith("m2d-")
+           for part in pathlib.PurePosixPath(relative).parts):
+        return False
     if relative.startswith("config/cobbled-horizon/"):
         return relative in SEED_PATHS
     return relative.startswith(("config/", "squaremap/")) and not relative.startswith("config/luckperms/")
