@@ -166,6 +166,34 @@ class ServerFolderTests(unittest.TestCase):
                 self.assertFalse(self.output.exists())
                 self.assertEqual([], list(self.root.glob(".materialize-*")))
 
+    def test_indexed_private_source_state_is_rejected(self):
+        self.materialize()
+        self.assertEqual([], server_folder.validate_directory(self.output, self.root))
+        index = self.root / "index.toml"
+        original = index.read_text()
+        cases = (
+            ("config/luckperms/users.json", "unexpected source override: config/luckperms/users.json"),
+            ("config/cobbled-horizon/extra.json", "unexpected source override: config/cobbled-horizon/extra.json"),
+            ("mods/luckperms/luckperms-h2.mv.db", "unexpected source override: mods/luckperms/luckperms-h2.mv.db"),
+        )
+        for position, (relative, diagnostic) in enumerate(cases):
+            with self.subTest(relative=relative):
+                candidate = self.root / f"server-private-{position}"
+                shutil.copytree(self.output, candidate)
+                source = self.root / relative
+                installed = candidate / relative
+                source.parent.mkdir(parents=True, exist_ok=True)
+                installed.parent.mkdir(parents=True, exist_ok=True)
+                source.write_bytes(b"synthetic private state")
+                installed.write_bytes(source.read_bytes())
+                index.write_text(original + f"[[files]]\nfile = {json.dumps(relative)}\n")
+                try:
+                    self.assertEqual([diagnostic], server_folder.validate_directory(candidate, self.root))
+                finally:
+                    index.write_text(original)
+                    source.unlink()
+        self.assertEqual([], server_folder.validate_directory(self.output, self.root))
+
     def test_unindexed_source_config_is_rejected(self):
         self.materialize()
         (self.root / "config/forgotten.json").write_text("{}")
