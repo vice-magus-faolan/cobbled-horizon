@@ -12,6 +12,7 @@ See the [deployment report](verification.md#current-deployment) and the [verific
 - Verify the actual filesystem quota, backup retention/restore scope and quota accounting. Keep an independent daily host/provider backup layer enabled; JEB does not replace it. See [storage and recovery](storage-and-recovery.md).
 - Confirm at least 8,192 MB remains free after the world, squaremap tiles, logs, and current JEB backups are present, with additional headroom for temporary backup work. Do not infer capacity from an advertised plan.
 - Verify authenticated file upload, server console and stop/start access, permission bootstrap, secret storage and a usable rollback/restore route before changing the installation.
+- Before enabling SlashLoot on an existing world, complete the [ordinary and mixed-double storage, real Java and Bedrock, private-inventory restart and basic rollback checks](acceptance-tests.md#personal-loot). Generated loot containers can lose all players’ private items on source destruction/cleanup; this accepted lifecycle limitation is not an additional deployment hold. No all-player escrow or lossless-uninstall gate or historical migration is required for normal adoption. Reconcile an existing host-owned SlashLoot config deliberately; this pack ships no override.
 - Disable automatic mod/server-version updates.
 - Establish the [full-backup procedure across restarts](storage-and-recovery.md#create-full-backups-across-restarts) before enabling unattended restarts.
 - Take a host-level backup before replacing an existing installation.
@@ -85,7 +86,7 @@ This procedure covers an operator-authorized installation or update; live change
 
 ## Rollback
 
-If startup fails, stop the server before making further changes. Restore the prior `/mods`, `/config`, `/squaremap`, and world snapshot together. Do not allow a failed version migration to keep writing into the only world copy.
+If startup fails, stop the server before making further changes. Restore the prior `/mods`, `/config`, `/squaremap`, and world snapshot together, including all dimensions, player inventories and identities and matching SlashLoot private state. Do not restore a loot ledger independently after rewards have moved into player inventories. Do not allow a failed version migration to keep writing into the only world copy.
 
 If the one-time group import was applied, also restore or reconcile the LuckPerms backend from its private pre-import backup through the [separately approved recovery procedure](permissions.md#one-time-group-import). Restoring server files does not revert an external LuckPerms backend.
 

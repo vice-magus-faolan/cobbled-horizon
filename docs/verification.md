@@ -41,6 +41,19 @@ These are outstanding checks on an already-deployed pack, not prerequisites to
 that past deployment. Existing releases/assets are unchanged. Historical sections
 below retain their dated scope and are not retroactively certified by this evidence.
 
+## SlashLoot 26.3
+
+Date: November 23, 2026. Pack `26.3.0.1.6` pins SlashLoot `0.6.0+mc26.3-fabric` with no config override. [PR54 workflow 45259607245](https://github.com/vice-magus-faolan/cobbled-horizon/actions/runs/45259607245) passed `validate` and `native-acceptance` on historical candidate `359c5f03f41035045fb877e339ce306d9a58d906`, including generated defaults on first install and restart. Revised source still requires its own exact-head hosted checks; the old pass does not approve the revision.
+
+A bounded console-only experiment on the designated development host used the validated full-pack mrpack (SHA-256 `c2ae66d2f085bf5d68bde0df443f7c916acb974f5399d7d238623446b0bae752`), Minecraft 26.3, Fabric 0.20.1 and the pinned Java 25 container. It created a new synthetic world, not a copy of Broadwater. The explicit manifest had eight synthetic target rows:
+
+- The report-only phase preserved all observed block-entity preimages. The one approved empty single chest received exactly `LootTable: minecraft:chests/simple_dungeon` and `LootTableSeed: 1234567` through the native guarded metadata command.
+- Runtime guards left a chest containing seven diamonds, a verified double-chest half, a barrel outside this chest-only proof, and a conflicting existing table/seed unchanged. Separate manifest filters omitted rows labelled ambiguous, replaced and unapproved; those labels were test inputs, **not automatic ownership detection**. Every rejected row retained its observed block-entity preimage.
+- Repeating the guarded command was a no-op. Complete clean saves and offline restarts preserved the proposed metadata and negative controls. Restoring the consistent pre-application world snapshot while stopped, then booting offline, restored all observed baseline preimages. This was a pre-claim world with no connected players or private claims, not a post-claim player/mod-state restore drill.
+- The metadata experiment completed on a disposable world and left no running test server. No production tool, dependency, scanner or launch hook was added.
+
+This proves only the limited metadata command, negative controls, idempotent rerun, save/restart durability and pre-claim snapshot restoration. A synthetic tableless chest is **not an actual player-opened/drained historical source**. No real unmodded Java or Bedrock client, UUID-specific loot roll, private-remainder persistence, mixed-double menu behavior, donor reconstruction, historical continuity classification or Broadwater recovery was exercised. Those remaining [personal-loot checks](acceptance-tests.md#personal-loot) and [Broadwater follow-up](slashloot-migration.md#proof-and-remaining-work) retain their actual scope. Accepted source-destruction/private-item loss is not an adoption blocker, and neither optional protection nor historical migration is required for normal adoption.
+
 ## Distribution-aware source and export checks
 
 Source validation and public distribution are separate gates. `make validate test` checks the active exact-pin records, required text bytes/provenance and existing source/archive contracts without pretending unresolved rights are allowed. The hosted `Build and release pack` / `validate` job refresh-checks the index and runs this source/test feedback even while public clearance is unresolved. See [ownership and licensing](../README.md#ownership-and-licensing) for the authoritative channel/notice/source contract.

@@ -1,5 +1,7 @@
 # Renewable and per-player structure loot on Fabric 26.3
 
+> **Historical research, superseded policy recommendations.** The findings below retain their original research scope, not current adoption gates. Use the [current SlashLoot guide](slashloot.md) and [Broadwater-only one-time migration design](slashloot-migration.md). The operator selected upstream defaults and accepted source-destruction/private-item loss (including deposited valuables). The old blanket escrow/lossless-removal gate and permanent-extension recommendation below are not current requirements. Verified empty original single-container metadata restoration is now the preferred migration hypothesis; SavedData alone still cannot enable handling. Mixed-double/ordinary-storage, real Java/Bedrock, private-restart and basic rollback evidence remain independently required. No historical world was accessed.
+
 **Investigation date:** 23 November 2026. **Status:** research and design, not an installation recommendation or runtime certification.
 
 **Repository baseline:** `26.3` at `ad603ee5191987e74d2a544a7c6cde4b0058009f`, pack `26.3.0.1.5`, Fabric Loader `0.20.1`. This is the inspected published branch, not an assertion about Broadwater's current on-disk configuration.[1]

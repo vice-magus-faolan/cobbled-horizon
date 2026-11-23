@@ -65,7 +65,7 @@ partial JSON. Use `--repository PATH` to read another local repository.
 ### Quality of life and exploration
 
 - [Server-Side Waystones](https://modrinth.com/mod/sswaystones)
-- [SlashLoot](https://modrinth.com/mod/slashloot) — once-per-player pending-table loot; [activation and retention gates](docs/slashloot.md)
+- [SlashLoot](https://modrinth.com/mod/slashloot) — once-per-player pending-table loot; [lifecycle limits and compatibility checks](docs/slashloot.md)
 - [Universal Graves](https://modrinth.com/mod/universal-graves)
 - [Creeper No Break](https://modrinth.com/mod/creeper-no-break)
 - [Naturally Trimmed](https://modrinth.com/mod/naturally-trimmed)
@@ -113,7 +113,7 @@ Fabric API is the only explicitly selected platform library. Polymer, Cristel Li
 - Crops Love Rain gives directly rain-exposed crops and cocoa a 1-in-10 extra-stage chance per applicable random tick; slower-growing plants use 1-in-15. Bamboo's rain bonus is disabled because the mod checks global rain rather than direct exposure for bamboo.
 - Moog's spacing is scoped by namespace: Soaring Structures uses `2.0`, while Ocean Structures uses `3.0`. The universal multiplier remains `1.0` so future Moog packs do not inherit either rarity policy.
 - Epic Villages Standalone preserves vanilla villages. Its Cristel placement override uses spacing `80` and separation `22`, retaining salt `50387312` and frequency `1.0`: 75% fewer Epic candidate-grid positions per area than the shipped `40`/`11` policy, not measured settlement totals or guaranteed cross-mod separation. Existing chunks are unchanged; actual config loading, fresh-chunk density and performance remain outstanding checks.
-- SlashLoot uses upstream defaults: once-per-player pending-table loot, pot instancing and orphan-record cleanup enabled, unknown containers disabled. It does not recover unpacked historical loot. [Private-data/export/removal limits and real-client checks](docs/slashloot.md) remain explicit; no live activation is implied.
+- SlashLoot uses upstream defaults: once-per-player pending-table loot, pot instancing and orphan-record cleanup enabled, unknown containers disabled. Source destruction/cleanup can discard any player’s private leftovers or deposited valuables; this is an accepted lifecycle limit, not a deployment blocker. Ordinary tableless storage is normally shared, with a separate unresolved mixed-double concern. [Real-client, storage, restart and basic rollback checks](docs/slashloot.md) remain pending. [One-time Broadwater migration](docs/slashloot-migration.md) and optional protection are not required for normal adoption; no live activation is implied.
 - Universal Graves retains 75% of XP, protects graves for one hour, and expires them after 24 real-time hours.
 - squaremap enables only the Overworld, limits zoom, reduces background rendering pressure, and intentionally retains its live player tracker. The tracker becomes public to anyone who can reach the configured map endpoint.
 - JEB uses 24-hour full and three-hour differential intervals, a 6 GB retention cap, an 8 GB free-space reserve, and operator-level-4 commands. The operating procedure requires an initial full backup and explicit daily full backups coordinated with host restarts because startup can reset the timers. Exact-pin scheduling checks and full and differential restore drills remain outstanding evidence.
@@ -237,6 +237,7 @@ This is an upgrade-discovery check, not an audit of pinned-pack stability: a lat
 
 ## Documentation
 
+- [One-time Broadwater metadata migration](docs/slashloot-migration.md) — explicit provenance and approval; no automatic recovery
 - [Renewable and per-player structure loot investigation](docs/loot-investigation.md) — research only; no live-world changes
 - [`docs/configuration.md`](docs/configuration.md)
 - [`docs/permissions.md`](docs/permissions.md)
