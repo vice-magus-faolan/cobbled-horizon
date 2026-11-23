@@ -126,6 +126,7 @@ class DistributionTests(unittest.TestCase):
         first = distribution.notice_members(self.root)
         self.assertEqual(first, distribution.notice_members(self.root))
         self.assertEqual(self.text, first["LICENSES/" + self.digest + ".txt"])
+        self.assertIn(b"Copyright (c) 2026 jabez007 and contributors", first["LICENSES/" + self.digest + ".txt"])
         self.assertIn(b"contributors", first["CREDITS.md"])
         self.assertIn(b"no source-delivery duty", first["SOURCES.md"])
 
@@ -138,6 +139,15 @@ class DistributionTests(unittest.TestCase):
             r"\b(?:Wesley1808|wesley1808|malte0811|pop4959|v0\.7\.0|v1\.10|v4\.5|v1\.4\.3|v26\.3)(?!\w|\.[0-9])"
         )
         notices = distribution.notice_members(ROOT)
+        self.assertEqual("jabez007 and contributors", distribution.load(ROOT / "pack.toml")["author"])
+        for decision in (
+            b"jabez007's 2026-11-16 accepted risk",
+            b"jabez007's accepted non-commercial pack AND server purpose",
+            b"under jabez007's accepted 2026-11-17 missing-copyright interpretation",
+            b"under jabez007's accepted missing-copyright interpretation",
+            b"jabez007's accepted pack AND server purpose remains non-commercial",
+        ):
+            self.assertIn(decision, notices["CREDITS.md"])
         cases = [(name, notices[name].decode(), False) for name in ("CREDITS.md", "SOURCES.md")]
         cases.extend((label, label, True) for label in (
             "Gson2.11.0", "ASM9.5", "AWS SDK2.31.78", "reg-sync0.18.2",
