@@ -23,13 +23,27 @@ Before Custom upload, verify the panel's removal scope and preserve the matching
 
 ## Build
 
-Use source matching the selected release. Download its `.mrpack` and `.mrpack.sha256` into `dist/`, then verify the checksum before preparing the mrpack. Historical releases retain their original assets; use their supplied checksum rather than assuming the new two-file contract applies retroactively:
+For a downloaded release through `v26.2.0.1.3`, download `cobbled-horizon-<pack-version>.sha256` beside the `.mrpack`. This legacy checksum also lists the retired ZIP; downloading that ZIP is unnecessary. In the download directory, replace `<pack-version>` with the release's version and run:
 
 ```bash
-(cd dist && sha256sum --check cobbled-horizon-26.2.0.1.3.mrpack.sha256)
+MRPACK='cobbled-horizon-<pack-version>.mrpack'
+sha256sum --check --ignore-missing cobbled-horizon-<pack-version>.sha256
+```
+
+Require the `.mrpack` line to say **OK**. The command ignores missing files; an absent `.mrpack` result is not verification.
+
+Future releases from the mrpack-only pipeline instead provide `.mrpack.sha256`. Download it beside the `.mrpack`, set `MRPACK` to that release's filename as above, and run:
+
+```bash
+sha256sum --check "$MRPACK.sha256"
+```
+
+After verification, use the matching source revision, place the `.mrpack` under `dist/` and create the `build/` parent. Prepare the private folder and optional ZIP:
+
+```bash
 mkdir -p build
-python3 scripts/server_folder.py materialize dist/cobbled-horizon-26.2.0.1.3.mrpack build/server
-python3 scripts/server_folder.py zip build/server build/cobbled-horizon-26.2.0.1.3-server.zip
+python3 scripts/server_folder.py materialize "dist/$MRPACK" build/server
+python3 scripts/server_folder.py zip build/server build/cobbled-horizon-<pack-version>-server.zip
 ```
 
 Alternatively, build and prepare the exact reviewed source on the designated Minecraft test host:

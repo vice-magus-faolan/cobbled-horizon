@@ -358,6 +358,27 @@ class TaggedPublisherTests(unittest.TestCase):
                 finally:
                     case.doCleanups()
 
+    def test_legacy_combined_checksum_verifies_mrpack_without_retired_zip(self):
+        # Synthetic release bytes, not a verified public download. Legacy
+        # checksums list a ZIP even when the operator downloads only the mrpack.
+        mrpack = self.dist / (self.basename + ".mrpack")
+        retired_zip = self.dist / (self.basename + ".zip")
+        checksum = self.dist / (self.basename + ".sha256")
+        checksum.write_text(hashlib.sha256(self.archive).hexdigest() + "  " + mrpack.name + "\n" +
+                            hashlib.sha256(b"synthetic retired ZIP").hexdigest() + "  " + retired_zip.name + "\n")
+        for data in (self.archive, b"corrupted synthetic mrpack", None):
+            with self.subTest(valid=data == self.archive, missing=data is None):
+                if data is None:
+                    mrpack.unlink()
+                else:
+                    mrpack.write_bytes(data)
+                result = subprocess.run(["sha256sum", "--check", "--ignore-missing", checksum.name],
+                                        cwd=self.dist, env={"PATH": str(self.bin)},
+                                        capture_output=True, text=True, timeout=10)
+                self.assertEqual(data == self.archive, result.returncode == 0, result.stdout + result.stderr)
+                self.assertEqual(data == self.archive, mrpack.name + ": OK" in result.stdout.splitlines())
+                self.assertFalse(retired_zip.exists())
+
     def test_checksum_membership_must_be_exact(self):
         import distribution
         self.stage(False)

@@ -169,14 +169,22 @@ The public files are the same two files shown above. The `.mrpack` preserves ser
 
 ### Using a downloaded release
 
-For releases produced by this pipeline, download the `.mrpack` and its matching `.mrpack.sha256` into the same directory. Replace `<pack-version>` with that release's version, then verify:
+Releases through `v26.2.0.1.3` ship one `cobbled-horizon-<pack-version>.sha256` that lists both the `.mrpack` and the retired ZIP. Download that checksum beside the `.mrpack`; the obsolete ZIP is not needed. Replace `<pack-version>` with the downloaded release's version:
 
 ```bash
 MRPACK='cobbled-horizon-<pack-version>.mrpack'
+sha256sum --check --ignore-missing cobbled-horizon-<pack-version>.sha256
+```
+
+Require the `.mrpack` line to say **OK** before installation. Missing files are ignored by this command, so do not accept an absent `.mrpack` result.
+
+Future releases produced by the mrpack-only pipeline instead supply a matching `.mrpack.sha256`. Download both files, set `MRPACK` to that release's filename as above, then verify:
+
+```bash
 sha256sum --check "$MRPACK.sha256"
 ```
 
-Historical releases retain their original asset sets; use the checksum supplied with that release instead of assuming a new per-mrpack checksum exists.
+Historical release assets remain unchanged; do not expect a `.mrpack.sha256` for a legacy release.
 
 Choose one installation route:
 
