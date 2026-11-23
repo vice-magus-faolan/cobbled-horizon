@@ -20,7 +20,6 @@ jobs:
     timeout-minutes: 30
     outputs:
       version: ${{ steps.metadata.outputs.version }}
-      cleared: ${{ steps.rights.outputs.cleared }}
       artifact-id: ${{ steps.artifacts.outputs.artifact-id }}
     steps:
       - name: Check out repository
@@ -63,13 +62,13 @@ jobs:
           packwiz refresh --build
           git diff --exit-code -- pack.toml index.toml
 
-      - name: Export and validate metadata-only pack
+      - name: Export and validate public pack
         run: |
           make export check-metadata
           git diff --exit-code -- pack.toml index.toml
 
-      - name: Evaluate public distribution clearance
-        id: rights
+      - name: Plan public release files
+        id: release-plan
         shell: bash
         run: |
           args=()
@@ -77,31 +76,19 @@ jobs:
             args+=(--tag "$GITHUB_REF_NAME")
           fi
           python3 scripts/distribution.py release-plan "${args[@]}" > "$RUNNER_TEMP/release-plan.json"
-          mode=$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))["mode"])' "$RUNNER_TEMP/release-plan.json")
-          if [[ "$mode" == full ]]; then
-            echo 'cleared=true' >> "$GITHUB_OUTPUT"
-          else
-            echo 'cleared=false' >> "$GITHUB_OUTPUT"
-            echo '::notice::The public ZIP is withheld; validated no-JAR metadata remains eligible after native acceptance.'
-          fi
+          make check-release RELEASE_PLAN="$RUNNER_TEMP/release-plan.json"
           {
             echo 'paths<<RELEASE_ASSETS'
             python3 -c 'import json, sys; print("\n".join("dist/" + name for name in json.load(open(sys.argv[1]))["assets"]))' "$RUNNER_TEMP/release-plan.json"
             echo 'RELEASE_ASSETS'
           } >> "$GITHUB_OUTPUT"
 
-      - name: Export and validate selected public archives
-        if: steps.rights.outputs.cleared == 'true'
-        run: |
-          make release CHANNEL=github RELEASE_PLAN="$RUNNER_TEMP/release-plan.json"
-          git diff --exit-code -- pack.toml index.toml
-
       - name: Upload validated selected release files
         id: artifacts
         uses: actions/upload-artifact@v7
         with:
           name: cobbled-horizon-${{ steps.metadata.outputs.version }}
-          path: ${{ steps.rights.outputs.paths }}
+          path: ${{ steps.release-plan.outputs.paths }}
           if-no-files-found: error
           retention-days: 14
 
@@ -208,7 +195,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          # Never trust an upstream clearance boolean at the upload boundary.
+          # Revalidate the exact source/tag and complete asset contract before upload.
           plan="$RUNNER_TEMP/publish-plan.json"
           python3 scripts/distribution.py release-plan --tag "$GITHUB_REF_NAME" > "$plan"
           make check-release RELEASE_PLAN="$plan" RELEASE_TAG="$GITHUB_REF_NAME"

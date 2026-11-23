@@ -1,4 +1,4 @@
-"""Release identity and CurseForge archive regression tests."""
+"""Release identity and two-file public publisher regression tests."""
 
 from __future__ import annotations
 
@@ -14,15 +14,12 @@ import sys
 import textwrap
 import tempfile
 import unittest
-import warnings
 import zipfile
 from unittest.mock import patch
 
-from pack_fixtures import load_script
-import permission_seed
+from pack_fixtures import ROOT, load_script, workflow_script
 
 release_metadata = load_script("release_metadata")
-validate_curseforge = load_script("validate_curseforge")
 
 
 class ReleaseMetadataTests(unittest.TestCase):
@@ -76,131 +73,6 @@ class ReleaseMetadataTests(unittest.TestCase):
                 release_metadata.metadata({"version": "26.3.0.1.0", "versions": {"minecraft": target}})
 
 
-class CurseForgeArchiveTests(unittest.TestCase):
-    def setUp(self) -> None:
-        temporary = tempfile.TemporaryDirectory()
-        self.addCleanup(temporary.cleanup)
-        self.root = pathlib.Path(temporary.name)
-        (self.root / "mods").mkdir()
-        (self.root / "config").mkdir()
-        (self.root / "pack.toml").write_text(
-            'name = "Test pack"\nversion = "26.2.0.1.0"\nauthor = "Test author"\n'
-            '[versions]\nminecraft = "26.2"\nfabric = "0.19.5"\n'
-        )
-        self.mod = b"pinned server mod bytes"
-        (self.root / "mods/test.pw.toml").write_text(
-            'filename = "test.jar"\nside = "server"\n'
-            '[download]\nhash-format = "sha512"\n'
-            f'hash = "{hashlib.sha512(self.mod).hexdigest()}"\n'
-        )
-        (self.root / "config/test.json").write_bytes(b'{"enabled": true}')
-        (self.root / "index.toml").write_text(
-            '[[files]]\nfile = "mods/test.pw.toml"\nmetafile = true\n'
-            '[[files]]\nfile = "config/test.json"\n'
-        )
-        self.manifest = {
-            "manifestType": "minecraftModpack", "manifestVersion": 1,
-            "name": "Test pack", "version": "26.2.0.1.0", "author": "Test author",
-            "minecraft": {"version": "26.2", "modLoaders": [{"id": "fabric-0.19.5", "primary": True}]},
-            "files": [], "overrides": "overrides",
-        }
-        self.files = {
-            "overrides/mods/test.jar": self.mod,
-            "overrides/config/test.json": b'{"enabled": true}',
-            "modlist.html": b"<ul><li>Test mod</li></ul>",
-        }
-
-    def validate(self, duplicate: bool = False) -> list[str]:
-        path = self.root / "test.zip"
-        with zipfile.ZipFile(path, "w") as archive:
-            archive.writestr("manifest.json", json.dumps(self.manifest))
-            for name, contents in self.files.items():
-                archive.writestr(name, contents)
-            if duplicate:
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore", UserWarning)
-                    archive.writestr("overrides/mods/test.jar", self.mod)
-        return validate_curseforge.validate_archive(path, self.root)
-
-    def test_complete_server_export_passes(self) -> None:
-        self.assertEqual([], self.validate())
-
-    def test_setup_payload_and_indexed_private_state(self) -> None:
-        for relative in sorted(permission_seed.SEED_PATHS):
-            source = self.root / relative
-            source.parent.mkdir(parents=True, exist_ok=True)
-            source.write_bytes((pathlib.Path(__file__).resolve().parents[1] / relative).read_bytes())
-            with (self.root / "index.toml").open("a") as handle:
-                handle.write(f"[[files]]\nfile = {json.dumps(relative)}\n")
-            self.files["overrides/" + relative] = source.read_bytes()
-        self.assertEqual([], self.validate())
-        for relative in sorted(permission_seed.SEED_PATHS):
-            key = "overrides/" + relative
-            original = self.files.pop(key)
-            self.assertIn("missing exported file: " + key, self.validate())
-            self.files[key] = b"changed"
-            self.assertIn("exported file hash differs from source: " + key, self.validate())
-            self.files[key] = original
-        for relative in ("config/luckperms/users.json", "config/cobbled-horizon/extra.json", "mods/luckperms/luckperms-h2.mv.db"):
-            with self.subTest(relative=relative):
-                target = self.root / relative
-                target.parent.mkdir(parents=True, exist_ok=True)
-                target.write_bytes(b"private canary")
-                original = (self.root / "index.toml").read_text()
-                (self.root / "index.toml").write_text(original + f"[[files]]\nfile = {json.dumps(relative)}\n")
-                self.files["overrides/" + relative] = b"private canary"
-                self.assertIn("unexpected source override: " + relative, self.validate())
-                (self.root / "index.toml").write_text(original)
-                del self.files["overrides/" + relative]
-                target.unlink()
-
-    def test_client_export_missing_server_mod_is_rejected(self) -> None:
-        del self.files["overrides/mods/test.jar"]
-        self.assertIn("missing exported file: overrides/mods/test.jar", self.validate())
-
-    def test_modified_jar_and_configuration_are_rejected(self) -> None:
-        for name in ("overrides/mods/test.jar", "overrides/config/test.json"):
-            with self.subTest(name=name):
-                original = self.files[name]
-                self.files[name] = b"modified"
-                self.assertIn(f"exported file hash differs from source: {name}", self.validate())
-                self.files[name] = original
-
-    def test_missing_configuration_is_rejected(self) -> None:
-        del self.files["overrides/config/test.json"]
-        self.assertIn("missing exported file: overrides/config/test.json", self.validate())
-
-    def test_staged_secret_and_unsafe_entries_are_rejected(self) -> None:
-        for name in ("overrides/mods/staged.jar", "overrides/config/floodgate/key.pem", "../escape"):
-            with self.subTest(name=name):
-                self.files[name] = b"unexpected"
-                self.assertIn(f"unexpected archive entry: {name}", self.validate())
-                del self.files[name]
-
-    def test_wrong_versions_and_external_file_references_are_rejected(self) -> None:
-        for key, value in (("version", "0.1.0"), ("minecraft", {"version": "26.3"}), ("files", [{"projectID": 1, "fileID": 2}])):
-            with self.subTest(key=key):
-                original = self.manifest[key]
-                self.manifest[key] = value
-                self.assertTrue(any(error.startswith(f"manifest.{key}") for error in self.validate()))
-                self.manifest[key] = original
-
-    def test_duplicate_archive_entry_is_rejected(self) -> None:
-        self.assertIn("archive contains duplicate paths", self.validate(duplicate=True))
-
-    def test_unindexed_source_config_is_rejected(self) -> None:
-        (self.root / "config/forgotten.json").write_text("{}")
-        self.assertIn("source config is not indexed: config/forgotten.json", self.validate())
-
-
-def workflow_script(step: str) -> str:
-    """Execute a shipped run block without duplicating its publication logic."""
-    root = pathlib.Path(__file__).resolve().parents[1]
-    workflow = (root / ".github/workflows/validate.yml").read_text()
-    block = workflow.split("      - name: " + step + "\n", 1)[1]
-    return textwrap.dedent(block.split("run: |\n", 1)[1].split("\n      - name:", 1)[0])
-
-
 class TaggedPublisherTests(unittest.TestCase):
     """Real selector/Make/validators/publisher, synthetic provider transport only."""
 
@@ -210,14 +82,14 @@ class TaggedPublisherTests(unittest.TestCase):
         self.fixture.setUp()
         self.addCleanup(self.fixture.doCleanups)
         self.root = self.fixture.root
-        source, _ = self.fixture.prepare_archives(hosted=True)
+        self.fixture.prepare_archives(hosted=True)
         self.fixture.record["channels"] = {channel: "unknown" for channel in self.fixture.record["channels"]}
-        self.fixture.write_policy()  # References never convey these uncleared bytes.
+        self.fixture.write_policy()  # The mrpack conveys no mod binaries.
         self.dist = self.root / "dist"
         self.dist.mkdir()
         self.basename = "cobbled-horizon-26.2.0.1.0"
         self.tag = "v26.2.0.1.0"
-        self.archives = {".mrpack": self.fixture.mrpack.read_bytes(), ".zip": source.read_bytes()}
+        self.archive = self.fixture.mrpack.read_bytes()
         root = pathlib.Path(__file__).resolve().parents[1]
         shutil.copytree(root / "scripts", self.root / "scripts", ignore=shutil.ignore_patterns("__pycache__"))
         shutil.copyfile(root / "Makefile", self.root / "Makefile")
@@ -308,16 +180,12 @@ class TaggedPublisherTests(unittest.TestCase):
     def stage(self, cleared: bool):
         self.fixture.override_record["channels"]["github"] = "allowed" if cleared else "conditional"
         self.fixture.write_policy()
-        suffixes = (".mrpack", ".zip") if cleared else (".mrpack",)
-        for suffix in suffixes:
-            (self.dist / (self.basename + suffix)).write_bytes(self.archives[suffix])
-        self.checksum = self.basename + (".sha256" if cleared else ".mrpack.sha256")
+        (self.dist / (self.basename + ".mrpack")).write_bytes(self.archive)
+        self.checksum = self.basename + ".mrpack.sha256"
         self.rehash()
 
     def rehash(self):
-        names = sorted(path.name for path in self.dist.iterdir() if path.suffix in {".mrpack", ".zip"})
-        # Contract order is mrpack, CurseForge (not lexical sorting).
-        names.sort(key=lambda name: not name.endswith(".mrpack"))
+        names = [self.basename + ".mrpack"]
         (self.dist / self.checksum).write_text("".join(
             hashlib.sha256((self.dist / name).read_bytes()).hexdigest() + "  " + name + "\n" for name in names))
 
@@ -335,7 +203,7 @@ class TaggedPublisherTests(unittest.TestCase):
         self.assertNotEqual(0, result.returncode, result.stdout + result.stderr)
         self.assertFalse(any(call[1] in {"create", "upload", "edit"} for call in calls), calls)
 
-    def test_both_modes_publish_exact_assets_and_refuse_published_rerun(self):
+    def test_publication_ignores_clearance_and_refuses_published_rerun(self):
         for cleared in (False, True):
             with self.subTest(cleared=cleared):
                 # Each independent provider/pack starts with ordinary fixture defaults.
@@ -348,15 +216,12 @@ class TaggedPublisherTests(unittest.TestCase):
                     state = json.loads(case.provider.read_text())
                     self.assertFalse(state["isDraft"])
                     self.assertTrue(state["latest"])  # Empty published inventory.
-                    expected = [case.basename + suffix for suffix in
-                                ((".mrpack", ".zip", ".sha256") if cleared else (".mrpack", ".mrpack.sha256"))]
+                    expected = [case.basename + suffix for suffix in (".mrpack", ".mrpack.sha256")]
                     self.assertEqual(sorted(expected), sorted(item["name"] for item in state["assets"]))
                     self.assertTrue(all(item["size"] > 0 for item in state["assets"]))
                     self.assertIn("PASS: metadata-only .mrpack", result.stdout)
-                    self.assertEqual(cleared, "PASS: CurseForge-format ZIP" in result.stdout)
-                    if not cleared:
-                        self.assertIn(case.fixture.override_record["name"], state["notes"])
-                        self.assertIn("ZIP is withheld", state["notes"])
+                    self.assertIn("original host", state["notes"])
+                    self.assertIn("configs and recipient notices", state["notes"])
                     previous = case.provider.read_bytes()
                     prior_calls = len(calls)
                     result, calls = case.publish()
@@ -417,13 +282,24 @@ class TaggedPublisherTests(unittest.TestCase):
                 # Run the existing real-publisher regression, including its
                 # published-rerun assertions: a failed draft query can otherwise
                 # fall through to creation and appear to publish successfully.
-                case = TaggedPublisherTests("test_both_modes_publish_exact_assets_and_refuse_published_rerun")
+                case = TaggedPublisherTests("test_publication_ignores_clearance_and_refuses_published_rerun")
                 result = unittest.TestResult()
                 with patch("test_release.workflow_script", return_value=script.replace(query, wrong)):
                     case.run(result)
                 self.assertEqual([], result.errors)
                 self.assertTrue(result.failures)
                 self.assertIn(wrong.removeprefix("--jq "), result.failures[0][1])
+
+    def test_public_build_commands_never_reference_a_dist_zip(self):
+        # Exercise Make's entire export/release command graph, not only the
+        # selector or the fixture's already-exported archive used below.
+        result = subprocess.run(["make", "--dry-run", "release"], cwd=self.root,
+                                capture_output=True, text=True, timeout=30)
+        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+        self.assertNotRegex(result.stdout, r"(?i)\bdist/\S*\.zip\b")
+        self.assertNotIn("curseforge export", result.stdout)
+        workflow = (ROOT / ".github/workflows/validate.yml").read_text()
+        self.assertNotRegex(workflow, r"(?i)\.zip\b")
 
     def test_default_build_refreshes_plan_but_explicit_plans_remain_frozen(self):
         import distribution
@@ -435,18 +311,19 @@ class TaggedPublisherTests(unittest.TestCase):
         self.stage(True)
         # Real release recipe; the fixture's valid archives model completed
         # exporter targets. Do not run third-party downloads or source refresh.
-        command = ["make", "-o", "export", "release", "MAKE=make -o export-curseforge"]
+        command = ["make", "-o", "export", "release"]
         env = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}
         env.pop("RELEASE_PLAN", None)
         result = subprocess.run(command, cwd=self.root, env=env, capture_output=True, text=True, timeout=30)
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
         fresh = distribution.release_plan(self.root, self.tag)
         self.assertEqual(fresh, json.loads(default.read_text()))
-        self.assertFalse((self.dist / (self.basename + ".mrpack.sha256")).exists())
-        self.assertIn("PASS: CurseForge-format ZIP", result.stdout)
+        self.assertEqual({self.basename + suffix for suffix in (".mrpack", ".mrpack.sha256")},
+                         {path.name for path in self.dist.iterdir()})
+        self.assertIn("PASS: metadata-only .mrpack", result.stdout)
         frozen = self.root / "frozen.json"
         for plan, accepted in ((fresh, True), (stale, False), ({**fresh, "tag": "v26.2.0.1.1"}, False)):
-            with self.subTest(plan=plan["mode"], tag=plan["tag"]):
+            with self.subTest(tag=plan["tag"], accepted=accepted):
                 frozen.write_text(json.dumps(plan, indent=2) + "\n")
                 original = frozen.read_bytes()
                 result = subprocess.run([*command, "RELEASE_PLAN=" + str(frozen)], cwd=self.root, env=env,
@@ -481,7 +358,43 @@ class TaggedPublisherTests(unittest.TestCase):
                 finally:
                     case.doCleanups()
 
-    def test_native_download_consumer_checks_both_checksum_modes_without_reexport(self):
+    def test_legacy_combined_checksum_verifies_mrpack_without_retired_zip(self):
+        # Synthetic release bytes, not a verified public download. Legacy
+        # checksums list a ZIP even when the operator downloads only the mrpack.
+        mrpack = self.dist / (self.basename + ".mrpack")
+        retired_zip = self.dist / (self.basename + ".zip")
+        checksum = self.dist / (self.basename + ".sha256")
+        checksum.write_text(hashlib.sha256(self.archive).hexdigest() + "  " + mrpack.name + "\n" +
+                            hashlib.sha256(b"synthetic retired ZIP").hexdigest() + "  " + retired_zip.name + "\n")
+        for data in (self.archive, b"corrupted synthetic mrpack", None):
+            with self.subTest(valid=data == self.archive, missing=data is None):
+                if data is None:
+                    mrpack.unlink()
+                else:
+                    mrpack.write_bytes(data)
+                result = subprocess.run(["sha256sum", "--check", "--ignore-missing", checksum.name],
+                                        cwd=self.dist, env={"PATH": str(self.bin)},
+                                        capture_output=True, text=True, timeout=10)
+                self.assertEqual(data == self.archive, result.returncode == 0, result.stdout + result.stderr)
+                self.assertEqual(data == self.archive, mrpack.name + ": OK" in result.stdout.splitlines())
+                self.assertFalse(retired_zip.exists())
+
+    def test_checksum_membership_must_be_exact(self):
+        import distribution
+        self.stage(False)
+        plan = distribution.release_plan(self.root, self.tag)
+        checksum = self.dist / self.checksum
+        valid = checksum.read_text()
+        for changed in (valid.replace(".mrpack\n", ".zip\n"), valid + valid,
+                        valid + "0" * 64 + "  unexpected.zip\n"):
+            with self.subTest(changed=changed):
+                checksum.write_text(changed)
+                with self.assertRaisesRegex(ValueError, "checksum content/membership"):
+                    distribution.verify_release(self.root, plan, self.dist, self.tag)
+        checksum.write_text(valid)
+        distribution.verify_release(self.root, plan, self.dist, self.tag)
+
+    def test_native_download_consumer_checks_checksum_without_reexport(self):
         script = workflow_script("Validate downloaded pack artifacts")
         for cleared in (False, True):
             case = TaggedPublisherTests()
@@ -545,14 +458,14 @@ class TaggedPublisherTests(unittest.TestCase):
                 self.tag = "v26.2.0.1.0"
         self.assertEqual(original, (self.root / "distribution/permissions.toml").read_bytes())
 
-    def test_primary_zip_and_no_jar_metadata_are_validated_before_upload(self):
+    def test_no_jar_archive_is_validated_before_upload(self):
         self.stage(True)
-        for suffix in (".mrpack", ".zip"):
-            with self.subTest(suffix=suffix):
-                path = self.dist / (self.basename + suffix)
+        for name in ("overrides/mods/hidden.jar", "secret.pem"):
+            with self.subTest(name=name):
+                path = self.dist / (self.basename + ".mrpack")
                 original = path.read_bytes()
                 with zipfile.ZipFile(path, "a") as archive:
-                    archive.writestr("overrides/mods/hidden.jar" if suffix == ".mrpack" else "secret.pem", b"invalid payload")
+                    archive.writestr(name, b"invalid payload")
                 self.rehash()  # Correct checksums cannot hide invalid archive contents.
                 result, calls = self.publish()
                 self.assert_no_upload(result, calls)
@@ -560,7 +473,7 @@ class TaggedPublisherTests(unittest.TestCase):
                 path.write_bytes(original)
         self.rehash()
 
-    def test_both_modes_recover_existing_and_partially_uploaded_drafts(self):
+    def test_recover_existing_and_partially_uploaded_drafts(self):
         for cleared in (False, True):
             for partial in (False, True):
                 with self.subTest(cleared=cleared, partial=partial):
@@ -569,8 +482,7 @@ class TaggedPublisherTests(unittest.TestCase):
                     try:
                         case.stage(cleared)
                         case.provider.write_text(json.dumps({"isDraft": True, "assets": []}))
-                        expected = [case.basename + suffix for suffix in
-                                    ((".mrpack", ".zip", ".sha256") if cleared else (".mrpack", ".mrpack.sha256"))]
+                        expected = [case.basename + suffix for suffix in (".mrpack", ".mrpack.sha256")]
                         prior_calls = 0
                         if partial:
                             result, calls = case.publish(PROVIDER_UPLOAD_FAIL="1")
@@ -594,7 +506,7 @@ class TaggedPublisherTests(unittest.TestCase):
                     finally:
                         case.doCleanups()
 
-    def test_both_modes_draft_missing_extra_empty_and_failed_upload_never_publish(self):
+    def test_draft_missing_extra_empty_and_failed_upload_never_publish(self):
         for cleared in (False, True):
             with self.subTest(cleared=cleared):
                 case = TaggedPublisherTests()
