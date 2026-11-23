@@ -135,10 +135,11 @@ line check, run `python3 scripts/release_metadata.py --expected-minecraft 26.2` 
 when checking that line). Manual workflow runs must select the intended version branch;
 tag runs instead retain the exact release-tag check.
 
-The export lands at:
+`make export check-metadata` produces and validates a metadata-only archive, independently of JAR redistribution clearance. It contains exact original-host download references, approved configuration overrides and finite recipient notices, never bundled JARs or private runtime files. The archive and its separate checksum land at:
 
 ```text
 dist/cobbled-horizon-26.2.0.1.3.mrpack
+dist/cobbled-horizon-26.2.0.1.3.mrpack.sha256
 ```
 
 On the designated Minecraft test host, prepare a private server ZIP with:
@@ -149,29 +150,50 @@ make server-zip
 
 This first materializes and validates a fresh `build/server/`, then creates `build/cobbled-horizon-26.2.0.1.3-server.zip` with contents at the ZIP root, sorted names, fixed timestamps and normalized permissions. Existing folder and ZIP destinations are refused; keep the folder unchanged while archiving. `make materialize` remains available for folder-only preparation. Private installation on the owner's own server does not require a public redistribution-clearance record; that is not a public redistribution grant.
 
-For DatHost, select this prepared `-server.zip` under **Mods & Plugins → Custom upload**, not the public CurseForge-format manifest ZIP or a renamed `.mrpack`. The command reports actual bytes and warns above the documented **100 MB** (100,000,000 bytes) web-upload limit; use authenticated FTP/file-manager transfer of the extracted contents for larger files, not another browser upload subject to the same limit. Before replacement, stop the instance and verify an off-host backup of the pack, configuration and matching world data, separately preserving the Floodgate key and `mods/luckperms/` data. Verify the panel's removal scope; use selective transfer if Custom upload cannot preserve host-owned files safely. Overlaying directories alone does not remove retired JARs or obsolete configs. Follow the [stopped-server reconciliation procedure](docs/deployment.md#upload) and [DatHost import guidance](docs/providers/dathost.md#modpack-import-options). Runtime/account compatibility remains unverified; these commands do not install or start Minecraft. CI never builds, uploads or caches a real complete server ZIP, and releases never select it.
+For DatHost, select this prepared `-server.zip` under **Mods & Plugins → Custom upload**, not a renamed `.mrpack`. The command reports actual bytes and warns above the documented **100 MB** (100,000,000 bytes) web-upload limit; use authenticated FTP/file-manager transfer of the extracted contents for larger files, not another browser upload subject to the same limit. Before replacement, stop the instance and verify an off-host backup of the pack, configuration and matching world data, separately preserving the Floodgate key and `mods/luckperms/` data. Verify the panel's removal scope; use selective transfer if Custom upload cannot preserve host-owned files safely. Overlaying directories alone does not remove retired JARs or obsolete configs. Follow the [stopped-server reconciliation procedure](docs/deployment.md#upload) and [DatHost import guidance](docs/providers/dathost.md#modpack-import-options). Runtime/account compatibility remains unverified; these commands do not install or start Minecraft. CI never builds, uploads or caches a real complete server ZIP, and releases never select it.
 
 ## GitHub releases
 
 Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. For the current pack, use `v26.2.0.1.3`, for Minecraft `26.2` and pack revision `0.1.3`. `pack.toml` stores the complete version, `26.2.0.1.3`, without the leading `v`.
 
-The derived distribution plan selects one public asset set:
+A valid matching tag always selects exactly the validated no-JAR `.mrpack` and its `.mrpack.sha256`, regardless of unresolved binary redistribution obligations. Malformed records, stale identity, corrupt/missing required texts, invalid archives and checksum errors remain fatal. Native first-install/restart acceptance and separate release approval are still required.
 
-- **Full mode (current 26.2):** `cobbled-horizon-26.2.0.1.3.mrpack`, `cobbled-horizon-26.2.0.1.3.zip` and the combined `cobbled-horizon-26.2.0.1.3.sha256`. Native CurseForge references and bundled binaries have separate exact-identity/evidence checks. A validation failure never downgrades a full release to metadata.
-- **Metadata fallback:** the `.mrpack` and `.mrpack.sha256` when selected bundled records have well-formed unresolved binary obligations. The no-JAR archive contains exact upstream references, configuration and finite recipient notices.
-
-Inspect the current plan and build its full release with:
+Inspect the current plan and build the public release files without starting Minecraft:
 
 ```bash
 python3 scripts/distribution.py release-plan
 make validate test release
 ```
 
-`make release` builds the full public archives only when distribution checks permit it; neither its asset set nor its checksum selects the local `-server.zip`. `make materialize` produces the complete local folder from the mrpack, and `make server-zip` additionally packages it for private owner installation. The host must supply Java 25, Minecraft 26.2 and Fabric Loader 0.19.5; runtime binaries, worlds and credentials are not packaged. Vanilla Java clients need no pack.
+The public files are the same two files shown above. The `.mrpack` preserves server-only flags and exact original-host downloads. It includes the pack's configs and deterministic `CREDITS.md`, `SOURCES.md` and required `LICENSES/<hash>.txt` members, but no JARs, Minecraft/Fabric runtime, launch scripts, worlds or secrets. Java players do not need it to join. There is no public CurseForge ZIP producer or configured CurseForge listing; existing releases and their historical assets are unchanged.
 
-Only the release owner should create and push a matching version tag after review. GitHub Actions validates source, index and the selected archives, then independently boots a folder materialized from the validated mrpack, including in metadata mode. Native acceptance checks a clean install, effective permissions, conflict/repeat/roundtrip preservation, save/exit and an offline restart. Its test-owned permission import does not change this line's manual production bootstrap.
+### Using a downloaded release
 
-Publication reassesses the same frozen plan and checksum membership, uploads only its selected nonempty assets into a draft, compares the exact remote set, then publishes. Upload failures leave the draft recoverable; reruns refuse to alter published assets. Branch, pull-request and manual runs do not publish. Native evidence is a bounded log allowlist, never downloaded JARs, worlds, exports or credentials.
+Releases through `v26.2.0.1.3` ship one `cobbled-horizon-<pack-version>.sha256` that lists both the `.mrpack` and the retired ZIP. Download that checksum beside the `.mrpack`; the obsolete ZIP is not needed. Replace `<pack-version>` with the downloaded release's version:
+
+```bash
+MRPACK='cobbled-horizon-<pack-version>.mrpack'
+sha256sum --check --ignore-missing cobbled-horizon-<pack-version>.sha256
+```
+
+Require the `.mrpack` line to say **OK** before installation. Missing files are ignored by this command, so do not accept an absent `.mrpack` result.
+
+Future releases produced by the mrpack-only pipeline instead supply a matching `.mrpack.sha256`. Download both files, set `MRPACK` to that release's filename as above, then verify:
+
+```bash
+sha256sum --check "$MRPACK.sha256"
+```
+
+Historical release assets remain unchanged; do not expect a `.mrpack.sha256` for a legacy release.
+
+Choose one installation route:
+
+- From the source revision matching that release, run `make materialize` to export, validate and prepare a fresh `build/server/` with every original pinned mod and indexed configs/notices. To consume the downloaded archive itself, place it under `dist/`, create `build/`, and run `python3 scripts/server_folder.py materialize "dist/$MRPACK" build/server`. Existing destinations are refused. Neither command starts Minecraft or grants binary sharing rights. `make server-zip` additionally packages the validated folder for private owner installation. Check the unmodified folder with `python3 scripts/server_folder.py validate build/server` before runtime provisioning; follow the [deployment runbook](docs/deployment.md#build) and [DatHost import limitations](docs/providers/dathost.md#modpack-import-options). The host must supply Java 25, Minecraft 26.2 and Fabric Loader 0.19.5.
+- Alternatively use the [`itzg/minecraft-server` image's Modrinth support](https://docker-minecraft-server.readthedocs.io/en/latest/types-and-platforms/mod-platforms/modrinth-modpacks/). Set `TYPE=MODRINTH` and `MODRINTH_MODPACK` to the release asset's hosted `.mrpack` URL, or to a mounted container path ending in `.mrpack`. Follow the image's setup instructions and the pack's Java, runtime and deployment requirements. This alternative is documented, not independently runtime-tested here.
+
+Only the release owner should create and push a new matching version tag after separate publication authorization, source review and passing hosted checks. Never reuse a published version/tag or alter its historical assets. GitHub Actions validates source, index and exactly the `.mrpack` and `.mrpack.sha256`. The `native-acceptance` job downloads validate's immutable artifact ID, rechecks that same set and checksum, then boots a folder materialized from that very mrpack. Download/hash failures are fatal, never a reason to re-export; `summary.json` records the consumed `archive_sha256`. Native acceptance checks a clean install, effective permissions, conflict/repeat/roundtrip preservation, save/exit and an offline restart. Its test-owned permission import does not change this line's manual production bootstrap.
+
+The workflow uses one asset manifest from `scripts/distribution.py release-plan`. Default Make plans are regenerated for current records/tag; an explicit `RELEASE_PLAN=...` is frozen and must match exactly. Publication independently reassesses the records and exact tag, then `make check-release` validates the exact nonempty set, checksum membership and archive contents through `make check-metadata`. Release notes explain the original-host downloads, configs and notices. Uploads go into a draft, which becomes public only after its complete nonempty asset set matches that manifest. Unexpected draft assets are not deleted automatically. Upload failures leave the draft recoverable; reruns refuse to alter published assets. Branch, pull-request and manual runs do not publish. Native evidence is a bounded log allowlist, never downloaded JARs, worlds, exports or credentials. Publishing uses the built-in `GITHUB_TOKEN` and uploads to GitHub only.
 
 Exact-head hosted validate and native-acceptance must pass before accepting the pipeline. Production cross-play, provider access, world-generation/performance and restore tests remain separate designated-host requirements. See [`docs/version-policy.md`](docs/version-policy.md).
 
@@ -202,4 +224,4 @@ A nonzero exit means at least one baseline project remains unavailable. Staged c
 
 Jimmy McCann ([@jabez007](https://github.com/jabez007)) directs the project. See [`CONTRIBUTORS.md`](CONTRIBUTORS.md).
 
-The repository-authored tooling and documentation are MIT licensed. Referenced mods and Minecraft remain under their own licenses and terms. `distribution/permissions.toml` binds exact pins, channel decisions, source duties and captured license texts. Generated notices are not permission grants; unresolved records block public binary publication. Private owner installation does not require that public clearance record and grants no public redistribution rights.
+The repository-authored tooling and documentation are MIT licensed. Referenced mods and Minecraft remain under their own licenses and terms. `distribution/permissions.toml` binds exact pins, descriptive channel records, source duties and captured license texts. Exact project/version/SHA-512 and metafile digests bind original download identities. Native CurseForge updater metadata and captured evidence remain unchanged for a possible future listing; they do not split public archives. Generated notices are not permission grants. Public builds contain no JARs and remain usable while binary rights are unresolved; malformed records, stale identities and corrupt/missing texts remain fatal. `python3 scripts/distribution.py status` reports descriptive channel values, not public release eligibility. Private owner installation does not require public redistribution clearance and grants no public sharing rights for the complete payload. Sharing binaries would require applicable permissions, notices and source-delivery obligations; the public pipeline offers no binary archive or clearance command. A successful build or server startup supplies no CurseForge submission approval.

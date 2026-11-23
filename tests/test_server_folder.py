@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import io
+import hashlib
 import json
 import os
 import re
@@ -14,7 +15,7 @@ import warnings
 import zipfile
 from unittest.mock import patch
 
-from pack_fixtures import ROOT
+from pack_fixtures import ROOT, workflow_script
 import distribution
 import permission_seed
 import server_folder
@@ -45,7 +46,7 @@ class ServerFolderTests(unittest.TestCase):
             self.contents["overrides/" + relative] = target.read_bytes()
         self.write_mrpack(self.contents)
         self.payload = {name.removeprefix("overrides/"): data for name, data in self.contents.items() if name.startswith("overrides/")}
-        self.payload.update({"mods/test.jar": self.fixture.fixture.mod, "mods/override.jar": self.fixture.override_bytes})
+        self.payload.update({"mods/test.jar": self.fixture.mod, "mods/override.jar": self.fixture.override_bytes})
 
     def write_mrpack(self, contents, duplicate=False, symlink=None):
         with zipfile.ZipFile(self.source, "w") as archive:
@@ -59,7 +60,7 @@ class ServerFolderTests(unittest.TestCase):
                     archive.writestr("modrinth.index.json", contents["modrinth.index.json"])
 
     def materialize(self, destination=None):
-        with patch.object(server_folder.urllib.request, "urlopen", side_effect=[io.BytesIO(self.fixture.fixture.mod), io.BytesIO(self.fixture.override_bytes)]) as download:
+        with patch.object(server_folder.urllib.request, "urlopen", side_effect=[io.BytesIO(self.fixture.mod), io.BytesIO(self.fixture.override_bytes)]) as download:
             server_folder.materialize(self.source, destination or self.output, self.root)
         return download
 
@@ -79,12 +80,11 @@ class ServerFolderTests(unittest.TestCase):
         self.fixture.write_policy()
         argv = ["server_folder.py", "materialize", str(self.source), str(self.output)]
         with patch.object(server_folder, "ROOT", self.root), patch.object(sys, "argv", argv), \
-                patch.object(server_folder.urllib.request, "urlopen", side_effect=[io.BytesIO(self.fixture.fixture.mod), io.BytesIO(self.fixture.override_bytes)]) as download:
+                patch.object(server_folder.urllib.request, "urlopen", side_effect=[io.BytesIO(self.fixture.mod), io.BytesIO(self.fixture.override_bytes)]) as download:
             self.assertEqual(0, server_folder.main())
         self.assertEqual(2, download.call_count)
         self.assertEqual([], server_folder.validate_directory(self.output, self.root))
-        with self.assertRaisesRegex(ValueError, "distribution not cleared"):
-            distribution.clearance(self.root, "github")
+        self.assertEqual("conditional", distribution.selected(self.root)[1][1]["channels"]["github"])
 
     def test_invalid_archive_is_rejected_before_download_or_destination(self):
         for defect in ("missing", "modified", "extra", "duplicate", "symlink", "index", "traversal", "alias", "jar"):
@@ -153,7 +153,7 @@ class ServerFolderTests(unittest.TestCase):
     def test_download_hash_size_and_transport_failures_leave_no_folder(self):
         for failure in ("hash", "size", "transport"):
             with self.subTest(failure=failure):
-                responses = [io.BytesIO(b"x" * len(self.fixture.fixture.mod)), io.BytesIO(self.fixture.override_bytes)]
+                responses = [io.BytesIO(b"x" * len(self.fixture.mod)), io.BytesIO(self.fixture.override_bytes)]
                 if failure == "size":
                     responses[0] = io.BytesIO(b"short")
                 if failure == "transport":
@@ -165,6 +165,40 @@ class ServerFolderTests(unittest.TestCase):
                         server_folder.materialize(self.source, self.output, self.root)
                 self.assertFalse(self.output.exists())
                 self.assertEqual([], list(self.root.glob(".materialize-*")))
+
+    def test_indexed_private_source_state_is_rejected(self):
+        self.materialize()
+        self.assertEqual([], server_folder.validate_directory(self.output, self.root))
+        index = self.root / "index.toml"
+        original = index.read_text()
+        cases = (
+            ("config/luckperms/users.json", "unexpected source override: config/luckperms/users.json"),
+            ("config/cobbled-horizon/extra.json", "unexpected source override: config/cobbled-horizon/extra.json"),
+            ("mods/luckperms/luckperms-h2.mv.db", "unexpected source override: mods/luckperms/luckperms-h2.mv.db"),
+        )
+        for position, (relative, diagnostic) in enumerate(cases):
+            with self.subTest(relative=relative):
+                candidate = self.root / f"server-private-{position}"
+                shutil.copytree(self.output, candidate)
+                source = self.root / relative
+                installed = candidate / relative
+                source.parent.mkdir(parents=True, exist_ok=True)
+                installed.parent.mkdir(parents=True, exist_ok=True)
+                source.write_bytes(b"synthetic private state")
+                installed.write_bytes(source.read_bytes())
+                index.write_text(original + f"[[files]]\nfile = {json.dumps(relative)}\n")
+                try:
+                    self.assertEqual([diagnostic], server_folder.validate_directory(candidate, self.root))
+                finally:
+                    index.write_text(original)
+                    source.unlink()
+        self.assertEqual([], server_folder.validate_directory(self.output, self.root))
+
+    def test_unindexed_source_config_is_rejected(self):
+        self.materialize()
+        (self.root / "config/forgotten.json").write_text("{}")
+        self.assertIn("source config is not indexed: config/forgotten.json",
+                      server_folder.validate_directory(self.output, self.root))
 
     def test_symlink_cannot_masquerade_as_payload_or_directory(self):
         self.materialize()
@@ -296,10 +330,9 @@ class ServerFolderTests(unittest.TestCase):
             self.assertIn(f"({destination.stat().st_size} bytes)", output.getvalue())
             self.assertEqual(warning, "WARNING:" in output.getvalue())
             self.assertEqual(reference.read_bytes(), destination.read_bytes())
-        with self.assertRaisesRegex(ValueError, "distribution not cleared"):
-            distribution.clearance(self.root, "github")
+        self.assertEqual("conditional", distribution.selected(self.root)[1][1]["channels"]["github"])
 
-    def test_public_selector_excludes_existing_private_zip_in_both_modes(self):
+    def test_public_selector_excludes_existing_private_zip_regardless_of_clearance(self):
         self.materialize()
         private = self.root / "build/cobbled-horizon-26.2.0.1.0-server.zip"
         shutil.copytree(ROOT / "scripts", self.root / "scripts", ignore=shutil.ignore_patterns("__pycache__"))
@@ -311,7 +344,13 @@ class ServerFolderTests(unittest.TestCase):
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
         self.assertIn(f"({private.stat().st_size} bytes)", result.stdout)
         original = private.read_bytes()
-        script = test_distribution.test_release.workflow_script("Evaluate public distribution clearance")
+        dist = self.root / "dist"
+        dist.mkdir()
+        basename = "cobbled-horizon-26.2.0.1.0"
+        (dist / (basename + ".mrpack")).write_bytes(self.source.read_bytes())
+        (dist / (basename + ".mrpack.sha256")).write_text(
+            hashlib.sha256(self.source.read_bytes()).hexdigest() + "  " + basename + ".mrpack\n")
+        script = workflow_script("Plan public release files")
         for cleared in (False, True):
             with self.subTest(cleared=cleared):
                 self.fixture.override_record["channels"]["github"] = "allowed" if cleared else "conditional"
@@ -324,9 +363,9 @@ class ServerFolderTests(unittest.TestCase):
                                         "GITHUB_OUTPUT": str(output)}, capture_output=True, text=True, timeout=30)
                 self.assertEqual(0, result.returncode, result.stdout + result.stderr)
                 plan = json.loads((self.root / "release-plan.json").read_text())
-                suffixes = (".mrpack", ".zip", ".sha256") if cleared else (".mrpack", ".mrpack.sha256")
+                suffixes = (".mrpack", ".mrpack.sha256")
                 self.assertEqual(["cobbled-horizon-26.2.0.1.0" + suffix for suffix in suffixes], plan["assets"])
-                self.assertEqual(["dist/" + name for name in plan["assets"]], output.read_text().splitlines()[2:-1])
+                self.assertEqual(["dist/" + name for name in plan["assets"]], output.read_text().splitlines()[1:-1])
                 self.assertNotIn(private.name, plan["assets"])
                 forged = {**plan, "assets": [*plan["assets"], private.name]}
                 with self.assertRaisesRegex(ValueError, "release plan differs"):
@@ -334,8 +373,8 @@ class ServerFolderTests(unittest.TestCase):
                 self.assertEqual(original, private.read_bytes())
 
     def test_workflow_keeps_private_build_out_of_build_upload_and_cache(self):
-        # Exclude private server-ZIP references throughout the workflow, then
-        # retain the effect-bearing cache, command and upload checks below.
+        # CI may run synthetic archive regressions, but must never reference
+        # the private ZIP anywhere in the workflow, including alternate commands.
         workflow = (ROOT / ".github/workflows/validate.yml").read_text()
         self.assertNotRegex(workflow, r"(?i)server[-_.]zip")
         self.assertNotRegex(workflow, r"(?m)^\s*uses:\s*actions/cache(?:/|@)")
@@ -346,7 +385,7 @@ class ServerFolderTests(unittest.TestCase):
             self.assertNotRegex(run, r"server_folder\.py\s+zip\b")
         uploads = [block for block in workflow.split("      - name:") if "uses: actions/upload-artifact@" in block]
         self.assertEqual(2, len(uploads))
-        self.assertIn("path: ${{ steps.rights.outputs.paths }}", uploads[0])
+        self.assertIn("path: ${{ steps.release-plan.outputs.paths }}", uploads[0])
         paths = uploads[1].split("          path: |\n", 1)[1].split("          if-no-files-found:", 1)[0].splitlines()
         self.assertEqual({"summary.json", "installer.log", "first-boot.log", "offline-second-boot.log"},
                          {path.strip().rsplit("/", 1)[-1] for path in paths})
