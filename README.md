@@ -222,6 +222,6 @@ A nonzero exit means at least one baseline project remains unavailable. Staged c
 
 ## Ownership and licensing
 
-Jimmy McCann ([@jabez007](https://github.com/jabez007)) directs the project. See [`CONTRIBUTORS.md`](CONTRIBUTORS.md).
+[@jabez007](https://github.com/jabez007) directs the project. See [`CONTRIBUTORS.md`](CONTRIBUTORS.md).
 
 The repository-authored tooling and documentation are MIT licensed. Referenced mods and Minecraft remain under their own licenses and terms. `distribution/permissions.toml` binds exact pins, descriptive channel records, source duties and captured license texts. Exact project/version/SHA-512 and metafile digests bind original download identities. Native CurseForge updater metadata and captured evidence remain unchanged for a possible future listing; they do not split public archives. Generated notices are not permission grants. Public builds contain no JARs and remain usable while binary rights are unresolved; malformed records, stale identities and corrupt/missing texts remain fatal. `python3 scripts/distribution.py status` reports descriptive channel values, not public release eligibility. Private owner installation does not require public redistribution clearance and grants no public sharing rights for the complete payload. Sharing binaries would require applicable permissions, notices and source-delivery obligations; the public pipeline offers no binary archive or clearance command. A successful build or server startup supplies no CurseForge submission approval.
