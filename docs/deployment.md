@@ -38,14 +38,29 @@ The command reports actual ZIP bytes and warns above DatHost's 100 MB (100,000,0
 
 The generated server tree is `build/server/`. Inspect it before upload. It must contain the 32 active project JARs, including Explorify v1.6.6 rather than Structory, and reviewed config overrides, but no staged/client-only JARs or credentials. For pack `26.3.0.1.4`, verify the Epic override at `config/cristellib/mr_epic_structuresvillagesstandaloneedition/structure_placement_config.json5` is included with only `epic:villages` at spacing `80`, separation `22`, salt `50387312` and frequency `1.0`. Reconcile generated configs with the retained policy; distinguish the retired Lite file from the two legacy Explorify files awaiting schema review as described in [`configuration.md`](configuration.md#structure-generation).
 
-To prepare from a downloaded release, verify its checksum first and use the matching source revision after creating the `build/` parent:
+For a downloaded release through `v26.3.0.1.4`, download `cobbled-horizon-<pack-version>.sha256` beside the `.mrpack`. This legacy checksum also lists the retired ZIP; downloading that ZIP is unnecessary. In the download directory, replace `<pack-version>` with the release's version and run:
 
 ```bash
-python3 scripts/server_folder.py materialize dist/cobbled-horizon-26.3.0.1.4.mrpack build/server
-python3 scripts/server_folder.py zip build/server build/cobbled-horizon-26.3.0.1.4-server.zip
+MRPACK='cobbled-horizon-<pack-version>.mrpack'
+sha256sum --check --ignore-missing cobbled-horizon-<pack-version>.sha256
 ```
 
-This validates all original pins/configs/notices, not just the public ZIP's bundled subset. `python3 scripts/server_folder.py validate build/server` checks the unmodified prepared folder before runtime provisioning. Provision Minecraft 26.3, Fabric 0.20.1 and Java 25 separately; preparation includes no runtime, launch scripts, EULA, world or host secrets.
+Require the `.mrpack` line to say **OK**. The command ignores missing files; an absent `.mrpack` result is not verification.
+
+Future releases from the mrpack-only pipeline instead provide `.mrpack.sha256`. Download it beside the `.mrpack`, set `MRPACK` to that release's filename as above, and run:
+
+```bash
+sha256sum --check "$MRPACK.sha256"
+```
+
+After verification, use the matching source revision, place the `.mrpack` under `dist/` and create the `build/` parent. Prepare the private folder and optional ZIP:
+
+```bash
+python3 scripts/server_folder.py materialize "dist/$MRPACK" build/server
+python3 scripts/server_folder.py zip build/server build/cobbled-horizon-<pack-version>-server.zip
+```
+
+This validates all original pins, configs and recipient notices. `python3 scripts/server_folder.py validate build/server` checks the unmodified prepared folder before runtime provisioning. Provision Minecraft 26.3, Fabric 0.20.1 and Java 25 separately; preparation includes no runtime, launch scripts, EULA, world or host secrets.
 
 Retain recipient credits/licenses/source directions. Complete stopped-server reconciliation; overlaying a fresh folder does not remove retired JARs or protect existing host configuration. Provider import limitations remain in the [provider profile](providers/dathost.md#modpack-import-options).
 
