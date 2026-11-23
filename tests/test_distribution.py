@@ -133,6 +133,7 @@ class DistributionTests(unittest.TestCase):
         first = distribution.notice_members(self.root)
         self.assertEqual(first, distribution.notice_members(self.root))
         self.assertEqual(self.text, first["LICENSES/" + self.digest + ".txt"])
+        self.assertIn(b"Copyright (c) 2026 jabez007 and contributors\n", first["LICENSES/" + self.digest + ".txt"])
         self.assertIn(b"contributors", first["CREDITS.md"])
         self.assertIn(b"no source-delivery duty", first["SOURCES.md"])
 
@@ -145,6 +146,14 @@ class DistributionTests(unittest.TestCase):
             r"\b(?:Wesley1808|wesley1808|malte0811|pop4959|v0\.7\.0|v1\.10|v4\.5|v1\.4\.3|v26\.3)(?!\w|\.[0-9])"
         )
         notices = distribution.notice_members(ROOT)
+        self.assertEqual("jabez007 and contributors", distribution.load(ROOT / "pack.toml")["author"])
+        for attribution in (
+            b"jabez007's pack-owner risk decision of 2026-11-16",
+            b"Pack owner jabez007 decided on 2026-11-17 to distribute this MIT-declared copy",
+            b"Pack owner jabez007 decided on 2026-11-17 to distribute this distinct MIT-declared copy",
+        ):
+            with self.subTest(attribution=attribution):
+                self.assertIn(attribution, notices["CREDITS.md"])
         cases = [(name, notices[name].decode(), False) for name in ("CREDITS.md", "SOURCES.md")]
         cases.extend((label, label, True) for label in (
             "Gson2.11.0", "ASM9.5", "AWS SDK2.31.78", "reg-sync0.18.2",
