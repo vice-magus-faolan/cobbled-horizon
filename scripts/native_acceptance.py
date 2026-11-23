@@ -332,6 +332,28 @@ def first_boot(console: Console, server: Path) -> dict:
     return saved
 
 
+def check_slashloot(server: Path, output: str) -> None:
+    # The first boot must generate this file from the pinned mod, not a pack override.
+    require("slashloot 0.6.0" in output and "SlashLoot loaded - server-side per-player loot" in output,
+            "pinned SlashLoot was not loaded")
+    require("Failed to load slashloot.json" not in output, "SlashLoot config load failed")
+    actual = json.loads((server / "config/slashloot.json").read_text())
+    expected = {
+        "enabled": True,
+        "dimensionBlocklist": [],
+        "lootTableBlocklist": [],
+        "handleUnknownContainers": False,
+        "instancePots": True,
+        "delegateContainerAnimation": True,
+        "playOpenCloseSounds": True,
+        "cleanupOnBreak": True,
+        "pruneIntervalTicks": 6000,
+        "pruneBatchSize": 256,
+        "debugLogging": False,
+    }
+    require(actual == expected, "native SlashLoot policy drift")
+
+
 def check_discord_dormant(server: Path, output: str, *, normalized: bool = False) -> None:
     """Check actual pinned-mod startup, then its native rewritten config policy."""
     require("mc2discord 4.4.0" in output, "pinned Mc2Discord was not loaded")
@@ -352,6 +374,7 @@ def native_run(archive: Path, work: Path, project: str, summary: dict) -> None:
     summary["preparation"] = "validated mrpack to complete server folder"
     with archive.open("rb") as stream:
         summary["archive_sha256"] = hashlib.file_digest(stream, "sha256").hexdigest()
+    require(not (server / "config/slashloot.json").exists(), "archive overrides SlashLoot defaults")
     provision(server, project, work, deadline)
     name, console = boot(project, "first-boot", server, work, deadline, False)
     try:
@@ -359,6 +382,8 @@ def native_run(archive: Path, work: Path, project: str, summary: dict) -> None:
         console.stop(name)
         check_worldgen(server, console.output)
         check_discord_dormant(server, console.output)
+        check_slashloot(server, console.output)
+        summary["slashloot_first_boot_config"] = "passed"
         summary["discord_missing_config_no_token_first_boot"] = "passed"
         summary["first_install_and_import_repeat_conflict_roundtrip_preservation"] = "passed"
     finally:
@@ -381,6 +406,8 @@ def native_run(archive: Path, work: Path, project: str, summary: dict) -> None:
         console.stop(name)
         check_worldgen(server, console.output)
         check_discord_dormant(server, console.output, normalized=True)
+        check_slashloot(server, console.output)
+        summary["slashloot_restart_config"] = "passed"
         summary["discord_template_no_token_native_parser_offline_restart"] = "passed"
         summary["offline_second_boot_save_exit_no_startup_reapplication"] = "passed"
     finally:

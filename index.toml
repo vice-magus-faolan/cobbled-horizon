@@ -247,6 +247,11 @@ hash = "39edae3906c30e570070599dd3830ff06ac466bb428877c5cfe968e8ffa000b0"
 metafile = true
 
 [[files]]
+file = "mods/slashloot.pw.toml"
+hash = "814080af015ac619c5b203978e6a4c93c54829e6824b1adf0ab973813f1bd49b"
+metafile = true
+
+[[files]]
 file = "mods/spark.pw.toml"
 hash = "f61681a676a163851845222fac7278626d044001ddb31ccd9608e364c50c60aa"
 metafile = true

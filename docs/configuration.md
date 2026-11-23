@@ -99,6 +99,10 @@ Spiral Tower Villages 0.0.3 is staged with no configuration override. Its exclus
 
 CTOV remains future-only, behind Spiral Tower Villages. Its evaluated Fabric 4.1.0 JAR requires Lithostitched even though that release's Modrinth dependency list omits it. Neither CTOV nor Lithostitched is included in the active or staged pack metadata.
 
+## SlashLoot
+
+No SlashLoot config override is shipped. The pinned mod generates upstream defaults: enabled once-per-player pending-table loot, pot instancing and break/entity/background orphan-record cleanup on, unknown containers off. Existing host overrides are not reset. This does not recover unpacked historical loot or export private inventories. Read the [default policy and lifecycle limits](slashloot.md) before any separately approved installation; ordinary no-table storage remains vanilla.
+
 ## squaremap
 
 The checked-in `squaremap/config.yml`:

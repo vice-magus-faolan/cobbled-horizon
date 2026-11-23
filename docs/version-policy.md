@@ -2,9 +2,9 @@
 
 ## Release versions
 
-`pack.toml` is the source of truth for release versions and artifact names. Its `version` is `<Minecraft version>.<pack major>.<pack minor>.<pack patch>`, currently `26.3.0.1.5`. Git tags add a leading `v`, giving `v26.3.0.1.5`. The Minecraft prefix must match `versions.minecraft` exactly. The exported mrpack retains the complete pack version; a private server ZIP carries it in its filename. This numeric candidate identity does not establish runtime readiness or authorize a release.
+`pack.toml` is the source of truth for release versions and artifact names. Its `version` is `<Minecraft version>.<pack major>.<pack minor>.<pack patch>`, currently `26.3.0.1.6`. Git tags add a leading `v`, giving `v26.3.0.1.6`. The Minecraft prefix must match `versions.minecraft` exactly. The exported mrpack retains the complete pack version; a private server ZIP carries it in its filename. This numeric candidate identity does not establish runtime readiness or authorize a release.
 
-The next pack-only patch on Minecraft 26.3 would use `26.3.0.1.6`. If Minecraft gains another version component, keep the complete prefix, for example `26.3.1.0.1.0` for Minecraft 26.3.1 and pack revision 0.1.0. Release tags currently accept numeric versions only, without prerelease suffixes.
+The next pack-only patch on Minecraft 26.3 would use `26.3.0.1.7`. If Minecraft gains another version component, keep the complete prefix, for example `26.3.1.0.1.0` for Minecraft 26.3.1 and pack revision 0.1.0. Release tags currently accept numeric versions only, without prerelease suffixes.
 
 A valid matching tag always publishes exactly the validated no-JAR `.mrpack` and `.mrpack.sha256`. Release notes explain its original-host downloads, configs and notices. The selector owns one manifest for build/upload/draft comparison; the publisher independently reevaluates records and validates the exact nonempty set, checksum and archive through `make check-release`. Invalid records, stale identities, missing/corrupt texts or failed archive/checksum checks are fatal. Native success, draft-first exact-set checks and refusal to replace a published release remain required. Drafts with unexpected assets remain unpublished without automatic deletion. Existing published assets remain historical records. See the [release instructions](../README.md#github-releases) and [distribution obligations](../README.md#ownership-and-licensing). Publication to Modrinth or CurseForge is not configured.
 
@@ -33,7 +33,7 @@ Every `mods/*.pw.toml` entry must contain:
 
 The Minecraft and Fabric Loader versions are pinned in `pack.toml`. Do not broaden acceptable game versions to force a 26.2 JAR onto 26.3.
 
-The current development candidate uses Fabric Loader `0.20.1` and 33 exact Fabric 26.3 project versions. The sole explicit prerelease exception is Geyser `2.12.1-b1281`, project `wKkoqHrH`, version `MJYV1WUM` (beta). The other 32 versions are release-designated. This is not a global prerelease policy: `--release-only` must still reject beta/alpha records, and other prerelease-only candidates remain inactive. Primary metadata and verified artifact hashes do not establish dependency-range, server-boot, gameplay, or cross-play success.
+The current development candidate uses Fabric Loader `0.20.1` and 34 exact Fabric 26.3 project versions. The sole explicit prerelease exception is Geyser `2.12.1-b1281`, project `wKkoqHrH`, version `MJYV1WUM` (beta). The other 33 versions are release-designated. This is not a global prerelease policy: `--release-only` must still reject beta/alpha records, and other prerelease-only candidates remain inactive. Primary metadata and verified artifact hashes do not establish dependency-range, server-boot, gameplay, or cross-play success.
 
 Staged pins retain historical bytes, including 26.2 builds; they are excluded from active exports and are not certified for 26.3. Promotion requires selecting and verifying exact target-compatible versions as well as passing the existing activation gates. Future projects remain identity/gate entries only.
 
@@ -50,6 +50,8 @@ Staged pins retain historical bytes, including 26.2 builds; they are excluded fr
 9. For a future installation or update, complete the applicable deployment preflight, verify the result, and retain the previous known-good pack and matching world snapshot for rollback. Outstanding checks on the existing deployment are not retroactive deployment conditions.
 
 ## Current 26.3 deployment and outstanding evidence
+
+Pack `26.3.0.1.6` adds exact server-only SlashLoot 0.6.0 using upstream defaults, without a pack config override: once-per-player pending-table loot, pots and orphan-record cleanup enabled, unknown containers disabled. Existing mod/runtime pins, worldgen, permissions, storage controls and 26.2 are unchanged. [Activation, all-player export and removal gates](slashloot.md) remain separate; historical recovery and real Java/Bedrock certification are not delivered. The next pack-only patch is `26.3.0.1.7`.
 
 Pack `26.3.0.1.5` adds stable server-only Mc2Discord 4.4.0 and an inert example for one-way advancement, death, join and leave posts, with private runtime configuration excluded from source and archives. Existing pins, worldgen, permission policy and 26.2 remain unchanged. See the [private activation guide](discord-journal.md); real pinned-artifact no-token hosted boots and later approved live event delivery are distinct gates.
 

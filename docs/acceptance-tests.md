@@ -26,7 +26,8 @@ complete server folder. Download/hash failures are fatal, never a reason to re-e
 substitute mods. In one disposable non-root Java 25 container
 at a time (4 GB heap, no published ports), the first boot permits public dependency
 bootstrap and the second runs offline. It checks Minecraft readiness, MSS/Hopo and
-Moog policy, fresh group creation, native import/repeat/conflict/roundtrip preservation,
+Moog policy, the pinned SlashLoot entrypoint and generated upstream-default config
+without load errors, fresh group creation, native import/repeat/conflict/roundtrip preservation,
 effective synthetic-account permissions, no startup reapplication, and completed
 all-dimension saves with zero exits. Bounded logs and `summary.json` are Actions artifacts.
 
@@ -69,6 +70,19 @@ all-dimension saves with zero exits. Bounded logs and `summary.json` are Actions
 - [ ] During rain, directly exposed crops receive occasional extra growth while covered crops do not; normal growth remains unchanged when weather is clear.
 - [ ] Bamboo receives no extra rain growth, and the tuned crop, sapling, sugar cane, berry, melon, and pumpkin rates feel useful without trivializing farming.
 - [ ] Java and Bedrock players interact normally with every affected crop, and a large loaded farm shows acceptable storm-time tick cost in spark.
+
+## Personal loot
+
+These checks are outstanding, not implied by a clean hosted boot. Use the exact pinned [SlashLoot policy](slashloot.md) on a separately authorized disposable world. Do not use a live world or its backups for this feature trial.
+
+- [ ] Two distinct Java/Floodgate UUIDs receive independent persistent copies of one supported pending-table source. Repeat visits by either account reopen the same copy without renewal; reconnect preserves identity.
+- [ ] Leave distinctive component-bearing stacks in each copy, restart cleanly and verify counts/components and the remainder for each player. Exercise unmodded Java and a real Bedrock client, not just Geyser startup.
+- [ ] Compare newly generated pending tables with previously generated unopened sources. Previously opened empty/partial containers, ordinary player storage and player replacements without tables remain unchanged; no historical recovery occurs.
+- [ ] Exercise single/double/trapped chests, barrels, shulkers and lootable vehicles, including mixed ordinary/loot double halves and structures from the active pack. Unknown custom containers stay vanilla; eligible decorated pots give each UUID one roll without breaking in survival, as enabled upstream.
+- [ ] Check hopper/comparator/trapped-chest behavior, simultaneous opens, break/explosion/piston/removal paths and storage placed near or instead of sources. Never treat an empty inventory or structure coordinate as ownership evidence.
+- [ ] With non-empty private copies, remove a source marker, replace a source and destroy a vehicle. Observe the upstream break/entity/background cleanup lifecycle, including deletion of orphaned private copies and skipped unloaded chunks. Record inaccessible or deleted stacks honestly; ordinary/player storage must remain unaffected.
+- [ ] Before claiming item-preserving cleanup/migration/removal, demonstrate complete all-player (including offline players) retention/export to protected escrow with UUID/source/item/component reconciliation, consistent backup and cold restore. No such exporter or lossless removal is supplied by this pack.
+- [ ] Rehearse disable/removal without loss or duplicate shared rolls only after that escrow gate. Do not run destructive forget/prune/import operations as a test on real data. Helpers and ordinary accounts cannot access game-master administration.
 
 ## World generation
 

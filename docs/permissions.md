@@ -43,6 +43,10 @@ The checked-in mod configuration charges two XP levels, applies a 30-second PvP/
 
 There is no true cross-dimension disable switch: the maximum signed-integer XP cost is infeasible for survival players, but creative players bypass it. Creative mode remains owner-only. JEB's `commandPermissionLevel` remains `4`; use the owner or authenticated console for backup/restore, not helpers.
 
+## SlashLoot administration
+
+SlashLoot uses game-master authority (permission level 2) for its command root. Keep helpers and ordinary Java/Floodgate players non-operator; do not add wildcard or SlashLoot administration grants. The existing seed is unchanged. Forget/prune commands discard private records, and upstream automatic cleanup also reclaims orphaned source records; follow the [destructive-command and escrow gates](slashloot.md#retention-removal-and-administration), not a routine cleanup schedule.
+
 ## Verification
 
 Use the host's operator-management list or read `ops.json` and confirm only the intended owner is present. `op list` is not a read-only listing command and must not be used. From the authenticated console:

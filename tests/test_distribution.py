@@ -312,9 +312,17 @@ class DistributionTests(unittest.TestCase):
         inventory = distribution.records(ROOT)
         identities = {(item["project"], item["version"], item["sha512"]) for item in inventory}
         self.assertEqual(len(inventory), len(identities))
-        self.assertEqual(62, len(inventory))
-        for line, count in (("26.2", 32), ("26.3", 33)):
+        self.assertEqual(63, len(inventory))
+        for line, count in (("26.2", 32), ("26.3", 34)):
             self.assertEqual(count, sum(line in item["lines"] for item in inventory))
+        loot = next(item for item in inventory if item["project"] == "mRZVkEL7")
+        self.assertEqual(["26.3"], loot["lines"])
+        self.assertEqual("fCGypkiQ", loot["version"])
+        notices = distribution.notice_members(ROOT)
+        self.assertIn(b"The Block Academy", notices["CREDITS.md"])
+        self.assertIn(b"slashdaemon/SlashLoot", notices["SOURCES.md"])
+        for digest in loot["texts"]:
+            self.assertIn("LICENSES/" + digest + ".txt", notices)
         journal = next(item for item in inventory if item["project"] == "Cfbcv7uF")
         self.assertEqual(["26.3"], journal["lines"])
         self.assertNotIn("26.2", journal["lines"])

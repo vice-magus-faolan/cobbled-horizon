@@ -1,0 +1,14 @@
+name = "SlashLoot"
+filename = "slashloot-0.6.0+mc26.3-fabric.jar"
+side = "server"
+pin = true
+
+[download]
+url = "https://cdn.modrinth.com/data/mRZVkEL7/versions/fCGypkiQ/slashloot-0.6.0%2Bmc26.3-fabric.jar"
+hash-format = "sha512"
+hash = "320f12444d1c7aac8efb203357e6fd93a78363acfbe44f34b68c9b14d8bb8ea599e661ad4266d42824941276fd35020065823ba6971a5c4128144fc9d0c8e8c0"
+
+[update]
+[update.modrinth]
+mod-id = "mRZVkEL7"
+version = "fCGypkiQ"

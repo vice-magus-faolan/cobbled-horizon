@@ -6,7 +6,7 @@
 
 A reproducible, server-side Fabric collection for a Vanilla+ Minecraft world focused on performance, exploration, and restrained quality-of-life improvements.
 
-This **development candidate** targets **Minecraft Java 26.3** with **Fabric Loader 0.20.1**. It contains 27 deliberately selected projects plus six resolved dependencies. All 33 exact artifacts have published Fabric 26.3 support; 32 are release-designated and Geyser `2.12.1-b1281` (`MJYV1WUM`) is explicitly pinned as beta. The published `v26.3.0.1.4` passed hosted native install/restart, selected config and synthetic permission-import assertions; that evidence does not certify this changed candidate. See the [deployment report and outstanding checks](docs/verification.md#current-deployment). Just Enough Backups (JEB) retains the backup role.
+This **development candidate** targets **Minecraft Java 26.3** with **Fabric Loader 0.20.1**. It contains 28 deliberately selected projects plus six resolved dependencies. All 34 exact artifacts have published Fabric 26.3 support; 33 are release-designated and Geyser `2.12.1-b1281` (`MJYV1WUM`) is explicitly pinned as beta. The published `v26.3.0.1.4` passed hosted native install/restart, selected config and synthetic permission-import assertions; that evidence does not certify this changed candidate. See the [deployment report and outstanding checks](docs/verification.md#current-deployment). Just Enough Backups (JEB) retains the backup role.
 
 Java players should not need this pack on their clients: every packwiz entry is marked `side = "server"`. Bedrock access is provided by Geyser and Floodgate. This Geyser build requires UDP for NetherNet media and either TCP on the Bedrock port for built-in signaling, distinct from Java's TCP listener, or an explicitly configured and verified external signaling service. Host support is unverified; see [`Geyser networking`](docs/deployment.md#geyser-networking).
 
@@ -65,6 +65,7 @@ partial JSON. Use `--repository PATH` to read another local repository.
 ### Quality of life and exploration
 
 - [Server-Side Waystones](https://modrinth.com/mod/sswaystones)
+- [SlashLoot](https://modrinth.com/mod/slashloot) — once-per-player pending-table loot; [activation and retention gates](docs/slashloot.md)
 - [Universal Graves](https://modrinth.com/mod/universal-graves)
 - [Creeper No Break](https://modrinth.com/mod/creeper-no-break)
 - [Naturally Trimmed](https://modrinth.com/mod/naturally-trimmed)
@@ -112,6 +113,7 @@ Fabric API is the only explicitly selected platform library. Polymer, Cristel Li
 - Crops Love Rain gives directly rain-exposed crops and cocoa a 1-in-10 extra-stage chance per applicable random tick; slower-growing plants use 1-in-15. Bamboo's rain bonus is disabled because the mod checks global rain rather than direct exposure for bamboo.
 - Moog's spacing is scoped by namespace: Soaring Structures uses `2.0`, while Ocean Structures uses `3.0`. The universal multiplier remains `1.0` so future Moog packs do not inherit either rarity policy.
 - Epic Villages Standalone preserves vanilla villages. Its Cristel placement override uses spacing `80` and separation `22`, retaining salt `50387312` and frequency `1.0`: 75% fewer Epic candidate-grid positions per area than the shipped `40`/`11` policy, not measured settlement totals or guaranteed cross-mod separation. Existing chunks are unchanged; actual config loading, fresh-chunk density and performance remain outstanding checks.
+- SlashLoot uses upstream defaults: once-per-player pending-table loot, pot instancing and orphan-record cleanup enabled, unknown containers disabled. It does not recover unpacked historical loot. [Private-data/export/removal limits and real-client checks](docs/slashloot.md) remain explicit; no live activation is implied.
 - Universal Graves retains 75% of XP, protects graves for one hour, and expires them after 24 real-time hours.
 - squaremap enables only the Overworld, limits zoom, reduces background rendering pressure, and intentionally retains its live player tracker. The tracker becomes public to anyone who can reach the configured map endpoint.
 - JEB uses 24-hour full and three-hour differential intervals, a 6 GB retention cap, an 8 GB free-space reserve, and operator-level-4 commands. The operating procedure requires an initial full backup and explicit daily full backups coordinated with host restarts because startup can reset the timers. Exact-pin scheduling checks and full and differential restore drills remain outstanding evidence.
@@ -153,8 +155,8 @@ tag runs instead retain the exact release-tag check.
 `make export check-metadata` produces and validates a metadata-only archive, independently of JAR redistribution clearance. It contains exact download references, approved configuration overrides and finite recipient notices, never bundled JARs or private runtime files. The archive and its separate `.mrpack.sha256` checksum land at:
 
 ```text
-dist/cobbled-horizon-26.3.0.1.5.mrpack
-dist/cobbled-horizon-26.3.0.1.5.mrpack.sha256
+dist/cobbled-horizon-26.3.0.1.6.mrpack
+dist/cobbled-horizon-26.3.0.1.6.mrpack.sha256
 ```
 
 On the designated Minecraft test host, prepare a private server ZIP with:
@@ -163,13 +165,13 @@ On the designated Minecraft test host, prepare a private server ZIP with:
 make server-zip
 ```
 
-This first materializes and validates a fresh `build/server/`, then creates `build/cobbled-horizon-26.3.0.1.5-server.zip` with contents at the ZIP root, sorted names, fixed timestamps and normalized permissions. Existing folder and ZIP destinations are refused; keep the folder unchanged while archiving. `make materialize` remains available for folder-only preparation. Private installation on the owner's own server does not require a public redistribution-clearance record; that is not a public redistribution grant.
+This first materializes and validates a fresh `build/server/`, then creates `build/cobbled-horizon-26.3.0.1.6-server.zip` with contents at the ZIP root, sorted names, fixed timestamps and normalized permissions. Existing folder and ZIP destinations are refused; keep the folder unchanged while archiving. `make materialize` remains available for folder-only preparation. Private installation on the owner's own server does not require a public redistribution-clearance record; that is not a public redistribution grant.
 
 For DatHost, select this prepared `-server.zip` under **Mods & Plugins → Custom upload**, not a renamed `.mrpack`. The command reports actual bytes and warns above the documented **100 MB** web-upload limit; use authenticated FTP/file-manager transfer of the extracted contents for larger files, not another browser upload subject to the same limit. Before replacement, stop the instance and verify an off-host backup of the pack, configuration and matching world data, separately preserving the Floodgate key and `mods/luckperms/` data. Verify the panel's removal scope; use selective transfer if Custom upload cannot preserve host-owned files safely. Overlaying directories alone does not remove retired JARs or obsolete configs. Follow the [stopped-server reconciliation procedure](docs/deployment.md#upload) and [DatHost import guidance](docs/providers/dathost.md#modpack-import-options). Runtime/account compatibility remains unverified; these commands do not install or start Minecraft. CI never builds, uploads or caches a real complete server ZIP, and releases never select it.
 
 ## GitHub releases
 
-Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. This candidate's source version is `26.3.0.1.5`, for Minecraft `26.3` and pack revision `0.1.5`. A matching tag would be `v26.3.0.1.5`; the numeric version is not a production approval. Do not tag this development candidate until separately approved for release.
+Release tags use `v<Minecraft version>.<pack major>.<pack minor>.<pack patch>`. This candidate's source version is `26.3.0.1.6`, for Minecraft `26.3` and pack revision `0.1.6`. A matching tag would be `v26.3.0.1.6`; the numeric version is not a production approval. Do not tag this development candidate until separately approved for release.
 
 A valid matching tag always selects exactly the validated no-JAR `.mrpack` and its `.mrpack.sha256`, regardless of unresolved binary redistribution obligations. Malformed records, stale identity, corrupt/missing required texts, invalid archives and checksum errors remain fatal. Native first-install/restart acceptance and separate release approval are still required.
 
