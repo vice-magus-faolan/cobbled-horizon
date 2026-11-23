@@ -235,6 +235,7 @@ This is an upgrade-discovery check, not an audit of pinned-pack stability: a lat
 
 ## Documentation
 
+- [Renewable and per-player structure loot investigation](docs/loot-investigation.md) — research only; no live-world changes
 - [`docs/configuration.md`](docs/configuration.md)
 - [`docs/permissions.md`](docs/permissions.md)
 - [`docs/deployment.md`](docs/deployment.md)

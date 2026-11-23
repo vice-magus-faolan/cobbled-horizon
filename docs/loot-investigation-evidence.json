@@ -1,0 +1,2645 @@
+{
+  "format": 1,
+  "research_date": "2026-11-23",
+  "repository_base": "ad603ee5191987e74d2a544a7c6cde4b0058009f",
+  "scope": "Static upstream artifacts/source and repository inspection; no Minecraft runtime/client or live-world access",
+  "hash_check_scope": "Exact retained capture bytes checked against receipt size and SHA-256; does not authenticate URL, retrieval time, source-to-binary equality or semantic claims",
+  "records": [
+    {
+      "family": "recovery",
+      "capture": "modrinth_chestrefill_versions.json",
+      "url": "https://api.modrinth.com/v2/project/sv1q6VzG/version",
+      "sha256": "cb1b3df2d529520d72838ff2aa82752904c2c2bf01a8a69586c213449078a5f4",
+      "bytes": 5769,
+      "captured_at": "2026-11-23T17:40:09.043875+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "chestrefillver",
+      "citation_id": 71
+    },
+    {
+      "family": "pack",
+      "capture": ".github/workflows/validate.yml",
+      "url": "https://github.com/vice-magus-faolan/cobbled-horizon/blob/ad603ee5191987e74d2a544a7c6cde4b0058009f/.github/workflows/validate.yml",
+      "sha256": "21e5d16a288b0440225ae029b379b6f4348e9aafdadf2eeeb4f1983a3cb11036",
+      "bytes": 9323,
+      "captured_at": "2026-11-23",
+      "timestamp_basis": "day-only",
+      "http_status": 200,
+      "revision_binding": "Exact repository blob at pinned commit",
+      "key": "ci",
+      "citation_id": 6
+    },
+    {
+      "family": "recovery",
+      "capture": "release-v0.3.3/src__main__java__dev__chestshare__compat__StructureAligner.java",
+      "url": "https://raw.githubusercontent.com/PsycloneTM/ChestShare-plus/3649476248db0b90c94b265909eab1999fc191e0/src/main/java/dev/chestshare/compat/StructureAligner.java",
+      "sha256": "d31cd7fcbaf8f5efac66d5e9b91e1d68d4babc63186c4cf9be3094e6e97bf467",
+      "bytes": 8994,
+      "captured_at": "2026-11-23T17:37:15.630554+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "csalign",
+      "citation_id": 56
+    },
+    {
+      "family": "recovery",
+      "capture": "release-v0.3.3/src__main__java__dev__chestshare__command__ChestShareCommands.java",
+      "url": "https://raw.githubusercontent.com/PsycloneTM/ChestShare-plus/3649476248db0b90c94b265909eab1999fc191e0/src/main/java/dev/chestshare/command/ChestShareCommands.java",
+      "sha256": "cb9ee977dc29658edc634a28416d6184010f647da295ccbe929a67dbca531e8e",
+      "bytes": 53070,
+      "captured_at": "2026-11-23T17:37:15.955869+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "cscommand",
+      "citation_id": 57
+    },
+    {
+      "family": "recovery",
+      "capture": "curseforge_8985900.json",
+      "url": "https://www.curseforge.com/api/v1/mods/1694851/files/8985900",
+      "sha256": "84150f8903a3f272f34d478e8c12e33bb89b9decc455a557839d18f2632f9ad2",
+      "bytes": 644,
+      "captured_at": "2026-11-23T17:30:59.432328+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "csfile",
+      "citation_id": 49
+    },
+    {
+      "family": "recovery",
+      "capture": "release-v0.3.3/src__main__java__dev__chestshare__compat__FingerprintRegistry.java",
+      "url": "https://raw.githubusercontent.com/PsycloneTM/ChestShare-plus/3649476248db0b90c94b265909eab1999fc191e0/src/main/java/dev/chestshare/compat/FingerprintRegistry.java",
+      "sha256": "551e2c66fe2e83e86421987bda914a1c807e571e9d8df74c8a1e7a2edfbad8d3",
+      "bytes": 18275,
+      "captured_at": "2026-11-23T17:37:15.143848+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "csfinger",
+      "citation_id": 55
+    },
+    {
+      "family": "recovery",
+      "capture": "release-v0.3.3/src__main__java__dev__chestshare__command__ImportJob.java",
+      "url": "https://raw.githubusercontent.com/PsycloneTM/ChestShare-plus/3649476248db0b90c94b265909eab1999fc191e0/src/main/java/dev/chestshare/command/ImportJob.java",
+      "sha256": "afdd20d24e596ee4aca288c15e4cb4f040ce456a38899f6e065448f2d98b27e4",
+      "bytes": 15809,
+      "captured_at": "2026-11-23T17:37:16.198845+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "csimport",
+      "citation_id": 58
+    },
+    {
+      "family": "recovery",
+      "capture": "release-v0.3.3/LICENSE",
+      "url": "https://raw.githubusercontent.com/PsycloneTM/ChestShare-plus/3649476248db0b90c94b265909eab1999fc191e0/LICENSE",
+      "sha256": "f4c795a41267b4bd4973b529c5b686ff5d2bd076de1eb7cd27cc659de2914d80",
+      "bytes": 1335,
+      "captured_at": "2026-11-23T17:37:13.824084+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "cslicense",
+      "citation_id": 51
+    },
+    {
+      "family": "recovery",
+      "capture": "release-v0.3.3/src__main__resources__fabric.mod.json",
+      "url": "https://raw.githubusercontent.com/PsycloneTM/ChestShare-plus/3649476248db0b90c94b265909eab1999fc191e0/src/main/resources/fabric.mod.json",
+      "sha256": "a80db9403358346164fe31321308a0f3b9974826278b7decd6323f48b58f90e3",
+      "bytes": 720,
+      "captured_at": "2026-11-23T17:37:17.382904+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "csmeta",
+      "citation_id": 59
+    },
+    {
+      "family": "recovery",
+      "capture": "release-v0.3.3/README.md",
+      "url": "https://raw.githubusercontent.com/PsycloneTM/ChestShare-plus/3649476248db0b90c94b265909eab1999fc191e0/README.md",
+      "sha256": "fbbaa449e48564133094d81ee90f5d60a382e75e17a2c7814734e3542e41bc60",
+      "bytes": 8138,
+      "captured_at": "2026-11-23T17:37:13.587549+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "csread",
+      "citation_id": 52
+    },
+    {
+      "family": "recovery",
+      "capture": "release-v0.3.3/src__main__java__dev__chestshare__ContainerRegistrar.java",
+      "url": "https://raw.githubusercontent.com/PsycloneTM/ChestShare-plus/3649476248db0b90c94b265909eab1999fc191e0/src/main/java/dev/chestshare/ContainerRegistrar.java",
+      "sha256": "2a2ad9f822e038b1a3fcbf1b24cc1e5f4afe7c65fa0689838c3d6ea1fcaca7f9",
+      "bytes": 6111,
+      "captured_at": "2026-11-23T17:37:14.822296+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "csregister",
+      "citation_id": 53
+    },
+    {
+      "family": "recovery",
+      "capture": "github_chestshare_releases.json",
+      "url": "https://api.github.com/repos/PsycloneTM/ChestShare-plus/releases?per_page=100",
+      "sha256": "eea8e1443e24121e68db062727e1704c9407dab2411f744e61d869f61fb63c22",
+      "bytes": 20797,
+      "captured_at": "2026-11-23T17:30:58.156510+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "csrelease",
+      "citation_id": 50
+    },
+    {
+      "family": "recovery",
+      "capture": "github_chestshare_repo.json",
+      "url": "https://api.github.com/repos/PsycloneTM/ChestShare-plus",
+      "sha256": "3466faf1f9c63d859825ffec7ccac8ae0a57f0a15a2519a9a7175b57f6f76c91",
+      "bytes": 5607,
+      "captured_at": "2026-11-23T17:30:57.670839+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "csrepo",
+      "citation_id": 60
+    },
+    {
+      "family": "recovery",
+      "capture": "release-v0.3.3/src__main__java__dev__chestshare__StructureContainerRestorer.java",
+      "url": "https://raw.githubusercontent.com/PsycloneTM/ChestShare-plus/3649476248db0b90c94b265909eab1999fc191e0/src/main/java/dev/chestshare/StructureContainerRestorer.java",
+      "sha256": "706b5d985d595864dcbd24022781007a66d49e49e103ab4246444308564b104b",
+      "bytes": 7723,
+      "captured_at": "2026-11-23T17:37:14.334216+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "csrestore",
+      "citation_id": 54
+    },
+    {
+      "family": "integration",
+      "capture": "dungeons-and-taverns-stronghold-overhaul-3.0.1.jar",
+      "url": "https://cdn.modrinth.com/data/rYocd2LE/versions/hNKbQ85c/dungeons-and-taverns-stronghold-overhaul-3.0.1.jar",
+      "sha256": "6a4f1857f4d294748993c7a0cc6fdee6af37b3c2c5a49220d57d9da9d9a392ef",
+      "bytes": 2710723,
+      "captured_at": "2026-11-23T17:28:32.490701+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "Exact pinned JAR, SHA-512 matches repository pin",
+      "key": "dnt",
+      "citation_id": 79
+    },
+    {
+      "family": "integration",
+      "capture": "epic-structures-villages-standalone-edition-1.0.0.jar",
+      "url": "https://cdn.modrinth.com/data/3PvUBn3u/versions/OD6SDuW4/epic-structures-villages-standalone-edition-1.0.0.jar",
+      "sha256": "baacb57b957928e2c3f87d1302db3d28e9cbd4fb4d9a2365a642bcd36808464e",
+      "bytes": 18103837,
+      "captured_at": "2026-11-23T17:28:29.229458+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "Exact pinned JAR, SHA-512 matches repository pin",
+      "key": "epic",
+      "citation_id": 76
+    },
+    {
+      "family": "recovery",
+      "capture": "modrinth_gycZJL9N_project_live.json",
+      "url": "https://api.modrinth.com/v2/project/gycZJL9N",
+      "sha256": "c07a2dcb43ab34e625c9e5d23a0455ddc115ba602946f9b8d18c34719447acd7",
+      "bytes": 5625,
+      "captured_at": "2026-11-23T18:03:00.647394+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "equal",
+      "citation_id": 68
+    },
+    {
+      "family": "integration",
+      "capture": "Explorify v1.6.6.mod.jar",
+      "url": "https://cdn.modrinth.com/data/HSfsxuTo/versions/oyrAnNG8/Explorify%20v1.6.6.mod.jar",
+      "sha256": "76aa6b3392b316c8bbc9f8a5005818bb882ceb8a2762a5971fb2d96414521a77",
+      "bytes": 775401,
+      "captured_at": "2026-11-23T17:28:29.715734+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "Exact pinned JAR, SHA-512 matches repository pin",
+      "key": "explorify",
+      "citation_id": 77
+    },
+    {
+      "family": "candidates-b",
+      "capture": "source/fair/common/src/main/java/net/emeraude/fairloot/core/Config.java",
+      "url": "https://raw.githubusercontent.com/BackupBackupFede/fair-loot/1e8ffacfd868a54bad6a959d9226f3ca7069a194/common/src/main/java/net/emeraude/fairloot/core/Config.java",
+      "sha256": "5c70b40849cbd859d0aee134245de95da0d0ed65addfcf5ba6b4fc8f02e6d85c",
+      "bytes": 3104,
+      "captured_at": "2026-11-23T17:36:37.530839Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "BackupBackupFede/fair-loot@1e8ffacfd868a54bad6a959d9226f3ca7069a194:common/src/main/java/net/emeraude/fairloot/core/Config.java",
+      "key": "flconfig",
+      "citation_id": 47
+    },
+    {
+      "family": "candidates-b",
+      "capture": "artifacts/fairloot-fabric-26.3-0.1.0-github-release.jar",
+      "url": "https://github.com/BackupBackupFede/fair-loot/releases/download/v0.1.0/fairloot-fabric-26.3-0.1.0.jar",
+      "sha256": "175932474cafd9b03272bb4a8046421fd8d4bbbe79f9f83aa1c0dc4f063c91fe",
+      "bytes": 86199,
+      "captured_at": "2026-11-23T17:40:48.811380Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "GitHub release v0.1.0; tag at source commit 1e8ffacfd868a54bad6a959d9226f3ca7069a194",
+      "key": "fljar",
+      "citation_id": 48
+    },
+    {
+      "family": "candidates-b",
+      "capture": "source/fair/LICENSE",
+      "url": "https://raw.githubusercontent.com/BackupBackupFede/fair-loot/1e8ffacfd868a54bad6a959d9226f3ca7069a194/LICENSE",
+      "sha256": "62da95fb420ac2ce5f5e1a4809ca7b49ebbdc6fb5fbdefaba6f1bf1d64017075",
+      "bytes": 1069,
+      "captured_at": "2026-11-23T17:36:35.902554Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "BackupBackupFede/fair-loot@1e8ffacfd868a54bad6a959d9226f3ca7069a194:LICENSE",
+      "key": "fllicense",
+      "citation_id": 43
+    },
+    {
+      "family": "candidates-b",
+      "capture": "source/fair/README.md",
+      "url": "https://raw.githubusercontent.com/BackupBackupFede/fair-loot/1e8ffacfd868a54bad6a959d9226f3ca7069a194/README.md",
+      "sha256": "48f044001d9886ab035029a53b28bbaad2107c53edfe0b7436401491e1a255b4",
+      "bytes": 3494,
+      "captured_at": "2026-11-23T17:36:36.186940Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "BackupBackupFede/fair-loot@1e8ffacfd868a54bad6a959d9226f3ca7069a194:README.md",
+      "key": "flread",
+      "citation_id": 46
+    },
+    {
+      "family": "candidates-b",
+      "capture": "github/fair-github-release.json",
+      "url": "https://api.github.com/repos/BackupBackupFede/fair-loot/releases/tags/v0.1.0",
+      "sha256": "c04c974c13fa213efc40bdf5438bf94906737d6a8c53c94ebdd4a79c47b28127",
+      "bytes": 12125,
+      "captured_at": "2026-11-23T17:37:12.012031Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "official API response at retrieval time",
+      "key": "flrelease",
+      "citation_id": 44
+    },
+    {
+      "family": "candidates-b",
+      "capture": "github/fair-repo.json",
+      "url": "https://api.github.com/repos/BackupBackupFede/fair-loot",
+      "sha256": "0c65fb8a6653c57a545a67c890a8d35293f7c5fc7b8836fdf37f9dfed83a3232",
+      "bytes": 5567,
+      "captured_at": "2026-11-23T17:36:23.476654Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "default branch metadata captured at request",
+      "key": "flrepo",
+      "citation_id": 45
+    },
+    {
+      "family": "candidates-a",
+      "capture": "source-freshloot-src__main__java__net__jahus__freshloot__LootContainerHandler.java",
+      "url": "https://raw.githubusercontent.com/DarthJahus/minecraft-freshloot/a8da801c5dfa1bf1225b875778a9915d771934f8/src/main/java/net/jahus/freshloot/LootContainerHandler.java",
+      "sha256": "86dba5010c8fc5c885895b75c7b99709c326bd45c7ed01663eb641a6df76b642",
+      "bytes": 7468,
+      "captured_at": "2026-11-23T17:29:01.399954+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "a8da801c5dfa1bf1225b875778a9915d771934f8",
+      "key": "frhandle",
+      "citation_id": 17
+    },
+    {
+      "family": "candidates-b",
+      "capture": "source/fair/common/src/main/java/net/emeraude/fairloot/core/Ledger.java",
+      "url": "https://raw.githubusercontent.com/BackupBackupFede/fair-loot/1e8ffacfd868a54bad6a959d9226f3ca7069a194/common/src/main/java/net/emeraude/fairloot/core/Ledger.java",
+      "sha256": "1d520c4e00952eb9e010fc2940ffa658ebc0abb4f104e9053a59c8257c817a80",
+      "bytes": 2679,
+      "captured_at": "2026-11-23T17:36:37.733002Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "BackupBackupFede/fair-loot@1e8ffacfd868a54bad6a959d9226f3ca7069a194:common/src/main/java/net/emeraude/fairloot/core/Ledger.java",
+      "key": "frledger",
+      "citation_id": 42
+    },
+    {
+      "family": "candidates-a",
+      "capture": "source-freshloot-LICENCE.md",
+      "url": "https://raw.githubusercontent.com/DarthJahus/minecraft-freshloot/a8da801c5dfa1bf1225b875778a9915d771934f8/LICENCE.md",
+      "sha256": "5e28061edee28f8be421b31f6d887ad22ce3e52573ede3d5ed207a54c15d83ab",
+      "bytes": 11338,
+      "captured_at": "2026-11-23T17:29:01.031957+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "a8da801c5dfa1bf1225b875778a9915d771934f8",
+      "key": "frlicense",
+      "citation_id": 19
+    },
+    {
+      "family": "candidates-b",
+      "capture": "source/fair/common/src/main/java/net/emeraude/fairloot/Instancing.java",
+      "url": "https://raw.githubusercontent.com/BackupBackupFede/fair-loot/1e8ffacfd868a54bad6a959d9226f3ca7069a194/common/src/main/java/net/emeraude/fairloot/Instancing.java",
+      "sha256": "40b9bbdedb58c493de9caea12dfb906d208d58b205f31087bfd4a8e8ee67a23f",
+      "bytes": 14798,
+      "captured_at": "2026-11-23T17:36:36.408509Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "BackupBackupFede/fair-loot@1e8ffacfd868a54bad6a959d9226f3ca7069a194:common/src/main/java/net/emeraude/fairloot/Instancing.java",
+      "key": "fropen",
+      "citation_id": 41
+    },
+    {
+      "family": "candidates-a",
+      "capture": "jahus-freshloot-project.json",
+      "url": "https://api.modrinth.com/v2/project/jahus-freshloot",
+      "sha256": "bd54a28c86ec87858fa8cf9093324c0b7faf86ffc54f36302e756082b83e3304",
+      "bytes": 6296,
+      "captured_at": "2026-11-23T17:24:53.858513+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "Modrinth API live response; not revision-pinned",
+      "key": "frproject",
+      "citation_id": 86
+    },
+    {
+      "family": "candidates-a",
+      "capture": "source-freshloot-src__main__java__net__jahus__freshloot__LootRegistry.java",
+      "url": "https://raw.githubusercontent.com/DarthJahus/minecraft-freshloot/a8da801c5dfa1bf1225b875778a9915d771934f8/src/main/java/net/jahus/freshloot/LootRegistry.java",
+      "sha256": "a9395ce1e2bac5c2315018fee098f28b9f4d5ca0985cbc79fd6d4ded47135ba3",
+      "bytes": 4335,
+      "captured_at": "2026-11-23T17:29:01.567136+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "a8da801c5dfa1bf1225b875778a9915d771934f8",
+      "key": "frregistry",
+      "citation_id": 18
+    },
+    {
+      "family": "candidates-a",
+      "capture": "freshloot-github-repo.json",
+      "url": "https://api.github.com/repos/DarthJahus/minecraft-freshloot",
+      "sha256": "e991cde1bdef91268711a4bfd5e4d9ec7246d39826a41cc01ccefcc3e09db4e4",
+      "bytes": 5952,
+      "captured_at": "2026-11-23T17:25:46.959484+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "GitHub API; latest commit response captured; pinned-source capture to follow",
+      "key": "frrepo",
+      "citation_id": 20
+    },
+    {
+      "family": "candidates-a",
+      "capture": "jahus-freshloot-versions.json",
+      "url": "https://api.modrinth.com/v2/project/jahus-freshloot/version",
+      "sha256": "5772c68305ed0c9a3053e05ee85a267b5e4537c61c6e0b238795df040be142d6",
+      "bytes": 5624,
+      "captured_at": "2026-11-23T17:24:54.005703+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "Modrinth API live response; not revision-pinned",
+      "key": "frver",
+      "citation_id": 16
+    },
+    {
+      "family": "integration",
+      "capture": "HopoBetterMineshaft-[26.3]-1.3.8.jar",
+      "url": "https://cdn.modrinth.com/data/9IxCUYAP/versions/avIdkeZp/HopoBetterMineshaft-%5B26.3%5D-1.3.8.jar",
+      "sha256": "6a672400d7b303c6a485a5ff0b3a4e33a3242e95ab13d43bd37bbe1b16acd992",
+      "bytes": 6038186,
+      "captured_at": "2026-11-23T17:28:31.571259+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "Exact pinned JAR, SHA-512 matches repository pin",
+      "key": "hopo",
+      "citation_id": 78
+    },
+    {
+      "family": "pack",
+      "capture": "collection.toml",
+      "url": "https://github.com/vice-magus-faolan/cobbled-horizon/blob/ad603ee5191987e74d2a544a7c6cde4b0058009f/collection.toml",
+      "sha256": "0fe6423964f71610394b8ba1eb438b91dd028b03dbef57a28c2848dad78bb18c",
+      "bytes": 5309,
+      "captured_at": "2026-11-23",
+      "timestamp_basis": "day-only",
+      "http_status": 200,
+      "revision_binding": "Exact repository blob at pinned commit",
+      "key": "intent",
+      "citation_id": 2
+    },
+    {
+      "family": "recovery",
+      "capture": "modrinth_lootin_versions.json",
+      "url": "https://api.modrinth.com/v2/project/79PHFfQM/version",
+      "sha256": "a4bba4da9bf46d40ae4eb045aa1ff4432d996e117238d40c695949fb0b511d5f",
+      "bytes": 14449,
+      "captured_at": "2026-11-23T17:40:08.609939+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "lootinver",
+      "citation_id": 70
+    },
+    {
+      "family": "candidates-a",
+      "capture": "source-lootrestock-src__main__java__org__oldskooler__lootrestock__config__ModConfig.java",
+      "url": "https://raw.githubusercontent.com/Quackster/LootRestock/cdc10143ce17fb3b889d6dff278eb9cb52b362cf/src/main/java/org/oldskooler/lootrestock/config/ModConfig.java",
+      "sha256": "018711ef750313253145fc8a7867c97b38f7231a91c63e7b9a0dc977921aa821",
+      "bytes": 23226,
+      "captured_at": "2026-11-23T17:29:03.232831+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "cdc10143ce17fb3b889d6dff278eb9cb52b362cf",
+      "key": "lrconfig",
+      "citation_id": 24
+    },
+    {
+      "family": "candidates-a",
+      "capture": "source-lootrestock-src__main__java__org__oldskooler__lootrestock__data__ChestDataManager.java",
+      "url": "https://raw.githubusercontent.com/Quackster/LootRestock/cdc10143ce17fb3b889d6dff278eb9cb52b362cf/src/main/java/org/oldskooler/lootrestock/data/ChestDataManager.java",
+      "sha256": "87581c571314df4c7e6b740bcb23421f0253b270c6c6b5059d637cb7d70ecede",
+      "bytes": 6862,
+      "captured_at": "2026-11-23T17:29:03.605231+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "cdc10143ce17fb3b889d6dff278eb9cb52b362cf",
+      "key": "lrdata",
+      "citation_id": 23
+    },
+    {
+      "family": "candidates-a",
+      "capture": "source-lootrestock-src__main__java__org__oldskooler__lootrestock__handler__ChestResetHandler.java",
+      "url": "https://raw.githubusercontent.com/Quackster/LootRestock/cdc10143ce17fb3b889d6dff278eb9cb52b362cf/src/main/java/org/oldskooler/lootrestock/handler/ChestResetHandler.java",
+      "sha256": "10bf6f880b0e59205d1ee0f9992ebf97476965bd056ef82b30cbbd1d27fe3939",
+      "bytes": 17857,
+      "captured_at": "2026-11-23T17:29:03.948536+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "cdc10143ce17fb3b889d6dff278eb9cb52b362cf",
+      "key": "lrhandle",
+      "citation_id": 22
+    },
+    {
+      "family": "candidates-a",
+      "capture": "lootrestock-github-issues.json",
+      "url": "https://api.github.com/repos/Quackster/LootRestock/issues?state=all&per_page=100",
+      "sha256": "8902ff9d615dd750526ecb1842079572b91422260a40fc9b5a758c2c19041d2b",
+      "bytes": 30051,
+      "captured_at": "2026-11-23T17:31:19.851279+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "GitHub API live response",
+      "key": "lrissues",
+      "citation_id": 26
+    },
+    {
+      "family": "candidates-a",
+      "capture": "artifact-lootrestock.jar",
+      "url": "https://cdn.modrinth.com/data/ddaWpjKK/versions/M5kTZo9M/LootRestock-1.0.3-26.3.jar",
+      "sha256": "42dbd90b27895afb7f639391d57f95b5d92a5170507a8de31e791314c4dee0c7",
+      "bytes": 1375681,
+      "captured_at": "2026-11-23T17:29:05.375480+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "Exact published Modrinth JAR artifact; source commit relationship not established",
+      "key": "lrjar",
+      "citation_id": 27
+    },
+    {
+      "family": "candidates-a",
+      "capture": "source-lootrestock-LICENSE",
+      "url": "https://raw.githubusercontent.com/Quackster/LootRestock/cdc10143ce17fb3b889d6dff278eb9cb52b362cf/LICENSE",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "bytes": 35149,
+      "captured_at": "2026-11-23T17:29:02.633985+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "cdc10143ce17fb3b889d6dff278eb9cb52b362cf",
+      "key": "lrlicense",
+      "citation_id": 25
+    },
+    {
+      "family": "candidates-a",
+      "capture": "lootrestock-project.json",
+      "url": "https://api.modrinth.com/v2/project/lootrestock",
+      "sha256": "af25b732f920ba2a085b8953dc22e02415052557e3bf1a7b4aea5ba038defdfa",
+      "bytes": 3585,
+      "captured_at": "2026-11-23T17:24:54.147691+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "Modrinth API live response; not revision-pinned",
+      "key": "lrproject",
+      "citation_id": 85
+    },
+    {
+      "family": "candidates-a",
+      "capture": "lootrestock-versions.json",
+      "url": "https://api.modrinth.com/v2/project/lootrestock/version",
+      "sha256": "c2824764add8326685397a863f3fb01d0b743723f92ea4542beb7c7657230f60",
+      "bytes": 5828,
+      "captured_at": "2026-11-23T17:24:54.302932+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "Modrinth API live response; not revision-pinned",
+      "key": "lrver",
+      "citation_id": 21
+    },
+    {
+      "family": "candidates-b",
+      "capture": "source/lootr/fabric/src/main/java/noobanidus/mods/lootr/fabric/mixin/ticker/MixinPersistentEntitySectionManager.java",
+      "url": "https://raw.githubusercontent.com/noobanidus/Lootr/2a9c8307460e3ff5765ecd849b11a6faf06dfe8b/fabric/src/main/java/noobanidus/mods/lootr/fabric/mixin/ticker/MixinPersistentEntitySectionManager.java",
+      "sha256": "731f4b3bf5e859a69edecb3eb9e00ff79405836ce6bfa29530e17314f5600a8b",
+      "bytes": 3987,
+      "captured_at": "2026-11-23T17:39:43.562849Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "noobanidus/Lootr@2a9c8307460e3ff5765ecd849b11a6faf06dfe8b:fabric/src/main/java/noobanidus/mods/lootr/fabric/mixin/ticker/MixinPersistentEntitySectionManager.java",
+      "key": "ltcart",
+      "citation_id": 35
+    },
+    {
+      "family": "candidates-b",
+      "capture": "source/lootr/common/src/main/java/noobanidus/mods/lootr/common/api/config/LootrCommonConfig.java",
+      "url": "https://raw.githubusercontent.com/noobanidus/Lootr/2a9c8307460e3ff5765ecd849b11a6faf06dfe8b/common/src/main/java/noobanidus/mods/lootr/common/api/config/LootrCommonConfig.java",
+      "sha256": "93a270e9b9d345a72f3753f57b7fe5deda1b5f6a9a50f21eff26291319257436",
+      "bytes": 17909,
+      "captured_at": "2026-11-23T17:36:29.978167Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "noobanidus/Lootr@2a9c8307460e3ff5765ecd849b11a6faf06dfe8b:common/src/main/java/noobanidus/mods/lootr/common/api/config/LootrCommonConfig.java",
+      "key": "ltconfig",
+      "citation_id": 34
+    },
+    {
+      "family": "candidates-b",
+      "capture": "source/lootr/common/src/main/java/noobanidus/mods/lootr/common/block/entity/BlockEntityTicker.java",
+      "url": "https://raw.githubusercontent.com/noobanidus/Lootr/2a9c8307460e3ff5765ecd849b11a6faf06dfe8b/common/src/main/java/noobanidus/mods/lootr/common/block/entity/BlockEntityTicker.java",
+      "sha256": "09533ffa24f72cf358eec1c4c3813a1f6271806ca807b37c50f0293f59508763",
+      "bytes": 12206,
+      "captured_at": "2026-11-23T17:36:31.688430Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "noobanidus/Lootr@2a9c8307460e3ff5765ecd849b11a6faf06dfe8b:common/src/main/java/noobanidus/mods/lootr/common/block/entity/BlockEntityTicker.java",
+      "key": "ltconvert",
+      "citation_id": 32
+    },
+    {
+      "family": "candidates-b",
+      "capture": "source/lootr/LICENSE",
+      "url": "https://raw.githubusercontent.com/noobanidus/Lootr/2a9c8307460e3ff5765ecd849b11a6faf06dfe8b/LICENSE",
+      "sha256": "83e4dd21429a91fb7cea67a476032a9641425e5355df2e0f589a738b6ec9fd2c",
+      "bytes": 1057,
+      "captured_at": "2026-11-23T17:36:29.154119Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "noobanidus/Lootr@2a9c8307460e3ff5765ecd849b11a6faf06dfe8b:LICENSE",
+      "key": "ltlicense",
+      "citation_id": 36
+    },
+    {
+      "family": "candidates-b",
+      "capture": "modrinth/lootr-project.json",
+      "url": "https://api.modrinth.com/v2/project/lootr",
+      "sha256": "8a3289b2c9e6df4a0747d38862242a1933479e7e913ed438616d628afd3569cd",
+      "bytes": 15702,
+      "captured_at": "2026-11-23T17:36:14.469648Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "unbound API endpoint",
+      "key": "ltproject",
+      "citation_id": 30
+    },
+    {
+      "family": "candidates-b",
+      "capture": "source/lootr/common/src/main/java/noobanidus/mods/lootr/common/data/DataStorage.java",
+      "url": "https://raw.githubusercontent.com/noobanidus/Lootr/2a9c8307460e3ff5765ecd849b11a6faf06dfe8b/common/src/main/java/noobanidus/mods/lootr/common/data/DataStorage.java",
+      "sha256": "01c369d2f71127f89bcb814ccdf9fd8b68786eb8e09e10dbf7b734993c92e3ad",
+      "bytes": 5827,
+      "captured_at": "2026-11-23T17:36:32.287209Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "noobanidus/Lootr@2a9c8307460e3ff5765ecd849b11a6faf06dfe8b:common/src/main/java/noobanidus/mods/lootr/common/data/DataStorage.java",
+      "key": "ltstore",
+      "citation_id": 33
+    },
+    {
+      "family": "candidates-b",
+      "capture": "modrinth/lootr-version-gVwn7m2v.json",
+      "url": "https://api.modrinth.com/v2/version/gVwn7m2v",
+      "sha256": "3db067424a5f4b1a7e62ea4c5261326fcf4d08009baf928a8bf63868f2d6e21b",
+      "bytes": 1387,
+      "captured_at": "2026-11-23T17:36:15.307183Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "unbound API endpoint",
+      "key": "ltver",
+      "citation_id": 28
+    },
+    {
+      "family": "minecraft-reference",
+      "capture": "source-01-randomizablecontainerblockentity.html",
+      "url": "https://mc-packet-reference.netlify.app/26.x/source/net/minecraft/world/level/block/entity/randomizablecontainerblockentity",
+      "sha256": "05a455a635e21d9ee17e8d77c3715ff499cabf3f2c81b24667df61f6e2933445",
+      "bytes": 57672,
+      "captured_at": "2026-11-23",
+      "timestamp_basis": "day-only; original exact receipt unavailable",
+      "http_status": 200,
+      "revision_binding": "Retained unofficial version-labeled HTML, not source-bound to official vanilla artifact",
+      "key": "mcentity",
+      "citation_id": 87
+    },
+    {
+      "family": "minecraft-reference",
+      "capture": "source-11-hopperblockentity.html",
+      "url": "https://mc-packet-reference.netlify.app/26.x/source/net/minecraft/world/level/block/entity/hopperblockentity",
+      "sha256": "7d4cfd6835a8fbc2698f75fee8cd01a46d63c2b002a9968c3595263e738e8ab4",
+      "bytes": 114187,
+      "captured_at": "2026-11-23",
+      "timestamp_basis": "day-only; original exact receipt unavailable",
+      "http_status": 200,
+      "revision_binding": "Retained unofficial version-labeled HTML, not source-bound to official vanilla artifact",
+      "key": "mchopper",
+      "citation_id": 88
+    },
+    {
+      "family": "minecraft",
+      "capture": "26.3-server.jar",
+      "url": "https://piston-data.mojang.com/v1/objects/33680f5f2ac32864d6d7cf5e56a705fdb3e05f4c/server.jar",
+      "sha256": "d052f14d7a173734fba553711e5b570162e2f2a313267ee31a21b975a679be64",
+      "bytes": 62294556,
+      "captured_at": "2026-11-23",
+      "timestamp_basis": "day-only",
+      "http_status": 200,
+      "revision_binding": "Official manifest/version metadata/server artifact",
+      "key": "mcjar",
+      "citation_id": 74
+    },
+    {
+      "family": "minecraft-reference",
+      "capture": "source-07-structurepiece.html",
+      "url": "https://mc-packet-reference.netlify.app/26.x/source/net/minecraft/world/level/levelgen/structure/structurepiece",
+      "sha256": "14b95904050bca8002ee9275cf0cb7f8e2d45e1416e590a01d8199f3cba57490",
+      "bytes": 120188,
+      "captured_at": "2026-11-23",
+      "timestamp_basis": "day-only; original exact receipt unavailable",
+      "http_status": 200,
+      "revision_binding": "Retained unofficial version-labeled HTML, not source-bound to official vanilla artifact",
+      "key": "mcpiece",
+      "citation_id": 90
+    },
+    {
+      "family": "minecraft-reference",
+      "capture": "source-06-structurestart.html",
+      "url": "https://mc-packet-reference.netlify.app/26.x/source/net/minecraft/world/level/levelgen/structure/structurestart",
+      "sha256": "474dffd4e58042b1191d1da061794e57a406ed39781dba08315fcdee8fc5a17c",
+      "bytes": 47058,
+      "captured_at": "2026-11-23",
+      "timestamp_basis": "day-only; original exact receipt unavailable",
+      "http_status": 200,
+      "revision_binding": "Retained unofficial version-labeled HTML, not source-bound to official vanilla artifact",
+      "key": "mcstart",
+      "citation_id": 89
+    },
+    {
+      "family": "minecraft-reference",
+      "capture": "source-09-structuretemplate.html",
+      "url": "https://mc-packet-reference.netlify.app/26.x/source/net/minecraft/world/level/levelgen/structure/templatesystem/structuretemplate",
+      "sha256": "1f711d9875d9a914f82f2680e070cffcf0389955b6600bf77cd132f8892c9de1",
+      "bytes": 191408,
+      "captured_at": "2026-11-23",
+      "timestamp_basis": "day-only; original exact receipt unavailable",
+      "http_status": 200,
+      "revision_binding": "Retained unofficial version-labeled HTML, not source-bound to official vanilla artifact",
+      "key": "mctemplate",
+      "citation_id": 92
+    },
+    {
+      "family": "minecraft-reference",
+      "capture": "source-08-templatestructurepiece.html",
+      "url": "https://mc-packet-reference.netlify.app/26.x/source/net/minecraft/world/level/levelgen/structure/templatestructurepiece",
+      "sha256": "6c8fd26f2876ff719c7a899f3fa575d68b06c1ea05767c27c346ca2a8b3fd50b",
+      "bytes": 49139,
+      "captured_at": "2026-11-23",
+      "timestamp_basis": "day-only; original exact receipt unavailable",
+      "http_status": 200,
+      "revision_binding": "Retained unofficial version-labeled HTML, not source-bound to official vanilla artifact",
+      "key": "mctpiece",
+      "citation_id": 91
+    },
+    {
+      "family": "minecraft",
+      "capture": "26.3-version.json",
+      "url": "https://piston-meta.mojang.com/v1/packages/ead839cbccf0ddf013c3f935f2840080b5cb0d26/26.3.json",
+      "sha256": "43f99ada2af68d760f03840cd66eb3afba96c870fe1f521900fe5be08985d4f4",
+      "bytes": 45056,
+      "captured_at": "2026-11-23",
+      "timestamp_basis": "day-only",
+      "http_status": 200,
+      "revision_binding": "Official manifest/version metadata/server artifact",
+      "key": "mcversion",
+      "citation_id": 73
+    },
+    {
+      "family": "integration",
+      "capture": "MoogsOceanStructures-universal-1.21-1.1.1.jar",
+      "url": "https://cdn.modrinth.com/data/ZKBkklMv/versions/QfMITqh9/MoogsOceanStructures-universal-1.21-1.1.1.jar",
+      "sha256": "9a6010b3f8776ab3cf6218da05a0176d0548ad88f046915e4f1578e687615228",
+      "bytes": 1590700,
+      "captured_at": "2026-11-23T17:28:34.222228+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "Exact pinned JAR, SHA-512 matches repository pin",
+      "key": "mos",
+      "citation_id": 81
+    },
+    {
+      "family": "integration",
+      "capture": "MoogsStructureLib-fabric-26.3-3.4.2.jar",
+      "url": "https://cdn.modrinth.com/data/1oUDhxuy/versions/SkD4H9XM/MoogsStructureLib-fabric-26.3-3.4.2.jar",
+      "sha256": "7fbc02571c368257acd017cdb1b09294b64c9cb6d8c889977c7b9051155c02fd",
+      "bytes": 1097200,
+      "captured_at": "2026-11-23T17:28:34.660973+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "Exact pinned JAR, SHA-512 matches repository pin",
+      "key": "mslib",
+      "citation_id": 82
+    },
+    {
+      "family": "integration",
+      "capture": "MoogsSoaringStructures-universal-1.21-2.2.0.jar",
+      "url": "https://cdn.modrinth.com/data/RJCLIx7k/versions/O20bIWkj/MoogsSoaringStructures-universal-1.21-2.2.0.jar",
+      "sha256": "2caca5b2dab3ea4541eb3207bab9d5efcc034e3bf7d89788fd95d7b582d24ed2",
+      "bytes": 5022443,
+      "captured_at": "2026-11-23T17:28:33.730050+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "Exact pinned JAR, SHA-512 matches repository pin",
+      "key": "mss",
+      "citation_id": 80
+    },
+    {
+      "family": "integration",
+      "capture": "naturallytrimmed-Events.java",
+      "url": "https://raw.githubusercontent.com/Imajo24I/Mob-Armor-Trims-1.20.1/fb11a11ff9ff2c781a68975384c36d027f6bffcc/src/main/java/net/majo24/naturally_trimmed/Events.java",
+      "sha256": "d025b913521e7d52039e37175eb5f50d309a8e03caa303a63ca9f3c724433a37",
+      "bytes": 2742,
+      "captured_at": "2026-11-23T17:32:53.723725+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "Immutable GitHub source URL",
+      "key": "ntevent",
+      "citation_id": 84
+    },
+    {
+      "family": "integration",
+      "capture": "naturally_trimmed-3.6.1+26.3-fabric.jar",
+      "url": "https://cdn.modrinth.com/data/hHVaPgFK/versions/h3K7LsVB/naturally_trimmed-3.6.1%2B26.3-fabric.jar",
+      "sha256": "206efdade95ef9b516df9a09087703abf89ad152efdc4f4bf381111cc30e472f",
+      "bytes": 133051,
+      "captured_at": "2026-11-23T17:28:34.887143+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "Exact pinned JAR, SHA-512 matches repository pin",
+      "key": "ntjar",
+      "citation_id": 83
+    },
+    {
+      "family": "pack",
+      "capture": "pack.toml",
+      "url": "https://github.com/vice-magus-faolan/cobbled-horizon/blob/ad603ee5191987e74d2a544a7c6cde4b0058009f/pack.toml",
+      "sha256": "65f85944103781fdd34bd3bb3510f1a80b5c0076878f1862abebebac5aa92c35",
+      "bytes": 290,
+      "captured_at": "2026-11-23",
+      "timestamp_basis": "day-only",
+      "http_status": 200,
+      "revision_binding": "Exact repository blob at pinned commit",
+      "key": "pack",
+      "citation_id": 1
+    },
+    {
+      "family": "recovery",
+      "capture": "modrinth_personal_treasure_versions_live.json",
+      "url": "https://api.modrinth.com/v2/project/personal-treasure-loot/version",
+      "sha256": "ddb192ed8900e942df76b734fb3898759fd9d1948b5ce63e04aa3dfe337416a5",
+      "bytes": 2553,
+      "captured_at": "2026-11-23T18:06:55.017197+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "personalver",
+      "citation_id": 69
+    },
+    {
+      "family": "recovery",
+      "capture": "modrinth_caaezIQ8_project_live.json",
+      "url": "https://api.modrinth.com/v2/project/caaezIQ8",
+      "sha256": "ea1b72a8cd8fabcdf32b4b5d87af8075d0d1afa871466daacc43def27b6511a9",
+      "bytes": 7372,
+      "captured_at": "2026-11-23T18:03:01.085216+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "phantom",
+      "citation_id": 66
+    },
+    {
+      "family": "recovery",
+      "capture": "modrinth_caaezIQ8_versions_live.json",
+      "url": "https://api.modrinth.com/v2/project/caaezIQ8/version",
+      "sha256": "b8712fdb7f107dd7c6937d71142b9d6aa42c08dc075c43364bb613cfe2c51dea",
+      "bytes": 6088,
+      "captured_at": "2026-11-23T18:03:01.313356+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "phantomver",
+      "citation_id": 67
+    },
+    {
+      "family": "candidates-b",
+      "capture": "source/patch/src/main/java/tornato/lootr/mixin/ModBlocksMixin.java",
+      "url": "https://raw.githubusercontent.com/T0RNATO/lootr-polymer/688007ce5ea6aeb5edee52a9ba140651d601259b/src/main/java/tornato/lootr/mixin/ModBlocksMixin.java",
+      "sha256": "f070cdbd57964e2b85755e22a0226b131dc7646c3fe64b6452b0a84e459b7e63",
+      "bytes": 1184,
+      "captured_at": "2026-11-23T17:36:28.243778Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "T0RNATO/lootr-polymer@688007ce5ea6aeb5edee52a9ba140651d601259b:src/main/java/tornato/lootr/mixin/ModBlocksMixin.java",
+      "key": "ptblocks",
+      "citation_id": 38
+    },
+    {
+      "family": "candidates-b",
+      "capture": "github/patch-issue-11-comments.json",
+      "url": "https://api.github.com/repos/T0RNATO/lootr-polymer/issues/11/comments",
+      "sha256": "fafc5176554e71e5f9d1fb759e29eefe44037d419c1a9805243e7ef0709587f3",
+      "bytes": 5455,
+      "captured_at": "2026-11-23T17:36:22.659612Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "comments on vanilla-client issue #11 at request",
+      "key": "ptissue",
+      "citation_id": 39
+    },
+    {
+      "family": "candidates-b",
+      "capture": "source/patch/LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/T0RNATO/lootr-polymer/688007ce5ea6aeb5edee52a9ba140651d601259b/LICENSE.txt",
+      "sha256": "ef0fe65b22ebea8f2c40589d772d9cf5d4aa69a5a53485b0af0db62dade7b200",
+      "bytes": 1067,
+      "captured_at": "2026-11-23T17:36:26.536511Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "T0RNATO/lootr-polymer@688007ce5ea6aeb5edee52a9ba140651d601259b:LICENSE.txt",
+      "key": "ptlicense",
+      "citation_id": 37
+    },
+    {
+      "family": "candidates-b",
+      "capture": "modrinth/patch-project.json",
+      "url": "https://api.modrinth.com/v2/project/lootr-polymer-patch",
+      "sha256": "224a3498a047c3ab1a0589a60b001ddb87a566eefb75ade11eef2e084e5795e2",
+      "bytes": 3128,
+      "captured_at": "2026-11-23T17:36:14.038999Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "unbound API endpoint",
+      "key": "ptproject",
+      "citation_id": 31
+    },
+    {
+      "family": "candidates-b",
+      "capture": "github/patch-repo.json",
+      "url": "https://api.github.com/repos/T0RNATO/lootr-polymer",
+      "sha256": "d12dfb35284d3f29853016667bd6d9900d720785830db97d8526b77fd4d2c482",
+      "bytes": 5313,
+      "captured_at": "2026-11-23T17:36:21.559685Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "default branch metadata captured at request",
+      "key": "ptrepo",
+      "citation_id": 40
+    },
+    {
+      "family": "candidates-b",
+      "capture": "modrinth/patch-version-DMk4xzkH.json",
+      "url": "https://api.modrinth.com/v2/version/DMk4xzkH",
+      "sha256": "832eb4bacfb54b8e2b0bf2687252e8b82230c917c938b193c0e772f4b0ecf7a9",
+      "bytes": 995,
+      "captured_at": "2026-11-23T17:36:15.494830Z",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "unbound API endpoint",
+      "key": "ptver",
+      "citation_id": 29
+    },
+    {
+      "family": "pack",
+      "capture": "docs/version-policy.md",
+      "url": "https://github.com/vice-magus-faolan/cobbled-horizon/blob/ad603ee5191987e74d2a544a7c6cde4b0058009f/docs/version-policy.md",
+      "sha256": "21d73a1728caaafb80ec4ef007f871b8562b0c396d774521e7e31ba3b663d896",
+      "bytes": 11418,
+      "captured_at": "2026-11-23",
+      "timestamp_basis": "day-only",
+      "http_status": 200,
+      "revision_binding": "Exact repository blob at pinned commit",
+      "key": "release",
+      "citation_id": 5
+    },
+    {
+      "family": "candidates-a",
+      "capture": "slashloot-project.json",
+      "url": "https://api.modrinth.com/v2/project/slashloot",
+      "sha256": "61dfffa2f03f3e98c9d6e17baa16b1aed3bf920015675127e372ebf6f53d0fd3",
+      "bytes": 12813,
+      "captured_at": "2026-11-23T17:24:53.031186+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "Modrinth API live response; not revision-pinned",
+      "key": "slapi",
+      "citation_id": 9
+    },
+    {
+      "family": "candidates-a",
+      "capture": "source-slashloot-mc-src__src__main__java__dev__blockacademy__slashloot__handler__CleanupHandler.java",
+      "url": "https://raw.githubusercontent.com/slashdaemon/SlashLoot/a565d5165e475a7520c2623a9498965d4609b244/mc-src/src/main/java/dev/blockacademy/slashloot/handler/CleanupHandler.java",
+      "sha256": "c22e5839e045d9c2a8d60c04531c9f4602f1f5e1488230e1ce0ba44985a9d81f",
+      "bytes": 6733,
+      "captured_at": "2026-11-23T17:29:00.225684+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "a565d5165e475a7520c2623a9498965d4609b244",
+      "key": "slcleanup",
+      "citation_id": 93
+    },
+    {
+      "family": "recovery",
+      "capture": "slashloot/mc-src__src__main__java__dev__blockacademy__slashloot__command__SlashLootCommand.java",
+      "url": "https://raw.githubusercontent.com/slashdaemon/SlashLoot/a565d5165e475a7520c2623a9498965d4609b244/mc-src/src/main/java/dev/blockacademy/slashloot/command/SlashLootCommand.java",
+      "sha256": "36d68d8e6a33fcee63fd2865421a88b51728047b316dfc547f35ca48831f49a3",
+      "bytes": 10796,
+      "captured_at": "2026-11-23T17:34:14.074203+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "slcommand",
+      "citation_id": 94
+    },
+    {
+      "family": "candidates-a",
+      "capture": "source-slashloot-mc-src__src__main__java__dev__blockacademy__slashloot__core__Handling.java",
+      "url": "https://raw.githubusercontent.com/slashdaemon/SlashLoot/a565d5165e475a7520c2623a9498965d4609b244/mc-src/src/main/java/dev/blockacademy/slashloot/core/Handling.java",
+      "sha256": "928b2656507b896b109ae368de2658a4b4b6af81ff7242711b00e8eff517362e",
+      "bytes": 12281,
+      "captured_at": "2026-11-23T17:28:59.696119+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "a565d5165e475a7520c2623a9498965d4609b244",
+      "key": "slhandle",
+      "citation_id": 11
+    },
+    {
+      "family": "recovery",
+      "capture": "slashloot/mc-src__src__main__java__dev__blockacademy__slashloot__store__LootImport.java",
+      "url": "https://raw.githubusercontent.com/slashdaemon/SlashLoot/a565d5165e475a7520c2623a9498965d4609b244/mc-src/src/main/java/dev/blockacademy/slashloot/store/LootImport.java",
+      "sha256": "74be0582fb8418d9c3c823aded95e38e3958d00eb43002d4ffbea8cf2e29f6cd",
+      "bytes": 15376,
+      "captured_at": "2026-11-23T17:34:14.327890+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "slimport",
+      "citation_id": 61
+    },
+    {
+      "family": "candidates-a",
+      "capture": "source-slashloot-LICENSE",
+      "url": "https://raw.githubusercontent.com/slashdaemon/SlashLoot/a565d5165e475a7520c2623a9498965d4609b244/LICENSE",
+      "sha256": "56c9b5f2d380652361501011b077eec3122c8e7f75309f3c52cec55a1a5e8e1a",
+      "bytes": 957,
+      "captured_at": "2026-11-23T17:28:58.765118+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "a565d5165e475a7520c2623a9498965d4609b244",
+      "key": "sllicense",
+      "citation_id": 14
+    },
+    {
+      "family": "candidates-a",
+      "capture": "source-slashloot-mc-src__src__main__java__dev__blockacademy__slashloot__handler__ContainerInteractionHandler.java",
+      "url": "https://raw.githubusercontent.com/slashdaemon/SlashLoot/a565d5165e475a7520c2623a9498965d4609b244/mc-src/src/main/java/dev/blockacademy/slashloot/handler/ContainerInteractionHandler.java",
+      "sha256": "9e118507b70d6795b52bac2e414eb285684a449bc3ff35603ca5146f512d3b0d",
+      "bytes": 12093,
+      "captured_at": "2026-11-23T17:28:59.332007+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "a565d5165e475a7520c2623a9498965d4609b244",
+      "key": "slopen",
+      "citation_id": 12
+    },
+    {
+      "family": "candidates-a",
+      "capture": "source-slashloot-README.md",
+      "url": "https://raw.githubusercontent.com/slashdaemon/SlashLoot/a565d5165e475a7520c2623a9498965d4609b244/README.md",
+      "sha256": "d13b1f7c6b891c509a1394a6763484ac2b2b123cc6739c52ed60d95b9d126203",
+      "bytes": 12249,
+      "captured_at": "2026-11-23T17:28:58.969043+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "a565d5165e475a7520c2623a9498965d4609b244",
+      "key": "slread",
+      "citation_id": 10
+    },
+    {
+      "family": "candidates-a",
+      "capture": "slashloot-github-repo.json",
+      "url": "https://api.github.com/repos/slashdaemon/SlashLoot",
+      "sha256": "de3e49c3f126901a548bfe7546a7961b08eb24bbfad71c49d537a2ac164b84ca",
+      "bytes": 5423,
+      "captured_at": "2026-11-23T17:25:45.822728+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "GitHub API; latest commit response captured; pinned-source capture to follow",
+      "key": "slrepo",
+      "citation_id": 15
+    },
+    {
+      "family": "candidates-a",
+      "capture": "source-slashloot-compat__store-codec__src__main__java__dev__blockacademy__slashloot__store__SlashLootState.java",
+      "url": "https://raw.githubusercontent.com/slashdaemon/SlashLoot/a565d5165e475a7520c2623a9498965d4609b244/compat/store-codec/src/main/java/dev/blockacademy/slashloot/store/SlashLootState.java",
+      "sha256": "470f67106a9b7847b3252fa3fd2bad50308ae4ebe18bcaa909f54649c2f83ec2",
+      "bytes": 10075,
+      "captured_at": "2026-11-23T17:33:17.962553+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "a565d5165e475a7520c2623a9498965d4609b244",
+      "key": "slstate",
+      "citation_id": 13
+    },
+    {
+      "family": "candidates-a",
+      "capture": "slashloot-versions.json",
+      "url": "https://api.modrinth.com/v2/project/slashloot/version",
+      "sha256": "19cdd531b4e2697aac521d70bc6ad1e5bb14d916ce1209431cdf0b493bdcc555",
+      "bytes": 539724,
+      "captured_at": "2026-11-23T17:24:53.423757+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "Modrinth API live response; not revision-pinned",
+      "key": "slver",
+      "citation_id": 8
+    },
+    {
+      "family": "integration",
+      "capture": "t_and_t-fabric-neoforge-1.13.13.jar",
+      "url": "https://cdn.modrinth.com/data/DjLobEOy/versions/vHZIKy6e/t_and_t-fabric-neoforge-1.13.13.jar",
+      "sha256": "2336815d788efc2dfcd545986cfb507c4a9dc026da1c1aaf646305f58a74155c",
+      "bytes": 3194933,
+      "captured_at": "2026-11-23T17:28:24.327861+00:00",
+      "timestamp_basis": "response-time",
+      "http_status": 200,
+      "revision_binding": "Exact pinned JAR, SHA-512 matches repository pin",
+      "key": "towns",
+      "citation_id": 75
+    },
+    {
+      "family": "recovery",
+      "capture": "unlimited-trial-vaults/26.3-source/src__main__java__net__fayber__unlimitedtrialvaults__ModConfig.java",
+      "url": "https://raw.githubusercontent.com/Fayberr/unlimited-trial-vaults/90d2274da815f2d7cf1bd5946621e1ff508d0c8f/src/main/java/net/fayber/unlimitedtrialvaults/ModConfig.java",
+      "sha256": "c744ec520f84269f53ec5887c48046767d42716fecbc725dbc051f917eb2c944",
+      "bytes": 4007,
+      "captured_at": "2026-11-23T18:25:32.059153+00:00",
+      "timestamp_basis": "retrieval receipt",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "utconfig",
+      "citation_id": 63
+    },
+    {
+      "family": "recovery",
+      "capture": "unlimited-trial-vaults/26.3-source/src__main__java__net__fayber__unlimitedtrialvaults__mixin__VaultServerDataMixin.java",
+      "url": "https://raw.githubusercontent.com/Fayberr/unlimited-trial-vaults/90d2274da815f2d7cf1bd5946621e1ff508d0c8f/src/main/java/net/fayber/unlimitedtrialvaults/mixin/VaultServerDataMixin.java",
+      "sha256": "ac64f36596c86bbb5e138aa703bbbe6157603a65918cdcaef0df21dd7da3d828",
+      "bytes": 2625,
+      "captured_at": "2026-11-23T18:25:31.573540+00:00",
+      "timestamp_basis": "retrieval receipt",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "utvault",
+      "citation_id": 64
+    },
+    {
+      "family": "recovery",
+      "capture": "unlimited-trial-vaults/version.json",
+      "url": "https://api.modrinth.com/v2/version/JqOZeLvz",
+      "sha256": "5fa6ab78a6b3af609cd55fe2c37fe0ca7712280087484c4e28794bc0d7831941",
+      "bytes": 943,
+      "captured_at": "2026-11-23T18:24:44.199250+00:00",
+      "timestamp_basis": "retrieval receipt",
+      "http_status": 200,
+      "revision_binding": "",
+      "key": "utver",
+      "citation_id": 62
+    }
+  ],
+  "pinned_artifact_inspections": [
+    {
+      "slug": "towns-and-towers",
+      "source": "https://cdn.modrinth.com/data/DjLobEOy/versions/vHZIKy6e/t_and_t-fabric-neoforge-1.13.13.jar",
+      "retrieved_at": "2026-11-23T17:28:24.327861+00:00",
+      "sha256": "2336815d788efc2dfcd545986cfb507c4a9dc026da1c1aaf646305f58a74155c",
+      "sha512": "bd0469d23a80d1bbbb0a3696b3c1a62f90cc5ad16e4cc58fe9e0e08e7453c3015ff7619b1d429106a034279b46fe909a0962b6dc9e970920f717fc518d9e292d",
+      "bytes": 3194933,
+      "version_id": "vHZIKy6e",
+      "metadata": {
+        "schemaVersion": 1,
+        "id": "t_and_t",
+        "version": "1.13.13",
+        "name": "Towns and Towers",
+        "description": "Spice up your world with new villages, pillager outposts, and even new ships!",
+        "authors": [
+          "Kubek",
+          "Biban_Auriu",
+          "Cristelknight999"
+        ],
+        "contact": {
+          "homepage": "https://modrinth.com/mod/towns-and-towers"
+        },
+        "license": "CC-BY-NC-ND-4.0",
+        "icon": "pack.png",
+        "custom": {
+          "modmenu": {
+            "links": {
+              "modmenu.discord": "https://discord.gg/G2UJ2FAuYh"
+            }
+          }
+        },
+        "environment": "*",
+        "depends": {
+          "fabricloader": ">=0.18.4",
+          "fabric-api": "*",
+          "minecraft": ">=26.3",
+          "cristellib": ">=3.1.13"
+        }
+      },
+      "loot_table_files": [
+        "data/kaisyn/loot_table/archeology/forest_ruins_common.json",
+        "data/kaisyn/loot_table/archeology/forest_ruins_rare.json",
+        "data/kaisyn/loot_table/outpost/common/armory.json",
+        "data/kaisyn/loot_table/outpost/common/food.json",
+        "data/kaisyn/loot_table/outpost/exclusives/outpost_beach_barrel.json",
+        "data/kaisyn/loot_table/outpost/exclusives/outpost_mediterranean_barrel.json",
+        "data/kaisyn/loot_table/outpost/exclusives/outpost_rustic_barrel.json",
+        "data/kaisyn/loot_table/village/village_badlands_house.json",
+        "data/kaisyn/loot_table/village/village_jungle_house.json",
+        "data/kaisyn/loot_table/village/village_mushroom_house.json",
+        "data/kaisyn/loot_table/village/village_swamp_house.json",
+        "data/kaisyn/loot_table/village/exclusives/village_classic_blacksmith.json",
+        "data/kaisyn/loot_table/village/exclusives/village_mediterranean_house.json",
+        "data/kaisyn/loot_table/village/exclusives/village_piglin_barrel.json",
+        "data/kaisyn/loot_table/village/exclusives/village_piglin_house.json",
+        "data/kaisyn/loot_table/village/exclusives/village_wandering_trader_hut.json"
+      ],
+      "structure_template_count": 840,
+      "class_count": 0,
+      "mixin_files": [],
+      "data_namespaces": [
+        "cristellib",
+        "kaisyn",
+        "minecraft",
+        "towns_and_towers"
+      ]
+    },
+    {
+      "slug": "epic-structures-villages-standalone-edition",
+      "source": "https://cdn.modrinth.com/data/3PvUBn3u/versions/OD6SDuW4/epic-structures-villages-standalone-edition-1.0.0.jar",
+      "retrieved_at": "2026-11-23T17:28:29.229458+00:00",
+      "sha256": "baacb57b957928e2c3f87d1302db3d28e9cbd4fb4d9a2365a642bcd36808464e",
+      "sha512": "63664edea835da127a9e5aad0761ef5dd8cfc8b48a0a1340c175d82bad125e36bd8e90b2a1bfbd86391a1567af898a24ea96e51cdde0d87555d4148bfd34cac6",
+      "bytes": 18103837,
+      "version_id": "OD6SDuW4",
+      "metadata": {
+        "schemaVersion": 1,
+        "id": "mr_epic_structuresvillagesstandaloneedition",
+        "version": "1.0.0",
+        "name": "Epic Structures: Villages Standalone Edition",
+        "description": "Overhauls Minecraft villages. This Edition spawns villages separately instead of replacing vanilla villages.",
+        "authors": [
+          "HardWater",
+          "ATi"
+        ],
+        "contact": {
+          "homepage": "https://modrinth.com/datapack/epic-structures-villages-standalone-edition"
+        },
+        "license": "LicenseRef-Unknown",
+        "icon": "epic-structures-villages-standalone-edition_pack.png",
+        "environment": "*",
+        "depends": {
+          "fabric-resource-loader-v0": "*"
+        }
+      },
+      "loot_table_files": [
+        "data/minecraft/loot_table/chests/dye.json",
+        "data/minecraft/loot_table/chests/mineral.json",
+        "data/minecraft/loot_table/chests/random.json",
+        "data/minecraft/loot_table/chests/stone.json",
+        "data/minecraft/loot_table/chests/trash.json",
+        "data/minecraft/loot_table/chests/wood.json"
+      ],
+      "structure_template_count": 246,
+      "class_count": 0,
+      "mixin_files": [],
+      "data_namespaces": [
+        "epic",
+        "minecraft"
+      ]
+    },
+    {
+      "slug": "explorify",
+      "source": "https://cdn.modrinth.com/data/HSfsxuTo/versions/oyrAnNG8/Explorify%20v1.6.6.mod.jar",
+      "retrieved_at": "2026-11-23T17:28:29.715734+00:00",
+      "sha256": "76aa6b3392b316c8bbc9f8a5005818bb882ceb8a2762a5971fb2d96414521a77",
+      "sha512": "d4368c83b493c6fcf9b489cd91b4d1e468d695d099d9df3845a6fcee07ef58dc35074557d0108627b98c9941b1e6a6c0bcdbbcd121e8915514a21b91e9d38530",
+      "bytes": 775401,
+      "version_id": "oyrAnNG8",
+      "metadata": {
+        "schemaVersion": 1,
+        "id": "explorify",
+        "version": "1.6.6",
+        "name": "Explorify",
+        "description": "A simplistic, vanilla-friendly collection of new structures.",
+        "authors": [
+          "bebebea_loste"
+        ],
+        "contact": {
+          "homepage": "https://modrinth.com/datapack/explorify"
+        },
+        "license": "ARR",
+        "icon": "pack.png",
+        "environment": "*",
+        "depends": {
+          "fabric-api": "*",
+          "minecraft": ">=1.20"
+        },
+        "suggests": {}
+      },
+      "loot_table_files": [
+        "data/explorify/loot_table/chest/dark_forest_settlement.json",
+        "data/explorify/loot_table/chest/mausoleum_pot.json",
+        "data/explorify/loot_table/chest/supply_cache.json",
+        "f121/data/explorify/loot_table/chest/dark_forest_settlement.json",
+        "f121/data/explorify/loot_table/chest/mausoleum_pot.json",
+        "f121/data/explorify/loot_table/chest/supply_cache.json"
+      ],
+      "structure_template_count": 165,
+      "class_count": 0,
+      "mixin_files": [],
+      "data_namespaces": [
+        "cristellib",
+        "explorify"
+      ]
+    },
+    {
+      "slug": "hopo-better-mineshaft",
+      "source": "https://cdn.modrinth.com/data/9IxCUYAP/versions/avIdkeZp/HopoBetterMineshaft-%5B26.3%5D-1.3.8.jar",
+      "retrieved_at": "2026-11-23T17:28:31.571259+00:00",
+      "sha256": "6a672400d7b303c6a485a5ff0b3a4e33a3242e95ab13d43bd37bbe1b16acd992",
+      "sha512": "8a4b5d79a7c05ef6990d7cc08bee0c1c537ff80a1300a30ffc30a8e5580a40177c71b388f36be803461813ed9b845d1ac85969da5037f2d766975442a5dca20e",
+      "bytes": 6038186,
+      "version_id": "avIdkeZp",
+      "metadata": {
+        "schemaVersion": 1,
+        "authors": [
+          "Hoponopono"
+        ],
+        "contact": {
+          "discord": "discord.gg/CZQthZJjPc"
+        },
+        "custom": {
+          "modmenu": {
+            "links": {
+              "modmenu.discord": "https://discord.gg/CZQthZJjPc",
+              "modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/hopo-better-mineshaft",
+              "modmenu.modrinth": "https://modrinth.com/datapack/hopo-better-mineshaft"
+            }
+          }
+        },
+        "environment": "*",
+        "name": "Hopo Better Mineshaft",
+        "id": "hopobettermineshaft",
+        "version": "1.3.8",
+        "description": "\u00a77A mod that makes your mineshaft exploration more fun and exciting.",
+        "license": "LGPL-3.0-or-later",
+        "icon": "pack.png"
+      },
+      "loot_table_files": [
+        "data/hopo/loot_table/archaeology/mineshaft_remnants.json",
+        "data/hopo/loot_table/chests/mineshaft/abandoned_miners_stuff.json",
+        "data/hopo/loot_table/chests/mineshaft/base/amethyst.json",
+        "data/hopo/loot_table/chests/mineshaft/base/archer.json",
+        "data/hopo/loot_table/chests/mineshaft/base/armor.json",
+        "data/hopo/loot_table/chests/mineshaft/base/bedroom.json",
+        "data/hopo/loot_table/chests/mineshaft/base/books.json",
+        "data/hopo/loot_table/chests/mineshaft/base/brown_mushroom.json",
+        "data/hopo/loot_table/chests/mineshaft/base/copper.json",
+        "data/hopo/loot_table/chests/mineshaft/base/crafting.json",
+        "data/hopo/loot_table/chests/mineshaft/base/diamond.json",
+        "data/hopo/loot_table/chests/mineshaft/base/emerald.json",
+        "data/hopo/loot_table/chests/mineshaft/base/food.json",
+        "data/hopo/loot_table/chests/mineshaft/base/fossils.json",
+        "data/hopo/loot_table/chests/mineshaft/base/gold.json",
+        "data/hopo/loot_table/chests/mineshaft/base/iron.json",
+        "data/hopo/loot_table/chests/mineshaft/base/lapis.json",
+        "data/hopo/loot_table/chests/mineshaft/base/potions.json",
+        "data/hopo/loot_table/chests/mineshaft/base/prison.json",
+        "data/hopo/loot_table/chests/mineshaft/base/redstone.json",
+        "data/hopo/loot_table/chests/mineshaft/base/red_mushroom.json",
+        "data/hopo/loot_table/chests/mineshaft/base/rip.json",
+        "data/hopo/loot_table/chests/mineshaft/base/smelting.json",
+        "data/hopo/loot_table/chests/mineshaft/base/tnt.json",
+        "data/hopo/loot_table/chests/mineshaft/base/tools.json",
+        "data/hopo/loot_table/chests/mineshaft/base/weapons.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/archer.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/biomes_map/target_acacia.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/biomes_map/target_bamboo.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/biomes_map/target_birch.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/biomes_map/target_cherry.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/biomes_map/target_dark_oak.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/biomes_map/target_jungle.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/biomes_map/target_lush_caves.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/biomes_map/target_mangrove.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/biomes_map/target_mud.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/biomes_map/target_oak.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/biomes_map/target_pale.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/biomes_map/target_poplar.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/biomes_map/target_spruce.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/biomes_map/target_stone.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/biomes_map/target_sulfur.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/copper.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/farm_beetroot.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/farm_carrot.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/farm_melon.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/farm_potato.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/farm_pumpkin.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/farm_wheat.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/iron_golem.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/map.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/music.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/potion.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/prison.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/stews.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/villager_toolsmith.json",
+        "data/hopo/loot_table/chests/mineshaft/big_rooms/villager_weaponsmith.json",
+        "data/hopo/loot_table/chests/mineshaft/deepslate/copper.json",
+        "data/hopo/loot_table/chests/mineshaft/deepslate/diamond.json",
+        "data/hopo/loot_table/chests/mineshaft/deepslate/emerald.json",
+        "data/hopo/loot_table/chests/mineshaft/deepslate/gold.json",
+        "data/hopo/loot_table/chests/mineshaft/deepslate/iron.json",
+        "data/hopo/loot_table/chests/mineshaft/deepslate/lapis.json",
+        "data/hopo/loot_table/chests/mineshaft/deepslate/redstone.json",
+        "data/hopo/loot_table/chests/mineshaft/dungeontraps/cavespiderpotion.json",
+        "data/hopo/loot_table/chests/mineshaft/dungeontraps/potion.json",
+        "data/hopo/loot_table/chests/mineshaft/minecart/connector.json",
+        "data/hopo/loot_table/entities/mineshaft/guard.json",
+        "data/hopo/loot_table/entities/mineshaft/poison_skeleton.json",
+        "data/hopo/loot_table/entities/mineshaft/vindicator_miner.json",
+        "data/hopo/loot_table/entities/mineshaft/zombie_villager.json",
+        "data/hopo/loot_table/entities/mineshaft/zombie_villager_miner.json",
+        "data/hopo/loot_table/pots/mineshaft/corridor_mineshaft.json",
+        "data/hopo/loot_table/spawners/mineshaft/consumables_mineshaft.json",
+        "data/hopo/loot_table/spawners/mineshaft/items_to_drop_when_ominous_mineshafthopo.json",
+        "data/hopo/loot_table/spawners/mineshaft/omi_consumables_mineshaft.json"
+      ],
+      "structure_template_count": 1677,
+      "class_count": 0,
+      "mixin_files": [],
+      "data_namespaces": [
+        "hopo",
+        "minecraft",
+        "zhopo"
+      ]
+    },
+    {
+      "slug": "dungeons-and-taverns-stronghold-overhaul",
+      "source": "https://cdn.modrinth.com/data/rYocd2LE/versions/hNKbQ85c/dungeons-and-taverns-stronghold-overhaul-3.0.1.jar",
+      "retrieved_at": "2026-11-23T17:28:32.490701+00:00",
+      "sha256": "6a4f1857f4d294748993c7a0cc6fdee6af37b3c2c5a49220d57d9da9d9a392ef",
+      "sha512": "f4afe3fc8a21a1eeba458813603eb3fd51783759699d8d6a2728389c9a66bdcd5dac02a2baae59a7142f071f21046cf2711bb7d2aa4f6a28179d0cf02802237d",
+      "bytes": 2710723,
+      "version_id": "hNKbQ85c",
+      "metadata": {
+        "schemaVersion": 1,
+        "id": "mr_dungeons_andtavernsstrongholdoverhaul",
+        "version": "3.0.1",
+        "name": "Dungeons and Taverns Stronghold Overhaul",
+        "description": "This Datapack, the Standalone version of Dungeons and Taverns Overhaul of the Stronghold, Overhauls the Stronghold from the ground up With 417 Different rooms and 5 sub stronghold types\nFair warning, your world will Freeze Upon first Structure generation.",
+        "authors": [
+          "Konci",
+          "MiziraGamez",
+          "NovaWostra"
+        ],
+        "contact": {
+          "homepage": "https://modrinth.com/datapack/dungeons-and-taverns-stronghold-overhaul"
+        },
+        "license": "LicenseRef-All-Rights-Reserved",
+        "icon": "dungeons-and-taverns-stronghold-overhaul_pack.png",
+        "environment": "*",
+        "depends": {
+          "fabric-resource-loader-v0": "*"
+        }
+      },
+      "loot_table_files": [
+        "data/nova_structures/loot_table/chests/stronghold/altar.json",
+        "data/nova_structures/loot_table/chests/stronghold/base.json",
+        "data/nova_structures/loot_table/chests/stronghold/bedroom.json",
+        "data/nova_structures/loot_table/chests/stronghold/forge.json",
+        "data/nova_structures/loot_table/chests/stronghold/jail_cell.json",
+        "data/nova_structures/loot_table/chests/stronghold/library_bookshelf.json",
+        "data/nova_structures/loot_table/chests/stronghold/library_eye.json",
+        "data/nova_structures/loot_table/chests/stronghold/library_lesser.json",
+        "data/nova_structures/loot_table/chests/stronghold/supplies.json",
+        "data/nova_structures/loot_table/pots/pot_stronghold.json"
+      ],
+      "structure_template_count": 340,
+      "class_count": 0,
+      "mixin_files": [],
+      "data_namespaces": [
+        "enderscape",
+        "minecraft",
+        "nova_structures"
+      ]
+    },
+    {
+      "slug": "mss-moogs-soaring-structures",
+      "source": "https://cdn.modrinth.com/data/RJCLIx7k/versions/O20bIWkj/MoogsSoaringStructures-universal-1.21-2.2.0.jar",
+      "retrieved_at": "2026-11-23T17:28:33.730050+00:00",
+      "sha256": "2caca5b2dab3ea4541eb3207bab9d5efcc034e3bf7d89788fd95d7b582d24ed2",
+      "sha512": "1460cbb932e8f39c00bc7f980322696107c965094e00b9a05aa6b4ce6bc9babff5c3444b2135b8a6e7b88285dabbe3426cc4780fd1e3a8b64cc1b2cd8adb9dca",
+      "bytes": 5022443,
+      "version_id": "O20bIWkj",
+      "metadata": {
+        "schemaVersion": 1,
+        "id": "mss",
+        "version": "2.2.0",
+        "name": "MoogsSoaringStructures",
+        "description": "Moogs Soaring Structures brings life, fun and variety to your Minecraft world! Explore awesome new structures made with vanilla blocks and entities, and discover loot, enemies, and villagers along the way. This mod is compatible with any modpack and keeps the vanilla feel of the game!",
+        "authors": [
+          "FinnDog"
+        ],
+        "contributors": [
+          "Phantax"
+        ],
+        "contact": {
+          "homepage": "https://www.curseforge.com/minecraft/mc-mods/mss-moogs-soaring-structures",
+          "sources": "https://github.com/FinnSetchell/MoogsSoaringStructures",
+          "issues": "https://github.com/FinnSetchell/MoogsSoaringStructures/issues",
+          "discord": "https://discord.gg/S5nffJbuvA",
+          "ko-fi": "https://ko-fi.com/finndog",
+          "curseforge": "https://www.curseforge.com/minecraft/mc-mods/mss-moogs-soaring-structures",
+          "modrinth": "https://modrinth.com/mod/mss-moogs-soaring-structures"
+        },
+        "license": "GNU Lesser General Public License v3.0",
+        "icon": "assets/mss/icon.png",
+        "environment": "*",
+        "depends": {
+          "fabric-resource-loader-v0": "*",
+          "moogs_structures": ">=3.0.0"
+        },
+        "custom": {
+          "modmenu": {
+            "links": {
+              "mss.releases": "https://github.com/FinnSetchell/MoogsSoaringStructures/releases",
+              "modmenu.discord": "https://discord.gg/S5nffJbuvA",
+              "mss.kofi": "https://ko-fi.com/finndog",
+              "mss.curseforge": "https://www.curseforge.com/minecraft/mc-mods/mss-moogs-soaring-structures",
+              "mss.modrinth": "https://modrinth.com/mod/mss-moogs-soaring-structures"
+            },
+            "parent": "moogs_structures",
+            "update_checker": true
+          }
+        }
+      },
+      "loot_table_files": [
+        "data/mss/loot_table/arena/vault_ominous.json",
+        "data/mss/loot_table/arena/vault.json",
+        "data/mss/loot_table/arena/trial_spawner/key.json",
+        "data/mss/loot_table/arena/trial_spawner/ominous_consumables.json",
+        "data/mss/loot_table/arena/trial_spawner/ominous_key.json",
+        "data/mss/loot_table/arena/trial_spawner/consumables.json",
+        "data/mss/loot_table/stash.json",
+        "data/mss/loot_table/houses_common.json",
+        "data/mss/loot_table/castle_tower_top.json",
+        "data/mss/loot_table/pots/volcano.json",
+        "data/mss/loot_table/pots/swamp.json",
+        "data/mss/loot_table/pots/tower.json",
+        "data/mss/loot_table/pots/taiga.json",
+        "data/mss/loot_table/pots/jungle.json",
+        "data/mss/loot_table/pots/desert.json",
+        "data/mss/loot_table/houses_rare.json",
+        "data/mss/loot_table/arena_amethyst_cove.json",
+        "data/mss/loot_table/rare.json",
+        "data/mss/loot_table/abandoned.json",
+        "data/mss/loot_table/crystal.json",
+        "data/mss/loot_table/arena_dungeon_chest.json",
+        "data/mss/loot_table/sparse.json",
+        "data/mss/loot_table/general.json",
+        "data/mss/loot_table/arena_mossy_hallway_chest.json",
+        "data/mss/loot_table/houses_uncommon.json",
+        "data/mss/loot_table/empty.json",
+        "data/mss/loot_table/junk.json",
+        "data/mss/loot_table/arena.json"
+      ],
+      "structure_template_count": 131,
+      "class_count": 0,
+      "mixin_files": [],
+      "data_namespaces": [
+        "mss"
+      ]
+    },
+    {
+      "slug": "mos-moogs-ocean-structures",
+      "source": "https://cdn.modrinth.com/data/ZKBkklMv/versions/QfMITqh9/MoogsOceanStructures-universal-1.21-1.1.1.jar",
+      "retrieved_at": "2026-11-23T17:28:34.222228+00:00",
+      "sha256": "9a6010b3f8776ab3cf6218da05a0176d0548ad88f046915e4f1578e687615228",
+      "sha512": "62c209637f8fad6588caf39ce2357672b3fffdd0d12afdbf75e2ab77654073f773d386e8271666774d08134e6ae617d65581df7fa1695c298c91eb8831bda961",
+      "bytes": 1590700,
+      "version_id": "QfMITqh9",
+      "metadata": {
+        "schemaVersion": 1,
+        "id": "mos",
+        "version": "1.1.1",
+        "name": "MoogsOceanStructures",
+        "description": "100+ vanilla style ocean structures. Dive through Atlantean ruins, ancient shipwrecks, ocean temples, and drifting rafts for loot and adventure.",
+        "authors": [
+          "FinnDog"
+        ],
+        "contributors": [
+          "Phantax"
+        ],
+        "contact": {
+          "homepage": "https://www.curseforge.com/minecraft/mc-mods/mos-moogs-ocean-structures",
+          "sources": "https://github.com/FinnSetchell/Moog-s-Ocean-Structures",
+          "issues": "https://github.com/FinnSetchell/Moog-s-Ocean-Structures/issues",
+          "discord": "https://discord.gg/S5nffJbuvA",
+          "ko-fi": "https://ko-fi.com/finndog",
+          "curseforge": "https://www.curseforge.com/minecraft/mc-mods/mos-moogs-ocean-structures",
+          "modrinth": "https://modrinth.com/mod/mos-moogs-ocean-structures"
+        },
+        "license": "GNU Lesser General Public License v3.0",
+        "icon": "assets/mos/icon.png",
+        "environment": "*",
+        "depends": {
+          "fabric-resource-loader-v0": "*",
+          "moogs_structures": "*"
+        },
+        "custom": {
+          "modmenu": {
+            "links": {
+              "mos.releases": "https://github.com/FinnSetchell/Moog-s-Ocean-Structures/releases",
+              "modmenu.discord": "https://discord.gg/S5nffJbuvA",
+              "mos.kofi": "https://ko-fi.com/finndog",
+              "mos.curseforge": "https://www.curseforge.com/minecraft/mc-mods/mos-moogs-ocean-structures",
+              "mos.modrinth": "https://modrinth.com/mod/mos-moogs-ocean-structures"
+            },
+            "parent": "moogs_structures",
+            "update_checker": true
+          }
+        }
+      },
+      "loot_table_files": [
+        "data/mos/loot_table/skeleton/dragon_hoard.json",
+        "data/mos/loot_table/skeleton/dragon_gravel.json",
+        "data/mos/loot_table/skeleton/dragon_gut.json",
+        "data/mos/loot_table/traps/dispenser_trap.json",
+        "data/mos/loot_table/decor/conduit_arch.json",
+        "data/mos/loot_table/decor/clam_shell.json",
+        "data/mos/loot_table/decor/ruined_wall_gravel.json",
+        "data/mos/loot_table/vaults/atlantis_tribune/main_ominous.json",
+        "data/mos/loot_table/vaults/atlantis_tribune/main.json",
+        "data/mos/loot_table/spawners/small_ocean_temple/trial_reward.json",
+        "data/mos/loot_table/spawners/small_ocean_temple/trial_reward_ominous.json",
+        "data/mos/loot_table/spawners/atlantis_tribune/trial_reward.json",
+        "data/mos/loot_table/spawners/atlantis_tribune/trial_reward_ominous.json",
+        "data/mos/loot_table/domes/pufferfish_dome.json",
+        "data/mos/loot_table/temple/temple_stores.json",
+        "data/mos/loot_table/temple/temple_inner.json",
+        "data/mos/loot_table/temple/temple_offering.json",
+        "data/mos/loot_table/church/church_scriptorium.json",
+        "data/mos/loot_table/church/church_sacristy.json",
+        "data/mos/loot_table/church/church_reliquary.json",
+        "data/mos/loot_table/church/church_alms.json",
+        "data/mos/loot_table/portal_archway/portal_treasure.json",
+        "data/mos/loot_table/portal_archway/portal_gold.json",
+        "data/mos/loot_table/portal_archway/tree_camp.json",
+        "data/mos/loot_table/portal_archway/wreck_hold.json",
+        "data/mos/loot_table/rafts/dark_oak.json",
+        "data/mos/loot_table/rafts/snow.json",
+        "data/mos/loot_table/rafts/birch.json",
+        "data/mos/loot_table/rafts/mangrove.json",
+        "data/mos/loot_table/rafts/oak.json",
+        "data/mos/loot_table/rafts/wanderer_valuables.json",
+        "data/mos/loot_table/rafts/acacia.json",
+        "data/mos/loot_table/rafts/pale_forest.json",
+        "data/mos/loot_table/rafts/spruce.json",
+        "data/mos/loot_table/rafts/cherry.json",
+        "data/mos/loot_table/rafts/jungle.json",
+        "data/mos/loot_table/ruins/castle_common.json",
+        "data/mos/loot_table/ruins/castle_treasure.json",
+        "data/mos/loot_table/ships/travel_ship_pot.json",
+        "data/mos/loot_table/ships/docked_cargo.json",
+        "data/mos/loot_table/ships/sunken_hold.json",
+        "data/mos/loot_table/ships/travel_ship_quarters.json",
+        "data/mos/loot_table/ships/shipwreck_spruce.json",
+        "data/mos/loot_table/ships/travel_ship_cargo.json",
+        "data/mos/loot_table/ships/travel_ship_hold.json",
+        "data/mos/loot_table/ships/sunken_captain.json",
+        "data/mos/loot_table/ships/shipwreck_dark_oak.json",
+        "data/mos/loot_table/ships/travel_ship_cannon.json",
+        "data/mos/loot_table/ships/travel_ship_captain.json",
+        "data/mos/loot_table/ships/sunken_cabin.json",
+        "data/mos/loot_table/ships/shipwreck_oak.json",
+        "data/mos/loot_table/ships/small_ship_stores.json",
+        "data/mos/loot_table/ships/hauling_provisions.json",
+        "data/mos/loot_table/houses/atlantis_ultra_rare.json",
+        "data/mos/loot_table/houses/ruined_common.json",
+        "data/mos/loot_table/houses/atlantis_rare.json",
+        "data/mos/loot_table/houses/atlantis_common.json",
+        "data/mos/loot_table/houses/ruined_furnace.json",
+        "data/mos/loot_table/houses/ruined_rare.json",
+        "data/mos/loot_table/houses/ruined_junk.json",
+        "data/mos/loot_table/treasure/buried_treasure_1.json"
+      ],
+      "structure_template_count": 186,
+      "class_count": 0,
+      "mixin_files": [],
+      "data_namespaces": [
+        "mos"
+      ]
+    },
+    {
+      "slug": "moogs-structure-lib",
+      "source": "https://cdn.modrinth.com/data/1oUDhxuy/versions/SkD4H9XM/MoogsStructureLib-fabric-26.3-3.4.2.jar",
+      "retrieved_at": "2026-11-23T17:28:34.660973+00:00",
+      "sha256": "7fbc02571c368257acd017cdb1b09294b64c9cb6d8c889977c7b9051155c02fd",
+      "sha512": "2ebd787cfd2ba0622c44ab853b8daeae7039f1e73d4872218e536ea969e06503cae84351f037a1d007892ee4b4971f98770f7a1d68fa69ae4e164c59ad29bac9",
+      "bytes": 1097200,
+      "version_id": "SkD4H9XM",
+      "metadata": {
+        "schemaVersion": 1,
+        "id": "moogs_structures",
+        "version": "3.4.2+fabric",
+        "name": "Moog's Structure Lib",
+        "description": "A library mod for generating structures",
+        "authors": [
+          "FinnDog"
+        ],
+        "contact": {
+          "homepage": "https://www.curseforge.com/minecraft/mc-mods/moogs-structure-lib",
+          "sources": "https://github.com/FinnSetchell/MoogsStructureLib"
+        },
+        "license": "GNU Lesser General Public License v3.0",
+        "icon": "assets/moogs_structures/icon.png",
+        "environment": "*",
+        "entrypoints": {
+          "main": [
+            "com.finndog.moogs_structures.fabric.MoogsStructuresFabric"
+          ],
+          "modmenu": [
+            "com.finndog.moogs_structures.fabric.client.ModMenuIntegration"
+          ]
+        },
+        "mixins": [
+          "moogs_structures-fabric.mixins.json",
+          "moogs_structures-common.mixins.json"
+        ],
+        "depends": {
+          "fabricloader": ">=0.19.5",
+          "minecraft": ">=26.3 <26.4",
+          "fabric-api": "*",
+          "java": ">=25"
+        },
+        "suggests": {
+          "another-mod": "*"
+        },
+        "jars": [
+          {
+            "file": "META-INF/jars/mixinextras-fabric-0.5.3.jar"
+          }
+        ]
+      },
+      "loot_table_files": [],
+      "structure_template_count": 0,
+      "class_count": 161,
+      "mixin_files": [
+        "moogs_structures-common.mixins.json",
+        "moogs_structures-fabric.mixins.json"
+      ],
+      "data_namespaces": [
+        "moogs_structures"
+      ]
+    },
+    {
+      "slug": "naturally-trimmed",
+      "source": "https://cdn.modrinth.com/data/hHVaPgFK/versions/h3K7LsVB/naturally_trimmed-3.6.1%2B26.3-fabric.jar",
+      "retrieved_at": "2026-11-23T17:28:34.887143+00:00",
+      "sha256": "206efdade95ef9b516df9a09087703abf89ad152efdc4f4bf381111cc30e472f",
+      "sha512": "fc6aea242d919658a735f8a34c1cbf5e3ffdc8fb86b534ebef8672262b92589bd3a09bc35d6ae70956884a4b53d0c00ece97e892ec554d96ceb76c6337641697",
+      "bytes": 133051,
+      "version_id": "h3K7LsVB",
+      "metadata": {
+        "schemaVersion": 1,
+        "id": "naturally_trimmed",
+        "version": "3.6.1",
+        "name": "Naturally Trimmed",
+        "description": "Trims naturally generated armor and equipment from mobs, loot tables and trades",
+        "authors": [
+          "majo24"
+        ],
+        "contact": {
+          "homepage": "https://github.com/Imajo24I/Naturally-Trimmed",
+          "sources": "https://github.com/Imajo24I/Naturally-Trimmed",
+          "issues": "https://github.com/Imajo24I/Naturally-Trimmed/issues/new/choose"
+        },
+        "license": "LGPL-3.0-only",
+        "icon": "assets/naturally_trimmed/icon.png",
+        "environment": "*",
+        "entrypoints": {
+          "main": [
+            "net.majo24.naturally_trimmed.NaturallyTrimmed"
+          ],
+          "modmenu": [
+            "net.majo24.naturally_trimmed.config.screen.ModMenuIntegration"
+          ]
+        },
+        "mixins": [
+          "naturally_trimmed.mixins.json"
+        ],
+        "accessWidener": "naturally_trimmed.accesswidener",
+        "depends": {
+          "fabric-api": ">=0.161.0+26.3",
+          "fabricloader": ">=0.15.11",
+          "minecraft": ">=26.3.0 <26.4.0"
+        },
+        "recommends": {
+          "modmenu": ">=21.0.0-beta.1",
+          "yet_another_config_lib_v3": ">=3.9.7+26.3"
+        },
+        "jars": [
+          {
+            "file": "META-INF/jars/gson-0.3.1.jar"
+          },
+          {
+            "file": "META-INF/jars/json-0.3.1.jar"
+          }
+        ]
+      },
+      "loot_table_files": [],
+      "structure_template_count": 0,
+      "class_count": 39,
+      "mixin_files": [
+        "naturally_trimmed.mixins.json"
+      ],
+      "data_namespaces": []
+    }
+  ],
+  "template_container_audit": [
+    {
+      "slug": "towns-and-towers",
+      "counts": {
+        "minecraft:trapped_chest:table": 6,
+        "minecraft:chest:table": 501,
+        "minecraft:chest:prefilled": 36,
+        "minecraft:barrel:table": 239,
+        "minecraft:barrel:no-table-empty": 29,
+        "minecraft:trapped_chest:no-table-empty": 1,
+        "minecraft:barrel:prefilled": 1
+      },
+      "loot_table_refs": {
+        "minecraft:chests/desert_pyramid": 4,
+        "minecraft:chests/simple_dungeon": 12,
+        "kaisyn:outpost/exclusives/outpost_beach_barrel": 42,
+        "minecraft:chests/pillager_outpost": 95,
+        "kaisyn:outpost/common/food": 42,
+        "kaisyn:outpost/common/armory": 34,
+        "minecraft:chests/stronghold_library": 7,
+        "kaisyn:outpost/exclusives/outpost_mediterranean_barrel": 44,
+        "kaisyn:outpost/exclusives/outpost_rustic_barrel": 11,
+        "minecraft:chests/village/village_plains_house": 38,
+        "minecraft:chests/village/village_fisher": 66,
+        "minecraft:chests/village/village_cartographer": 21,
+        "minecraft:chests/shipwreck_treasure": 8,
+        "minecraft:chests/shipwreck_supply": 10,
+        "minecraft:chests/stronghold_crossing": 2,
+        "minecraft:chests/village/village_butcher": 23,
+        "minecraft:chests/shipwreck_map": 2,
+        "minecraft:chests/village/village_armorer": 22,
+        "minecraft:chests/village/village_weaponsmith": 22,
+        "kaisyn:village/village_badlands_house": 21,
+        "minecraft:chests/village/village_mason": 19,
+        "minecraft:chests/village/village_temple": 19,
+        "minecraft:chests/village/village_toolsmith": 18,
+        "minecraft:chests/village/village_fletcher": 20,
+        "minecraft:chests/village/village_tannery": 19,
+        "minecraft:chests/village/village_shepherd": 19,
+        "kaisyn:village/exclusives/village_classic_blacksmith": 1,
+        "minecraft:chests/village/village_savanna_house": 16,
+        "kaisyn:village/exclusives/village_mediterranean_house": 11,
+        "kaisyn:village/exclusives/village_piglin_barrel": 22,
+        "kaisyn:village/exclusives/village_piglin_house": 13,
+        "minecraft:chests/village/village_taiga_house": 22,
+        "kaisyn:village/exclusives/village_wandering_trader_hut": 2,
+        "minecraft:chests/village/village_snowy_house": 4,
+        "kaisyn:village/village_jungle_house": 10,
+        "kaisyn:village/village_mushroom_house": 2,
+        "kaisyn:village/village_swamp_house": 3
+      },
+      "examples": [
+        {
+          "template": "data/kaisyn/structure/other/desert_temple_mimic/pyramid_main.nbt",
+          "local_pos": [
+            8,
+            3,
+            10
+          ],
+          "block": "minecraft:trapped_chest",
+          "kind": "table",
+          "nbt_keys": [
+            "LootTable",
+            "id"
+          ],
+          "loot_table": "minecraft:chests/desert_pyramid"
+        },
+        {
+          "template": "data/kaisyn/structure/other/desert_temple_mimic/passages/passage_2.nbt",
+          "local_pos": [
+            2,
+            1,
+            1
+          ],
+          "block": "minecraft:chest",
+          "kind": "table",
+          "nbt_keys": [
+            "LootTable",
+            "id"
+          ],
+          "loot_table": "minecraft:chests/simple_dungeon"
+        },
+        {
+          "template": "data/kaisyn/structure/outpost/camps/beach/base_plate.nbt",
+          "local_pos": [
+            11,
+            0,
+            25
+          ],
+          "block": "minecraft:chest",
+          "kind": "prefilled",
+          "nbt_keys": [
+            "Items",
+            "id"
+          ],
+          "loot_table": null
+        },
+        {
+          "template": "data/kaisyn/structure/outpost/camps/beach/base_plate.nbt",
+          "local_pos": [
+            4,
+            1,
+            1
+          ],
+          "block": "minecraft:barrel",
+          "kind": "table",
+          "nbt_keys": [
+            "LootTable",
+            "id"
+          ],
+          "loot_table": "kaisyn:outpost/exclusives/outpost_beach_barrel"
+        },
+        {
+          "template": "data/kaisyn/structure/outpost/towers/flower_forest/base_plate.nbt",
+          "local_pos": [
+            4,
+            24,
+            5
+          ],
+          "block": "minecraft:barrel",
+          "kind": "no-table-empty",
+          "nbt_keys": [
+            "Items",
+            "id"
+          ],
+          "loot_table": null
+        },
+        {
+          "template": "data/kaisyn/structure/village/exclusives/piglin/houses/piglin_skull_tent_1.nbt",
+          "local_pos": [
+            3,
+            2,
+            25
+          ],
+          "block": "minecraft:trapped_chest",
+          "kind": "no-table-empty",
+          "nbt_keys": [
+            "Items",
+            "id"
+          ],
+          "loot_table": null
+        },
+        {
+          "template": "data/kaisyn/structure/village/old_growth_taiga_polish/houses/old_growth_taiga_medium_house_2.nbt",
+          "local_pos": [
+            4,
+            5,
+            4
+          ],
+          "block": "minecraft:barrel",
+          "kind": "prefilled",
+          "nbt_keys": [
+            "Items",
+            "id"
+          ],
+          "loot_table": null
+        }
+      ]
+    },
+    {
+      "slug": "epic-structures-villages-standalone-edition",
+      "counts": {
+        "minecraft:chest:table": 1050,
+        "minecraft:barrel:table": 212,
+        "minecraft:barrel:no-table-empty": 11,
+        "minecraft:trapped_chest:prefilled": 3,
+        "minecraft:barrel:prefilled": 35,
+        "minecraft:chest:no-table-empty": 7,
+        "minecraft:chest:prefilled": 5,
+        "minecraft:trapped_chest:table": 17
+      },
+      "loot_table_refs": {
+        "minecraft:chests/underwater_ruin_small": 22,
+        "minecraft:chests/underwater_ruin_big": 29,
+        "minecraft:chests/shipwreck_supply": 14,
+        "minecraft:chests/village/village_cartographer": 60,
+        "minecraft:chests/village/village_armorer": 22,
+        "minecraft:chests/village/village_temple": 45,
+        "minecraft:chests/village/village_butcher": 45,
+        "minecraft:chests/village/village_fisher": 78,
+        "minecraft:chests/village/village_mason": 53,
+        "minecraft:chests/village/village_desert_house": 7,
+        "minecraft:chests/simple_dungeon": 71,
+        "minecraft:chests/village/village_toolsmith": 13,
+        "minecraft:chests/village/village_weaponsmith": 41,
+        "minecraft:chests/mineral": 62,
+        "minecraft:chests/random": 112,
+        "minecraft:chests/village/village_shepherd": 24,
+        "minecraft:chests/wood": 39,
+        "minecraft:chests/village/village_plains_house": 37,
+        "minecraft:chests/stronghold_library": 7,
+        "minecraft:chests/trash": 169,
+        "minecraft:chests/stone": 41,
+        "minecraft:chests/village/village_fletcher": 67,
+        "minecraft:chests/village/village_savanna_house": 61,
+        "minecraft:chests/shipwreck_treasure": 41,
+        "minecraft:chests/buried_treasure": 3,
+        "minecraft:chests/dye": 17,
+        "minecraft:chests/shipwreck_map": 19,
+        "minecraft:chests/village/village_tannery": 11,
+        "minecraft:chests/village/village_taiga_house": 26,
+        "minecraft:chests/village/village_snowy_house": 39,
+        "minecraft:chests/stronghold_corridor": 2,
+        "minecraft:chests/spawn_bonus_chest": 2
+      },
+      "examples": [
+        {
+          "template": "data/epic/structure/village/desert/houses/desert_animal_pen_1.nbt",
+          "local_pos": [
+            1,
+            1,
+            3
+          ],
+          "block": "minecraft:chest",
+          "kind": "table",
+          "nbt_keys": [
+            "LootTable",
+            "id"
+          ],
+          "loot_table": "minecraft:chests/underwater_ruin_small"
+        },
+        {
+          "template": "data/epic/structure/village/desert/houses/desert_butcher_shop_1.nbt",
+          "local_pos": [
+            15,
+            1,
+            6
+          ],
+          "block": "minecraft:barrel",
+          "kind": "table",
+          "nbt_keys": [
+            "LootTable",
+            "id"
+          ],
+          "loot_table": "minecraft:chests/village/village_fisher"
+        },
+        {
+          "template": "data/epic/structure/village/desert/houses/desert_large_farm_1.nbt",
+          "local_pos": [
+            11,
+            2,
+            7
+          ],
+          "block": "minecraft:barrel",
+          "kind": "no-table-empty",
+          "nbt_keys": [
+            "Items",
+            "id"
+          ],
+          "loot_table": null
+        },
+        {
+          "template": "data/epic/structure/village/desert/houses/desert_small_house_2.nbt",
+          "local_pos": [
+            5,
+            1,
+            4
+          ],
+          "block": "minecraft:trapped_chest",
+          "kind": "prefilled",
+          "nbt_keys": [
+            "Items",
+            "id"
+          ],
+          "loot_table": null
+        },
+        {
+          "template": "data/epic/structure/village/desert/houses/desert_small_house_3.nbt",
+          "local_pos": [
+            13,
+            1,
+            19
+          ],
+          "block": "minecraft:barrel",
+          "kind": "prefilled",
+          "nbt_keys": [
+            "Items",
+            "id"
+          ],
+          "loot_table": null
+        },
+        {
+          "template": "data/epic/structure/village/desert/town_centers/desert_meeting_point_2.nbt",
+          "local_pos": [
+            22,
+            2,
+            14
+          ],
+          "block": "minecraft:chest",
+          "kind": "no-table-empty",
+          "nbt_keys": [
+            "Items",
+            "id"
+          ],
+          "loot_table": null
+        },
+        {
+          "template": "data/epic/structure/village/plains/houses/plains_fisher_cottage_1.nbt",
+          "local_pos": [
+            2,
+            1,
+            11
+          ],
+          "block": "minecraft:chest",
+          "kind": "prefilled",
+          "nbt_keys": [
+            "Items",
+            "id"
+          ],
+          "loot_table": null
+        },
+        {
+          "template": "data/epic/structure/village/snowy/houses/snowy_library_1.nbt",
+          "local_pos": [
+            2,
+            1,
+            13
+          ],
+          "block": "minecraft:trapped_chest",
+          "kind": "table",
+          "nbt_keys": [
+            "LootTable",
+            "id"
+          ],
+          "loot_table": "minecraft:chests/simple_dungeon"
+        }
+      ]
+    },
+    {
+      "slug": "explorify",
+      "counts": {
+        "minecraft:trapped_chest:table": 5,
+        "minecraft:chest:table": 84,
+        "minecraft:barrel:table": 17,
+        "minecraft:barrel:no-table-empty": 1
+      },
+      "loot_table_refs": {
+        "minecraft:chests/desert_pyramid": 5,
+        "minecraft:chests/bastion_bridge": 1,
+        "minecraft:chests/bastion_treasure": 1,
+        "minecraft:chests/village/village_taiga_house": 19,
+        "minecraft:chests/simple_dungeon": 21,
+        "explorify:chest/dark_forest_settlement": 10,
+        "minecraft:chests/village/village_temple": 2,
+        "minecraft:chests/village/village_armorer": 2,
+        "minecraft:chests/village/village_weaponsmith": 1,
+        "minecraft:chests/village/village_desert_house": 1,
+        "minecraft:chests/end_city_treasure": 4,
+        "minecraft:chests/village/village_plains_house": 16,
+        "minecraft:chests/jungle_temple": 2,
+        "explorify:chest/supply_cache": 14,
+        "minecraft:chests/village/village_butcher": 2,
+        "minecraft:chests/village/village_shepherd": 2,
+        "minecraft:chests/ancient_city": 1,
+        "minecraft:chests/village/village_savanna_house": 2
+      },
+      "examples": [
+        {
+          "template": "data/explorify/structure/badlands_pyramid/whole.nbt",
+          "local_pos": [
+            10,
+            3,
+            12
+          ],
+          "block": "minecraft:trapped_chest",
+          "kind": "table",
+          "nbt_keys": [
+            "LootTable",
+            "id"
+          ],
+          "loot_table": "minecraft:chests/desert_pyramid"
+        },
+        {
+          "template": "data/explorify/structure/bastion_spiral/dungeon_feature/bridge_chest.nbt",
+          "local_pos": [
+            0,
+            0,
+            2
+          ],
+          "block": "minecraft:chest",
+          "kind": "table",
+          "nbt_keys": [
+            "LootTable",
+            "id"
+          ],
+          "loot_table": "minecraft:chests/bastion_bridge"
+        },
+        {
+          "template": "data/explorify/structure/campsite/tent/09.nbt",
+          "local_pos": [
+            2,
+            2,
+            6
+          ],
+          "block": "minecraft:barrel",
+          "kind": "table",
+          "nbt_keys": [
+            "LootTable",
+            "id"
+          ],
+          "loot_table": "minecraft:chests/village/village_taiga_house"
+        },
+        {
+          "template": "data/explorify/structure/dark_forest_settlement/house/13.nbt",
+          "local_pos": [
+            4,
+            1,
+            0
+          ],
+          "block": "minecraft:barrel",
+          "kind": "no-table-empty",
+          "nbt_keys": [
+            "Items",
+            "id"
+          ],
+          "loot_table": null
+        }
+      ]
+    },
+    {
+      "slug": "hopo-better-mineshaft",
+      "counts": {
+        "minecraft:chest:table": 1821,
+        "minecraft:barrel:table": 364
+      },
+      "loot_table_refs": {
+        "hopo:chests/mineshaft/big_rooms/archer": 49,
+        "hopo:chests/mineshaft/base/archer": 102,
+        "hopo:chests/mineshaft/big_rooms/biomes_map/target_oak": 5,
+        "hopo:chests/mineshaft/big_rooms/biomes_map/target_jungle": 1,
+        "hopo:chests/mineshaft/big_rooms/copper": 34,
+        "hopo:chests/mineshaft/big_rooms/farm_beetroot": 34,
+        "hopo:chests/mineshaft/big_rooms/farm_carrot": 34,
+        "hopo:chests/mineshaft/big_rooms/farm_melon": 34,
+        "hopo:chests/mineshaft/big_rooms/farm_potato": 34,
+        "hopo:chests/mineshaft/big_rooms/farm_pumpkin": 34,
+        "hopo:chests/mineshaft/big_rooms/farm_wheat": 34,
+        "hopo:chests/mineshaft/big_rooms/iron_golem": 34,
+        "hopo:chests/mineshaft/big_rooms/map": 34,
+        "hopo:chests/mineshaft/big_rooms/music": 34,
+        "minecraft:chests/ruined_portal": 17,
+        "hopo:chests/mineshaft/big_rooms/potion": 51,
+        "hopo:chests/mineshaft/base/potions": 102,
+        "hopo:chests/mineshaft/big_rooms/prison": 34,
+        "hopo:chests/mineshaft/big_rooms/stews": 51,
+        "hopo:chests/mineshaft/base/red_mushroom": 68,
+        "hopo:chests/mineshaft/base/brown_mushroom": 68,
+        "hopo:chests/mineshaft/base/tools": 54,
+        "hopo:chests/mineshaft/big_rooms/villager_toolsmith": 80,
+        "hopo:chests/mineshaft/base/weapons": 54,
+        "hopo:chests/mineshaft/big_rooms/villager_weaponsmith": 80,
+        "hopo:chests/mineshaft/minecart/connector": 187,
+        "hopo:chests/mineshaft/base/amethyst": 36,
+        "hopo:chests/mineshaft/base/armor": 36,
+        "hopo:chests/mineshaft/base/bedroom": 136,
+        "hopo:chests/mineshaft/base/books": 34,
+        "hopo:chests/mineshaft/base/copper": 30,
+        "hopo:chests/mineshaft/base/crafting": 51,
+        "hopo:chests/mineshaft/base/diamond": 30,
+        "hopo:chests/mineshaft/base/emerald": 30,
+        "hopo:chests/mineshaft/base/food": 34,
+        "hopo:chests/mineshaft/base/fossils": 136,
+        "hopo:chests/mineshaft/base/gold": 30,
+        "hopo:chests/mineshaft/base/iron": 30,
+        "hopo:chests/mineshaft/base/lapis": 30,
+        "hopo:chests/mineshaft/base/prison": 17,
+        "hopo:chests/mineshaft/base/redstone": 30,
+        "hopo:chests/mineshaft/base/rip": 34,
+        "hopo:chests/mineshaft/base/smelting": 34,
+        "hopo:chests/mineshaft/base/tnt": 34,
+        "hopo:chests/mineshaft/big_rooms/biomes_map/target_mangrove": 2,
+        "hopo:chests/mineshaft/big_rooms/biomes_map/target_cherry": 1,
+        "hopo:chests/mineshaft/big_rooms/biomes_map/target_pale": 1,
+        "hopo:chests/mineshaft/big_rooms/biomes_map/target_spruce": 6,
+        "hopo:chests/mineshaft/big_rooms/biomes_map/target_stone": 2,
+        "hopo:chests/mineshaft/deepslate/copper": 4,
+        "hopo:chests/mineshaft/deepslate/diamond": 4,
+        "hopo:chests/mineshaft/deepslate/emerald": 4,
+        "hopo:chests/mineshaft/deepslate/gold": 4,
+        "hopo:chests/mineshaft/deepslate/iron": 4,
+        "hopo:chests/mineshaft/deepslate/lapis": 4,
+        "hopo:chests/mineshaft/deepslate/redstone": 4,
+        "hopo:chests/mineshaft/big_rooms/biomes_map/target_bamboo": 1,
+        "hopo:chests/mineshaft/big_rooms/biomes_map/target_dark_oak": 3,
+        "hopo:chests/mineshaft/big_rooms/biomes_map/target_lush_caves": 3,
+        "hopo:chests/mineshaft/big_rooms/biomes_map/target_mud": 1,
+        "hopo:chests/mineshaft/big_rooms/biomes_map/target_birch": 1,
+        "hopo:chests/mineshaft/big_rooms/biomes_map/target_acacia": 1
+      },
+      "examples": [
+        {
+          "template": "data/hopo/structure/mineshaft/acacia/big_rooms/archer.nbt",
+          "local_pos": [
+            1,
+            1,
+            3
+          ],
+          "block": "minecraft:chest",
+          "kind": "table",
+          "nbt_keys": [
+            "LootTable",
+            "id"
+          ],
+          "loot_table": "hopo:chests/mineshaft/big_rooms/archer"
+        },
+        {
+          "template": "data/hopo/structure/mineshaft/acacia/big_rooms/archer.nbt",
+          "local_pos": [
+            1,
+            1,
+            8
+          ],
+          "block": "minecraft:barrel",
+          "kind": "table",
+          "nbt_keys": [
+            "LootTable",
+            "id"
+          ],
+          "loot_table": "hopo:chests/mineshaft/base/archer"
+        }
+      ]
+    },
+    {
+      "slug": "dungeons-and-taverns-stronghold-overhaul",
+      "counts": {
+        "minecraft:chest:table": 146,
+        "minecraft:chest:prefilled": 1
+      },
+      "loot_table_refs": {
+        "nova_structures:chests/stronghold/library_eye": 9,
+        "nova_structures:chests/stronghold/altar": 31,
+        "nova_structures:chests/stronghold/jail_cell": 2,
+        "nova_structures:chests/stronghold/supplies": 16,
+        "nova_structures:chests/stronghold/forge": 12,
+        "nova_structures:chests/stronghold/bedroom": 11,
+        "minecraft:chests/stronghold/generic": 1,
+        "nova_structures:chests/stronghold/library_bookshelf": 55,
+        "nova_structures:chests/stronghold/library_lesser": 8,
+        "nova_structures:chests/dungeon_4": 1
+      },
+      "examples": [
+        {
+          "template": "data/nova_structures/structure/stronghold/loot/bookshelf1.nbt",
+          "local_pos": [
+            0,
+            1,
+            1
+          ],
+          "block": "minecraft:chest",
+          "kind": "table",
+          "nbt_keys": [
+            "LootTable",
+            "components",
+            "id"
+          ],
+          "loot_table": "nova_structures:chests/stronghold/library_eye"
+        },
+        {
+          "template": "data/nova_structures/structure/stronghold/rooms/manufacturing_4x4_room2.nbt",
+          "local_pos": [
+            7,
+            2,
+            16
+          ],
+          "block": "minecraft:chest",
+          "kind": "prefilled",
+          "nbt_keys": [
+            "Items",
+            "components",
+            "id"
+          ],
+          "loot_table": null
+        }
+      ]
+    },
+    {
+      "slug": "mss-moogs-soaring-structures",
+      "counts": {
+        "minecraft:chest:table": 266,
+        "minecraft:barrel:table": 526,
+        "minecraft:barrel:no-table-empty": 7
+      },
+      "loot_table_refs": {
+        "mss:sparse": 79,
+        "mss:empty": 220,
+        "mss:houses_common": 19,
+        "mss:abandoned": 7,
+        "mss:crystal": 38,
+        "mss:rare": 42,
+        "mss:houses_uncommon": 78,
+        "mss:houses_rare": 5,
+        "mss:general": 99,
+        "mss:junk": 96,
+        "mss:arena_mossy_hallway_chest": 24,
+        "mss:stash": 55,
+        "mss:arena": 18,
+        "mss:arena_dungeon_chest": 8,
+        "mss:arena_amethyst_cove": 3,
+        "mss:castle_tower_top": 1
+      },
+      "examples": [
+        {
+          "template": "data/mss/structure/1_21_4/jungle.nbt",
+          "local_pos": [
+            20,
+            25,
+            42
+          ],
+          "block": "minecraft:chest",
+          "kind": "table",
+          "nbt_keys": [
+            "LootTable",
+            "components",
+            "id"
+          ],
+          "loot_table": "mss:sparse"
+        },
+        {
+          "template": "data/mss/structure/1_21_4/small_deepslate_house.nbt",
+          "local_pos": [
+            6,
+            25,
+            16
+          ],
+          "block": "minecraft:barrel",
+          "kind": "table",
+          "nbt_keys": [
+            "LootTable",
+            "components",
+            "id"
+          ],
+          "loot_table": "mss:general"
+        },
+        {
+          "template": "data/mss/structure/1_21_0/white_house.nbt",
+          "local_pos": [
+            27,
+            31,
+            23
+          ],
+          "block": "minecraft:barrel",
+          "kind": "no-table-empty",
+          "nbt_keys": [
+            "Items",
+            "components",
+            "id"
+          ],
+          "loot_table": null
+        }
+      ]
+    },
+    {
+      "slug": "mos-moogs-ocean-structures",
+      "counts": {
+        "minecraft:chest:table": 361,
+        "minecraft:barrel:table": 914,
+        "minecraft:trapped_chest:table": 36
+      },
+      "loot_table_refs": {
+        "mos:ships/travel_ship_quarters": 115,
+        "mos:ships/sunken_captain": 24,
+        "mos:ships/small_ship_stores": 356,
+        "mos:houses/ruined_common": 15,
+        "mos:ships/travel_ship_hold": 39,
+        "mos:ships/travel_ship_cargo": 99,
+        "mos:ships/travel_ship_captain": 3,
+        "mos:ships/sunken_hold": 81,
+        "mos:ships/docked_cargo": 13,
+        "mos:temple/temple_stores": 204,
+        "mos:temple/temple_offering": 40,
+        "mos:spawners/small_ocean_temple/trial_reward": 20,
+        "mos:temple/temple_inner": 24,
+        "mos:church/church_reliquary": 5,
+        "mos:domes/pufferfish_dome": 1,
+        "mos:houses/atlantis_rare": 11,
+        "mos:church/church_sacristy": 2,
+        "mos:church/church_alms": 2,
+        "mos:church/church_scriptorium": 2,
+        "mos:houses/ruined_junk": 10,
+        "mos:houses/ruined_rare": 4,
+        "mos:ruins/castle_treasure": 2,
+        "mos:decor/clam_shell": 2,
+        "mos:rafts/acacia": 11,
+        "mos:rafts/wanderer_valuables": 11,
+        "mos:rafts/jungle": 11,
+        "mos:treasure/buried_treasure_1": 2,
+        "mos:rafts/snow": 11,
+        "mos:houses/atlantis_common": 23,
+        "mos:rafts/pale_forest": 22,
+        "mos:ships/shipwreck_oak": 1,
+        "mos:ships/sunken_cabin": 20,
+        "mos:ships/shipwreck_dark_oak": 1,
+        "mos:houses/atlantis_ultra_rare": 7,
+        "mos:rafts/birch": 11,
+        "mos:skeleton/dragon_gut": 3,
+        "mos:skeleton/dragon_hoard": 2,
+        "mos:rafts/dark_oak": 11,
+        "mos:decor/conduit_arch": 2,
+        "mos:rafts/cherry": 11,
+        "mos:portal_archway/portal_gold": 6,
+        "mos:portal_archway/portal_treasure": 2,
+        "mos:portal_archway/wreck_hold": 4,
+        "mos:portal_archway/tree_camp": 2,
+        "mos:ships/hauling_provisions": 16,
+        "mos:rafts/oak": 11,
+        "mos:ruins/castle_common": 1,
+        "mos:rafts/mangrove": 11,
+        "mos:vaults/atlantis_tribune/main": 12,
+        "mos:ships/shipwreck_spruce": 1,
+        "mos:rafts/spruce": 11
+      },
+      "examples": [
+        {
+          "template": "data/mos/structure/1_21_6/cherry_long_ship/rear.nbt",
+          "local_pos": [
+            29,
+            5,
+            6
+          ],
+          "block": "minecraft:chest",
+          "kind": "table",
+          "nbt_keys": [
+            "LootTable",
+            "components",
+            "id"
+          ],
+          "loot_table": "mos:ships/travel_ship_quarters"
+        },
+        {
+          "template": "data/mos/structure/1_21_6/cherry_long_ship/rear.nbt",
+          "local_pos": [
+            38,
+            8,
+            10
+          ],
+          "block": "minecraft:barrel",
+          "kind": "table",
+          "nbt_keys": [
+            "LootTable",
+            "components",
+            "id"
+          ],
+          "loot_table": "mos:ships/small_ship_stores"
+        },
+        {
+          "template": "data/mos/structure/1_21_5/small_ocean_temple.nbt",
+          "local_pos": [
+            11,
+            3,
+            9
+          ],
+          "block": "minecraft:trapped_chest",
+          "kind": "table",
+          "nbt_keys": [
+            "LootTable",
+            "components",
+            "id"
+          ],
+          "loot_table": "mos:spawners/small_ocean_temple/trial_reward"
+        }
+      ]
+    }
+  ],
+  "template_audit_limit": "Raw archived templates, not effective overlays, generated-world locations or runtime compatibility. No Broadwater data included.",
+  "practical_tests": "ZIP/NBT parsing and checksums only; no game execution",
+  "timestamp_limit": "Source receipts preserve original precision. Day-only and filesystem-mtime-only records are not asserted as exact network capture times.",
+  "official_bytecode_analysis": {
+    "official_artifact_url": "https://piston-data.mojang.com/v1/objects/33680f5f2ac32864d6d7cf5e56a705fdb3e05f4c/server.jar",
+    "outer_sha1": "33680f5f2ac32864d6d7cf5e56a705fdb3e05f4c",
+    "nested_entry": "META-INF/versions/26.3/server-26.3.jar",
+    "nested_sha256": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
+    "trace_sha256": "03f21b93e52010c43de919b5236199e69bf72d524b612d06c7936c0100b4d165",
+    "extracted_class_sha256": {
+      "net/minecraft/world/RandomizableContainer.class": "91de5fafebdfe2533ef236d756432764924158301d911cc588a6e31ee67a4bfc",
+      "net/minecraft/world/level/block/entity/RandomizableContainerBlockEntity.class": "13838ba547b3367733bac3609491e1a4ab52acfeb557d32159b61cc6530eafdb",
+      "net/minecraft/world/level/block/entity/ChestBlockEntity.class": "00b11b95bdd44dc991909765080e5fccfb98aa511d9a585c26d4fccf9d4c21d1",
+      "net/minecraft/world/level/block/entity/BarrelBlockEntity.class": "b5dfd194b5e3fb3c1e4d7e727d687f4ba52ddf9c896cb966c72ef489f66a86dd",
+      "net/minecraft/world/entity/vehicle/ContainerEntity.class": "f7d72a8335957e0a6a0f761f2490f9edcc4a6da419cf04deb9c49f93063ac6a2",
+      "net/minecraft/world/entity/vehicle/minecart/AbstractMinecartContainer.class": "1c22613e249026a0076f8b30a6dc850436cd39ee3f16ceae1a05c03d877c3192"
+    },
+    "method_findings": [
+      "RandomizableContainer.unpackLootTable: key cleared before fill",
+      "RandomizableContainer.trySaveLootTable: false on null key; table and nonzero seed otherwise",
+      "ChestBlockEntity and BarrelBlockEntity: trySaveLootTable false selects item serialization",
+      "ContainerEntity: analogous table/seed versus items save/load, unpack clears key",
+      "AbstractMinecartContainer: delegates vehicle save/load"
+    ],
+    "scope": "Static primary-bytecode inspection. No game execution; no generalized runtime or all-structure-method proof."
+  },
+  "primary_bytes_rechecked_at": "2026-11-23T19:07:02.866480+00:00",
+  "initial_81_capture_check_recorded_at": "2026-11-23T19:01:41.789579+00:00",
+  "source_receipt_check_history": [
+    {
+      "batch": "original cited captures",
+      "checked_count": 81
+    },
+    {
+      "batch": "supplementary retained-reference captures",
+      "checked_count": 6
+    },
+    {
+      "batch": "cleanup and command source captures added after review",
+      "checked_count": 2
+    }
+  ],
+  "capture_check_precision": "All checks occurred on2026-11-23 across the recorded successive batches; this final record time is not a new simultaneous recheck of every source. Original retrieval precision remains per record.",
+  "final_recorded_at": "2026-11-23T19:10:41.905235+00:00",
+  "independent_review_v1": {
+    "reviewed_report_sha256": "54ae6313593d7e2e82453f848a10d889c143164f24108e9d3b9e3ab0bd4cfa40",
+    "review_note_sha256": "0b37d3f19fed4f930af090f8acfb3970f185801065f2ee6d30ddf24160c39a46",
+    "scope": "Focused research review, not runtime or source-delivery approval",
+    "corrections": {
+      "vanilla_method_proof": "Closed by official artifact/class identity and bytecode trace recorded here",
+      "engine_boundary": "Explicit upstream source hook or narrow fork, no demonstrated public historical registration API; standalone utility owns its own state/menu/transactions; estimate contingent on spike",
+      "private_copy_cleanup": "Marker loss and forget operations can delete all copies; tested all-player export/escrow is a hard gate",
+      "source_identity": "Immutable historical IDs/fail-closed behavior labeled proposed acceptance, not current engine behavior",
+      "historical_reward": "New approved entitlements, not original roll/looter recovery"
+    }
+  }
+}
