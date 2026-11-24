@@ -149,12 +149,37 @@ class RecoveryTests(unittest.TestCase):
         self.assertEqual(TABLE, str(target["LootTable"]))
 
     def test_bad_region_does_not_discard_supported_sources(self):
-        broken = self.dim / "region/r.1.1.mca"
+        # A readable start claims a target across the region boundary. Its broken
+        # region sorts before the healthy target, which must still be recovered.
+        broken = self.dim / "region/r.-1.0.mca"
         broken.write_bytes(b"incomplete region")
+        pieces = self.chunk["structures"]["starts"]["test"]["Children"]
+        cross_boundary = copy.deepcopy(pieces[0])
+        cross_boundary["TPX"] = r.nbtlib.Int(-512)
+        pieces.append(cross_boundary)
+        self.write_region()
+        before = self.snapshot()
+        dry = r.run(self.world, self.res)
+        self.assertEqual(2, dry["discovered"])
+        self.assertEqual(1, dry["unreadable_regions"])
+        self.assertEqual(1, dry["unreadable_target_positions"])
+        self.assertEqual(1, dry["eligible"])
+        self.assertEqual(0, dry["applied"])
+        self.assertEqual(before, self.snapshot())
         result = r.run(self.world, self.res, self.root / "partial")
+        self.assertEqual(2, result["discovered"])
         self.assertEqual(1, result["unreadable_regions"])
+        self.assertEqual(1, result["unreadable_target_positions"])
         self.assertEqual(1, result["applied"])
-        self.assertEqual(b"incomplete region", broken.read_bytes())
+        target = dict(r.Region(self.region).chunks())[65]["block_entities"][0]
+        self.assertEqual(TABLE, str(target["LootTable"]))
+        self.assertEqual(before[broken.relative_to(self.world)], broken.read_bytes())
+        after = self.snapshot()
+        repeat = r.run(self.world, self.res, self.root / "partial-repeat")
+        self.assertEqual(0, repeat["applied"])
+        self.assertEqual(1, repeat["already_managed"])
+        self.assertEqual(1, repeat["unreadable_target_positions"])
+        self.assertEqual(after, self.snapshot())
 
     def test_corrupt_region_and_locked_world_are_not_accepted(self):
         self.region.write_bytes(self.region.read_bytes()[:-1])

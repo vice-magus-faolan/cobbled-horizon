@@ -302,10 +302,16 @@ def process_dimension(world, dimension, resources, backup, counts):
         if not path.exists():
             counts["missing_chunk"] += len(targets)
             continue
-        region = Region(path)
+        try:
+            region = Region(path)
+            chunks = list(region.chunks())
+        except (ValueError, OSError, zlib.error) as error:
+            counts["unreadable_target_positions"] += len(targets)
+            print(str(error), file=sys.stderr)
+            continue
         updates = {}
         remaining = set(targets)
-        for slot, chunk in region.chunks():
+        for slot, chunk in chunks:
             chunk_targets = [p for p in targets if (p[0] // 16, p[2] // 16) == (int(chunk["xPos"]), int(chunk["zPos"]))]
             for pos in chunk_targets:
                 remaining.discard(pos)
