@@ -8,6 +8,8 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace
+from unittest import mock
 import zipfile
 import zlib
 
@@ -46,13 +48,13 @@ class RecoveryTests(unittest.TestCase):
             archive.writestr("data/minecraft/loot_table/chests/shipwreck_supply.json", "{}")
         self.res = r.Resources([self.resources])
 
-    def write_region(self):
-        data = zlib.compress(r.encode_nbt(r.nbtlib.File(self.chunk)))
-        record = (len(data) + 1).to_bytes(4, "big") + bytes([2]) + data
+    def write_region(self, payload=None, compression=2, path=None):
+        data = payload if payload is not None else {1: gzip.compress, 2: zlib.compress, 3: bytes}[compression](r.encode_nbt(r.nbtlib.File(self.chunk)))
+        record = (len(data) + 1).to_bytes(4, "big") + bytes([compression]) + data
         raw = bytearray(8192)
         raw[260:264] = bytes([0, 0, 2, 1])
         raw.extend(record + bytes(4096 - len(record)))
-        self.region.write_bytes(raw)
+        (path or self.region).write_bytes(raw)
 
     def snapshot(self):
         return {p.relative_to(self.world): p.read_bytes() for p in self.world.rglob("*") if p.is_file()}
@@ -60,6 +62,7 @@ class RecoveryTests(unittest.TestCase):
     def test_public_cli_dry_apply_repeat_preserve_all_other_data(self):
         (self.world / "player.dat").write_bytes(b"player sentinel")
         before = self.snapshot()
+        original_stat = self.region.stat()
         env = dict(os.environ)
         env.pop("PYTHONDONTWRITEBYTECODE", None)
         cmd = [sys.executable, str(ROOT / "scripts/recover_structure_loot.py"), str(self.world), "--resources", str(self.resources)]
@@ -68,6 +71,8 @@ class RecoveryTests(unittest.TestCase):
         self.assertEqual(before, self.snapshot())
         result = r.run(self.world, self.res, self.root / "backup")
         self.assertEqual(1, result["applied"])
+        final_stat = self.region.stat()
+        self.assertEqual((original_stat.st_uid, original_stat.st_gid, original_stat.st_mode), (final_stat.st_uid, final_stat.st_gid, final_stat.st_mode))
         self.assertEqual(before[self.region.relative_to(self.world)], (self.root / "backup" / self.region.relative_to(self.world)).read_bytes())
         updated = dict(r.Region(self.region).chunks())[65]
         expected = copy.deepcopy(self.chunk)
@@ -180,6 +185,125 @@ class RecoveryTests(unittest.TestCase):
         self.assertEqual(1, repeat["already_managed"])
         self.assertEqual(1, repeat["unreadable_target_positions"])
         self.assertEqual(after, self.snapshot())
+
+    def check_skipped_input(self, payload, label, compression=2, allocation=None, target_only=False):
+        # A bad SECOND dimension must neither abort after overworld replacement
+        # nor prevent a THIRD healthy dimension from being recovered.
+        bad = self.world / "dimensions/minecraft/the_nether/region/r.0.0.mca"
+        later = self.world / "dimensions/test/healthy/region/r.0.0.mca"
+        bad.parent.mkdir(parents=True, exist_ok=True)
+        later.parent.mkdir(parents=True, exist_ok=True)
+        self.write_region()
+        self.write_region(path=later)
+        self.write_region(payload=payload, compression=compression, path=bad)
+        # A readable structure start also claims the bad target across its region
+        # boundary, exercising target loading even when discovery skips bad bytes.
+        source = copy.deepcopy(self.chunk)
+        source["xPos"] = r.nbtlib.Int(-31)
+        source["block_entities"] = r.nbtlib.List[r.nbtlib.Compound]()
+        source["sections"] = r.nbtlib.List[r.nbtlib.Compound]()
+        self.write_region(payload=zlib.compress(r.encode_nbt(r.nbtlib.File(source))), path=bad.with_name("r.-1.0.mca"))
+        if allocation is not None:
+            raw = bytearray(bad.read_bytes())
+            key, value = allocation
+            raw[key] = value
+            bad.write_bytes(raw)
+        (self.world / "player.dat").write_bytes(b"unrelated player sentinel")
+        before = self.snapshot()
+        dry = r.run(self.world, self.res)
+        self.assertEqual(before, self.snapshot())
+        applied = r.run(self.world, self.res, self.root / (label + "-backup"))
+        after = self.snapshot()
+        self.assertEqual(before[bad.relative_to(self.world)], bad.read_bytes())
+        changed = {name for name in before if before[name] != after[name]}
+        self.assertEqual({self.region.relative_to(self.world), later.relative_to(self.world)}, changed)
+        self.assertEqual(set(before), set(after))
+        discovered, unreadable, unreadable_targets = 3, 0 if target_only else 1, 1
+        self.assertEqual((3, 2, 0), (dry["discovered"], dry["eligible"], dry["applied"]))
+        self.assertEqual((discovered, 2, unreadable, unreadable_targets), (applied["discovered"], applied["applied"], applied.get("unreadable_regions", 0), applied.get("unreadable_target_positions", 0)))
+        repeat = r.run(self.world, self.res, self.root / (label + "-repeat"))
+        self.assertEqual((0, 2, unreadable), (repeat["applied"], repeat["already_managed"], repeat.get("unreadable_regions", 0)))
+        self.assertEqual(after, self.snapshot())
+
+    def test_java_modified_utf8_and_truncated_nbt_skip_without_text_loss(self):
+        self.chunk["review_text"] = r.nbtlib.String("A!B")
+        encoded = r.encode_nbt(r.nbtlib.File(self.chunk))
+        cases = {
+            "java-nul": encoded.replace(b"\x00\x03A!B", b"\x00\x04A\xc0\x80B"),
+            "java-emoji": encoded.replace(b"\x00\x03A!B", b"\x00\x08A\xed\xa0\xbd\xed\xb8\x80B"),
+            "truncated-nbt": encoded[:-1],
+        }
+        for label, data in cases.items():
+            with self.subTest(label=label):
+                self.assertNotEqual(encoded, data)
+                self.check_skipped_input(zlib.compress(data), label)
+
+    def test_malformed_later_dimension_does_not_abort_healthy_work(self):
+        encoded = r.encode_nbt(r.nbtlib.File(self.chunk))
+        missing_x = copy.deepcopy(self.chunk)
+        del missing_x["xPos"]
+        missing_z = copy.deepcopy(self.chunk)
+        del missing_z["zPos"]
+        bad_starts = copy.deepcopy(self.chunk)
+        bad_starts["structures"] = r.nbtlib.String("not a compound")
+        bad_entities = copy.deepcopy(self.chunk)
+        del bad_entities["block_entities"][0]["x"]
+        cases = {
+            "gzip-eof": (gzip.compress(encoded)[:-5], 1),
+            "unknown-tag": (zlib.compress(b"\xff\x00\x00"), 2),
+            "non-compound-root": (zlib.compress(b"\x03\x00\x00\x00\x00\x00\x01"), 2),
+            "missing-x": (zlib.compress(r.encode_nbt(r.nbtlib.File(missing_x))), 2),
+            "missing-z": (zlib.compress(r.encode_nbt(r.nbtlib.File(missing_z))), 2),
+            "bad-start-shape": (zlib.compress(r.encode_nbt(r.nbtlib.File(bad_starts))), 2),
+            "bad-entity-shape": (zlib.compress(r.encode_nbt(r.nbtlib.File(bad_entities))), 2),
+        }
+        for label, (data, compression) in cases.items():
+            with self.subTest(label=label):
+                self.check_skipped_input(data, label, compression, target_only=label == "bad-entity-shape")
+
+    def test_invalid_allocations_skip_without_duplicate_targets(self):
+        cases = {
+            "aliased": (slice(264, 268), bytes([0, 0, 2, 1])),
+            "past-end": (263, 2),
+            "header-alias": (slice(260, 264), bytes([0, 0, 1, 1])),
+            "zero-offset-count": (slice(264, 268), bytes([0, 0, 0, 1])),
+        }
+        for label, allocation in cases.items():
+            with self.subTest(label=label):
+                self.check_skipped_input(None, label, allocation=allocation)
+
+    def test_owner_mismatch_refuses_public_apply_without_chown(self):
+        before = self.snapshot()
+        actual_fstat = r.os.fstat
+        for attribute in ("st_uid", "st_gid"):
+            with self.subTest(attribute=attribute):
+                def different_owner(fd):
+                    info = actual_fstat(fd)
+                    fields = dict(st_uid=info.st_uid, st_gid=info.st_gid)
+                    fields[attribute] += 1
+                    return SimpleNamespace(**fields)
+                with mock.patch.object(r.os, "fstat", side_effect=different_owner):
+                    with self.assertRaisesRegex(PermissionError, "ownership"):
+                        r.run(self.world, self.res, self.root / ("owner-refusal-" + attribute))
+                self.assertEqual(before, self.snapshot())
+
+    def test_backup_serialization_and_replace_failures_remain_fatal(self):
+        cases = [(r.os, "fsync", OSError("backup failure")),
+                 (r.Region, "updated", ValueError("serialization failure")),
+                 (r.os, "replace", OSError("replace failure"))]
+        for index, (owner, method, error) in enumerate(cases):
+            with self.subTest(method=method):
+                before = self.snapshot()
+                with mock.patch.object(owner, method, side_effect=error):
+                    with self.assertRaisesRegex(type(error), str(error)):
+                        r.run(self.world, self.res, self.root / ("fatal-" + str(index)))
+                self.assertEqual(before, self.snapshot())
+        with mock.patch.object(r.hashlib, "file_digest") as digest:
+            digest.return_value.digest.return_value = b"incorrect readback"
+            with self.assertRaisesRegex(OSError, "readback failed"):
+                r.run(self.world, self.res, self.root / "readback-failure")
+        self.assertNotEqual(before[self.region.relative_to(self.world)], self.region.read_bytes())
+        self.assertEqual(before[self.region.relative_to(self.world)], (self.root / "readback-failure" / self.region.relative_to(self.world)).read_bytes())
 
     def test_corrupt_region_and_locked_world_are_not_accepted(self):
         self.region.write_bytes(self.region.read_bytes()[:-1])

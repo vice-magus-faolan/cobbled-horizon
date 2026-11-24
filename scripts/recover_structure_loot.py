@@ -15,6 +15,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import struct
 import sys
 import tempfile
 import zipfile
@@ -27,6 +28,9 @@ CONTAINERS = {"minecraft:chest", "minecraft:trapped_chest", "minecraft:barrel"}
 ROTATIONS = {"NONE": 0, "CLOCKWISE_90": 1, "CLOCKWISE_180": 2, "COUNTERCLOCKWISE_90": 3}
 SHIP_TABLES = {name + "_chest": "minecraft:chests/shipwreck_" + name
                for name in ("supply", "map", "treasure")}
+# Only catch these while loading or consuming untrusted world input.
+INPUT_ERRORS = (ValueError, OSError, zlib.error, EOFError, KeyError, TypeError,
+                IndexError, AttributeError, OverflowError, RecursionError, struct.error)
 IDENTIFIER = re.compile(r"[a-z0-9_.-]+:[a-z0-9_./-]+")
 
 
@@ -48,21 +52,40 @@ class Region:
         if len(self.raw) < 8192 or len(self.raw) % 4096:
             raise ValueError(f"invalid region length: {path}")
 
-    def chunks(self):
+    def allocations(self):
+        used = {0, 1}
         for slot in range(1024):
-            offset = int.from_bytes(self.raw[slot * 4:slot * 4 + 3], "big") * 4096
-            if not offset:
-                continue
+            offset = int.from_bytes(self.raw[slot * 4:slot * 4 + 3], "big")
             sectors = self.raw[slot * 4 + 3]
+            if not offset and not sectors:
+                continue
+            allocated = set(range(offset, offset + sectors))
+            if not sectors or offset < 2 or offset + sectors > len(self.raw) // 4096 or used.intersection(allocated):
+                raise ValueError(f"invalid/overlapping chunk allocation: {self.path}:{slot}")
+            used.update(allocated)
+            yield slot, offset * 4096, sectors
+
+    def chunks(self):
+        # Validate ALL header allocations before yielding any chunk/claim.
+        allocations = list(self.allocations())
+        for slot, offset, sectors in allocations:
             length = int.from_bytes(self.raw[offset:offset + 4], "big")
-            if offset < 8192 or not sectors or length < 1 or length + 4 > sectors * 4096 or offset + length + 4 > len(self.raw):
-                raise ValueError(f"invalid chunk allocation: {self.path}:{slot}")
+            if length < 1 or length + 4 > sectors * 4096:
+                raise ValueError(f"invalid chunk length: {self.path}:{slot}")
             compression = self.raw[offset + 4]
             payload = self.raw[offset + 5:offset + length + 4]
             decoders = {1: gzip.decompress, 2: zlib.decompress, 3: bytes}
             if compression not in decoders:
                 raise ValueError(f"unsupported compression/external chunk {compression}: {self.path}:{slot}")
-            yield slot, parse_nbt(decoders[compression](payload))
+            data = decoders[compression](payload)
+            chunk = parse_nbt(data)
+            # nbtlib uses standard UTF-8, not Java modified UTF-8, and accepts
+            # some truncated NBT. Refuse lossy/noncanonical input, never repair it.
+            if encode_nbt(chunk) != data:
+                raise ValueError(f"NBT does not roundtrip losslessly: {self.path}:{slot}")
+            # Require coordinates even when discovery itself never uses them.
+            int(chunk["xPos"]), int(chunk["zPos"])
+            yield slot, chunk
 
     def updated(self, chunks):
         raw = bytearray(self.raw)
@@ -170,34 +193,47 @@ def template_claims(template, shipwreck):
     return sorted(variants[0])
 
 
+def discover_chunks(chunks, resources, counts):
+    claims = defaultdict(set)
+    for _, chunk in chunks:
+        for start in chunk.get("structures", {}).get("starts", {}).values():
+            for piece in start.get("Children", []):
+                placement = piece_placement(piece)
+                if placement is None:
+                    counts["unsupported_pieces"] += 1
+                    continue
+                name, origin, rotation, pivot = placement
+                template = resources.template(name)
+                if template is None or rotation not in ROTATIONS:
+                    counts["unsupported_pieces"] += 1
+                    continue
+                sources = template_claims(template, str(piece["id"]) == "minecraft:shipwreck")
+                if sources is None:
+                    counts["ambiguous_pieces"] += 1
+                    continue
+                for pos, block, table in sources:
+                    claims[transform(pos, origin, rotation, pivot)].add((block, table))
+    return claims
+
+
 def discover(region_paths, resources, counts):
     claims = defaultdict(set)
+    unreadable = set()
     for path in region_paths:
+        region_counts = Counter()
         try:
             chunks = list(Region(path).chunks())
-        except (ValueError, OSError, zlib.error) as error:
+            found = discover_chunks(chunks, resources, region_counts)
+        except INPUT_ERRORS as error:
             counts["unreadable_regions"] += 1
-            print(str(error), file=sys.stderr)
+            unreadable.add(path)
+            print(f"unreadable discovery region {path}: {error}", file=sys.stderr)
             continue
-        for _, chunk in chunks:
-            for start in chunk.get("structures", {}).get("starts", {}).values():
-                for piece in start.get("Children", []):
-                    placement = piece_placement(piece)
-                    if placement is None:
-                        counts["unsupported_pieces"] += 1
-                        continue
-                    name, origin, rotation, pivot = placement
-                    template = resources.template(name)
-                    if template is None or rotation not in ROTATIONS:
-                        counts["unsupported_pieces"] += 1
-                        continue
-                    sources = template_claims(template, str(piece["id"]) == "minecraft:shipwreck")
-                    if sources is None:
-                        counts["ambiguous_pieces"] += 1
-                        continue
-                    for pos, block, table in sources:
-                        claims[transform(pos, origin, rotation, pivot)].add((block, table))
-    return claims
+        # Do not retain partial claims/counts from a malformed region.
+        counts.update(region_counts)
+        for pos, candidates in found.items():
+            claims[pos].update(candidates)
+    return claims, unreadable
 
 
 def block_state(chunk, pos):
@@ -277,21 +313,40 @@ def replace_region(region, updates, backup, relative):
         out.flush()
         os.fsync(out.fileno())
     data = region.updated(updates)
-    with tempfile.NamedTemporaryFile(dir=region.path.parent, prefix=".slashloot-recovery-", delete=False) as out:
-        pending = Path(out.name)
-        out.write(data)
-        out.flush()
-        os.fsync(out.fileno())
-    shutil.copymode(region.path, pending)
-    os.replace(pending, region.path)
+    original = region.path.stat()
+    pending = None
+    try:
+        with tempfile.NamedTemporaryFile(dir=region.path.parent, prefix=".slashloot-recovery-", delete=False) as out:
+            pending = Path(out.name)
+            replacement = os.fstat(out.fileno())
+            if (replacement.st_uid, replacement.st_gid) != (original.st_uid, original.st_gid):
+                raise PermissionError(f"region ownership would change; run as the server user: {region.path}")
+            out.write(data)
+            out.flush()
+            os.fsync(out.fileno())
+        shutil.copymode(region.path, pending)
+        os.replace(pending, region.path)
+    finally:
+        if pending is not None:
+            pending.unlink(missing_ok=True)
     with region.path.open("rb") as check:
         if hashlib.file_digest(check, "sha256").digest() != hashlib.sha256(data).digest():
             raise OSError(f"region write readback failed: {region.path}")
 
 
+def classify_targets(chunks, targets, managed, resources):
+    # Consume every target shape before allowing any mutation of this region.
+    for slot, chunk in chunks:
+        chunk_pos = (int(chunk["xPos"]), int(chunk["zPos"]))
+        for pos in targets:
+            if (pos[0] // 16, pos[2] // 16) == chunk_pos:
+                category, entity = classify(chunk, pos, targets[pos], managed, resources)
+                yield slot, chunk, pos, category, entity
+
+
 def process_dimension(world, dimension, resources, backup, counts):
     paths = sorted((dimension / "region").glob("r.*.*.mca"))
-    claims = discover(paths, resources, counts)
+    claims, unreadable = discover(paths, resources, counts)
     counts["discovered"] += len(claims)
     managed = private_positions(dimension)
     grouped = defaultdict(dict)
@@ -299,32 +354,31 @@ def process_dimension(world, dimension, resources, backup, counts):
         x, _, z = pos
         grouped[dimension / "region" / f"r.{x // 512}.{z // 512}.mca"][pos] = candidates
     for path, targets in sorted(grouped.items()):
+        # A readable neighbor can claim a target in a discovery-rejected region.
+        if path in unreadable:
+            counts["unreadable_target_positions"] += len(targets)
+            continue
         if not path.exists():
             counts["missing_chunk"] += len(targets)
             continue
         try:
             region = Region(path)
-            chunks = list(region.chunks())
-        except (ValueError, OSError, zlib.error) as error:
+            classified = list(classify_targets(region.chunks(), targets, managed, resources))
+        except INPUT_ERRORS as error:
             counts["unreadable_target_positions"] += len(targets)
-            print(str(error), file=sys.stderr)
+            print(f"unreadable target region {path}: {error}", file=sys.stderr)
             continue
         updates = {}
         remaining = set(targets)
-        for slot, chunk in chunks:
-            chunk_targets = [p for p in targets if (p[0] // 16, p[2] // 16) == (int(chunk["xPos"]), int(chunk["zPos"]))]
-            for pos in chunk_targets:
-                remaining.discard(pos)
-                category, entity = classify(chunk, pos, targets[pos], managed, resources)
-                counts[category] += 1
-                if category == "eligible" and backup is not None:
-                    table = next(iter(targets[pos]))[1]
-                    entity["LootTable"] = nbtlib.String(table)
-                    entity["LootTableSeed"] = nbtlib.Long(location_seed(dimension.relative_to(world).as_posix(), pos, table))
-                    updates[slot] = chunk
-                    counts["applied"] += 1
-            if updates.get(slot) is not None:
+        for slot, chunk, pos, category, entity in classified:
+            remaining.discard(pos)
+            counts[category] += 1
+            if category == "eligible" and backup is not None:
+                table = next(iter(targets[pos]))[1]
+                entity["LootTable"] = nbtlib.String(table)
+                entity["LootTableSeed"] = nbtlib.Long(location_seed(dimension.relative_to(world).as_posix(), pos, table))
                 updates[slot] = chunk
+                counts["applied"] += 1
         counts["missing_chunk"] += len(remaining)
         if updates:
             replace_region(region, updates, backup, path.relative_to(world))

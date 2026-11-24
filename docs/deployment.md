@@ -28,7 +28,6 @@ Verification of the exact build's config migration, actual UDP/TCP listeners (or
 Run server preparation on the designated Minecraft test host, not on a lightweight control machine:
 
 ```bash
-python3 -m pip install -r scripts/requirements-recovery.txt
 make test
 make validate
 make server-zip

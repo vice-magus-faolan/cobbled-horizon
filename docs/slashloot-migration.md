@@ -1,43 +1,51 @@
 # Broadwater: one-time historical loot migration
 
-`scripts/recover_structure_loot.py` scans a **stopped Minecraft 26.3 world copy** and restores pending loot-table metadata on compatible empty structure containers. Ordinary unmodified SlashLoot then supplies per-player loot. This is an optional operator tool, not an installation hook, permanent mod dependency, terrain reset or permission to access Broadwater. Normal new worlds do not need it.
+`scripts/recover_structure_loot.py` scans a **stopped Minecraft 26.3 world** and restores pending loot-table metadata on compatible empty structure containers. Ordinary unmodified SlashLoot then supplies per-player loot. This is an optional operator tool, not an installation hook, permanent mod dependency, terrain reset or permission to access Broadwater. Normal new worlds do not need it.
 
 ## Eligibility and coverage
 
 One world-level migration approval is sufficient. An expected structure/template position, identified available loot table and compatible empty unmanaged container qualify. No per-chest manifest, continuity witness or original seed is required. An empty player replacement at the expected position can qualify; that risk and new entitlements for previous looters are accepted. Concrete inventory, layout or metadata conflicts still cause individual skips.
 
-The scanner reads stored structure pieces rather than sweeping every empty chest. It supports native shipwreck marker-to-chest positions with their stored origin, rotation and pivot. The same template extraction supports rigid single/legacy-single jigsaw pieces with empty processor lists and baked chest/barrel tables. Multiple palettes qualify only when their container/table claims agree. Resource conflicts are never resolved by guessing datapack order.
+The scanner reads stored structure pieces rather than sweeping every empty chest. It supports native shipwreck marker-to-chest positions with their stored origin, rotation and pivot. The same template extraction supports rigid single/legacy-single jigsaw pieces whose processor reference is literally `minecraft:empty`, with baked chest, trapped-chest or barrel tables. Multiple palettes qualify only when their container/table claims agree. Resource conflicts are never resolved by guessing datapack order.
 
 Occupied containers, double/composite chests, incompatible/missing blocks, custom components or unexplained metadata, conflicting tables and existing private claims are not overwritten. Existing matching tables are left alone, including unopened containers. Unsupported piece types, non-rigid or processed jigsaws, missing templates, differing palettes and unknown tables stay outside supported coverage. The tool does not reconstruct procedural dungeons/mineshafts, donor terrain or every modded structure. Its summary is a measured supported subset, not a world-wide loot total.
 
-New seeds are the first eight SHA-256 bytes, interpreted as signed big-endian, of compact JSON `["slashloot-recovery-v1", dimension-relative-directory, [x,y,z], table]`. This is deterministic per location within that world layout, not recovery of vanished historical randomness. It avoids using a common zero seed for every source. SlashLoot combines that seed with the player UUID. No private loot or prior-player records are inserted.
+New seeds are the first eight SHA-256 bytes, interpreted as signed big-endian, of compact JSON `["slashloot-recovery-v1", world-root-relative-dimension-path, [x,y,z], table]`. The dimension path is relative to the world root, for example `dimensions/minecraft/overworld` or `.` for a legacy overworld. This is deterministic per location within that world layout, not recovery of vanished historical randomness. It avoids using a common zero seed for every source. SlashLoot combines that seed with the player UUID. No private loot or prior-player records are inserted.
 
 ## Operator procedure
 
-Use Linux/POSIX, Python 3.11 or later, sufficient disk for region backups plus rewritten regions, and matching trusted server/mod/datapack resources. The inner vanilla server JAR is normally `versions/26.3/server-26.3.jar`, not the outer launcher. Include relevant mod JARs and datapack ZIPs/directories through repeated `--resources` arguments. Do not omit an active override and then claim the result represents that resource set.
+Use Linux/POSIX, Python 3.11 or later and enough disk for region backups plus rewritten regions. Run the tool **as the server user**, not root. Supply matching trusted server/mod/datapack resources; the inner vanilla server JAR is normally `versions/26.3/server-26.3.jar`, not the outer launcher. Include active mod/datapack overrides through repeated `--resources` arguments; conflicting bytes are not resolved by guessing load order.
 
-1. Approve the migration for the named world. Cleanly stop the server and keep other tools/players out. Take a complete consistent snapshot of all world/dimension, player, private-mod state and configuration files. Rehearse restoration separately; the utility backups cover only changed region files.
-2. Work on an independently owned copy first. Install the optional tooling dependency in a dedicated environment. Neither these dependencies nor this script are exported in the pack:
+1. Cleanly stop the server and keep players and other world-writing tools out. Take a complete, consistent **world snapshot**, including all dimensions, player data and private-mod state. The tool backs up changed regions only, not the whole world.
+2. If needed, prepare the optional dependency in a dedicated environment. The script and dependency are not exported in the pack:
 
    ```sh
    python3 -m venv ../recovery-venv
    ../recovery-venv/bin/python -m pip install -r scripts/requirements-recovery.txt
-   ../recovery-venv/bin/python scripts/recover_structure_loot.py /copies/world --resources /server/versions/26.3/server-26.3.jar --resources /server/mods/structures.jar
    ```
 
-3. Review the JSON counts and stderr warnings. `discovered` counts distinct expected positions from supported pieces; eligible/occupied/structurally_ambiguous/unknown_table and additional exclusion categories describe those positions. Unsupported/ambiguous pieces and `unreadable_regions` are separate discovery gaps, not additional recovered containers. `unreadable_target_positions` counts discovered positions whose target region could not be read; these positions are skipped, not eligible or recovered. Resolve or consciously exclude gaps before operation; never call a partially readable world consistent.
-4. Apply using the same resources and a **new backup directory outside the world**:
+3. Invoke apply manually with the matching resources and a **new backup directory outside the world**:
 
    ```sh
-   ../recovery-venv/bin/python scripts/recover_structure_loot.py /copies/world --resources /server/versions/26.3/server-26.3.jar --resources /server/mods/structures.jar --apply --backup /recovery/regions-before-first-apply
+   ../recovery-venv/bin/python scripts/recover_structure_loot.py /server/world --resources /server/versions/26.3/server-26.3.jar --resources /server/mods/structures.jar --apply --backup /recovery/regions-before-first-apply
    ```
 
-   The script holds the native POSIX session lock, rereads current inventories, backs up each changed region, then atomically replaces that region. It adds only `LootTable` and `LootTableSeed`; it never clears Items, replaces blocks, rewrites player files or creates private claims. Unchanged chunk sectors remain verbatim. A second apply with another new backup directory must report applied=0 for unchanged inputs.
-5. Start the copy with the exact selected unmodified SlashLoot and its ordinary defaults. Use two distinct UUIDs to open a recovered source normally. Drain A, require independent loot for B, repeat, then cleanly stop/restart and compare A-empty and B remaining slots/items/components. Check occupied and ordinary storage and player data. A marker alone is not successful recovery. Validate real Java/Bedrock access separately before claiming client compatibility.
+The script holds the native POSIX session lock, rereads inventories, backs up each changed region and atomically replaces that region. It adds only `LootTable` and `LootTableSeed` to eligible containers; other logical chunk data is preserved. It never clears Items, replaces blocks, rewrites player files or creates private claims. Untouched chunk sectors remain verbatim. Replacement retains the original mode and refuses if the temporary file has a different owner or group; it does not change ownership to force the operation through.
 
-No region is repaired by this tool. Invalid length/allocation/compression is rejected; unreadable discovery and target regions are reported and skipped while healthy regions continue. Backup, write and readback failures stop the operation; earlier regions may already be applied. Keep the server stopped, inspect the retained backups/results and either resume unchanged eligible sources or restore the complete snapshot. Region replacement is atomic, not an all-world transaction or power-loss guarantee. Never remove private claims to make a rerun eligible.
+No region is repaired. All allocated sector ranges must be outside the header, non-overlapping and wholly inside the file; inline length and compression limits still apply. Before any mutation, every chunk in a target region must decode and re-encode to exactly its original decompressed NBT bytes, and all consumed discovery/target shapes must be readable. This deliberately skips whole regions containing Java modified-UTF-8 NUL/emoji strings that nbtlib cannot preserve, truncated NBT, malformed coordinates/shapes or unsupported encoding. Discovery and target input failures are reported and skipped while later healthy regions and dimensions continue. A skipped region stays byte-identical, not silently normalized.
 
-Before any claim, the backed-up regions can restore the pre-apply metadata while stopped. After loot moves into player inventories, use the consistent full snapshot: restoring only regions or only the private ledger can duplicate or lose items. Existing [accepted private-inventory destruction loss](slashloot.md#retention-removal-and-administration) and the separate mixed-double limitations remain unchanged.
+Backup, replacement serialization, write, fsync, ownership and readback failures stop the operation, as does unknown private-state schema. Earlier regions may already be applied. Keep the server stopped and either resume unchanged eligible sources after resolving the failure or restore the complete snapshot. Region replacement is atomic, not an all-world transaction or power-loss guarantee. Never remove private claims to make a rerun eligible.
+
+Before any claim, region backups can restore pre-apply metadata while stopped. After loot moves into player inventories, restore the consistent full world snapshot: restoring only regions or only the private ledger can duplicate or lose items. Existing [accepted private-inventory destruction loss](slashloot.md#retention-removal-and-administration) and mixed-double limitations remain unchanged.
+
+## Optional result checks
+
+These exercises verify results; they are not required operator gates. You may rehearse restoration or try the utility on a disposable copy first. Omitting `--apply` and `--backup` performs a no-write scan with the same resources. Review its JSON/stderr if you want to assess coverage before applying:
+
+- `discovered` counts distinct expected positions from readable supported pieces. Position categories such as eligible, occupied and structurally_ambiguous describe those positions.
+- Unsupported/ambiguous pieces and `unreadable_regions` are separate discovery gaps, not additional recovered containers. `unreadable_target_positions` counts discovered positions whose target region cannot safely be consumed; those positions are skipped, not eligible or recovered. A partially readable world is not certified consistent.
+- A repeat apply with another new backup directory should report applied=0 for unchanged inputs.
+- A two-UUID trial can check independent loot, A-empty/B-remaining after draining A, then persistence of slots/items/components after a clean restart. Also compare occupied/ordinary storage and player data. A marker alone does not prove gameplay recovery. Real Java/Bedrock access needs separate verification before claiming client compatibility.
 
 ## Source comparison
 

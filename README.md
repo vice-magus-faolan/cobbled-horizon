@@ -237,7 +237,7 @@ This is an upgrade-discovery check, not an audit of pinned-pack stability: a lat
 
 ## Documentation
 
-- [One-time historical loot recovery](docs/slashloot-migration.md) — automatic stopped-copy scan/apply after world-level approval
+- [One-time historical loot recovery](docs/slashloot-migration.md) — optional, manually invoked stopped-world scan/apply after world-level approval
 - [Renewable and per-player structure loot investigation](docs/loot-investigation.md) — research only; no live-world changes
 - [`docs/configuration.md`](docs/configuration.md)
 - [`docs/permissions.md`](docs/permissions.md)
