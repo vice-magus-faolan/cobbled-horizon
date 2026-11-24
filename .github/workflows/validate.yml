@@ -53,6 +53,9 @@ jobs:
       - name: Install pinned packwiz revision
         run: go install github.com/packwiz/packwiz@ef87d964f8cbd52b3b13ea42453ef322290e2b9e
 
+      - name: Install offline recovery test dependency
+        run: python3 -m pip install -r scripts/requirements-recovery.txt
+
       - name: Validate source and test repository tooling
         # Pins, validators and exports share one contract: run the full PR suite.
         run: make validate test

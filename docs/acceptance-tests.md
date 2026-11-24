@@ -8,6 +8,8 @@ All Minecraft server startup, world-generation, and gameplay tests must run on t
 
 ## Automated gates
 
+Local checks use the [repository prerequisites](../README.md#prerequisites), including `python3 -m pip install -r scripts/requirements-recovery.txt`.
+
 ```bash
 make test
 make validate

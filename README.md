@@ -126,7 +126,7 @@ See [`docs/configuration.md`](docs/configuration.md) for the rationale and unres
 
 ## Prerequisites
 
-- Python 3.11+
+- Python 3.11+; install the repository test/recovery dependency with `python3 -m pip install -r scripts/requirements-recovery.txt` in your development environment
 - [packwiz](https://packwiz.infra.link/)
 - Java 25 on the designated Minecraft test/deployment host
 
@@ -237,7 +237,7 @@ This is an upgrade-discovery check, not an audit of pinned-pack stability: a lat
 
 ## Documentation
 
-- [One-time Broadwater metadata migration](docs/slashloot-migration.md) — explicit provenance and approval; no automatic recovery
+- [One-time historical loot recovery](docs/slashloot-migration.md) — automatic stopped-copy scan/apply after world-level approval
 - [Renewable and per-player structure loot investigation](docs/loot-investigation.md) — research only; no live-world changes
 - [`docs/configuration.md`](docs/configuration.md)
 - [`docs/permissions.md`](docs/permissions.md)
