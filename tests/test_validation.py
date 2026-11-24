@@ -31,7 +31,7 @@ class PackSourceTests(unittest.TestCase):
     def test_repository_passes_source_validation(self) -> None:
         errors, summary = check_pack.validate()
         self.assertEqual([], errors)
-        self.assertEqual(27, summary.baseline_selected)
+        self.assertEqual(28, summary.baseline_selected)
         self.assertEqual(6, summary.baseline_dependencies)
         self.assertEqual(4, summary.staged_selected)
         self.assertEqual(1, summary.staged_dependencies)
@@ -112,6 +112,19 @@ class PackSourceTests(unittest.TestCase):
         self.assertEqual("true", properties["pvp"])
         self.assertEqual("16", properties["spawn-protection"])
         self.assertEqual("4", properties["op-permission-level"])
+
+    def test_slashloot_exact_pin_without_config_override(self) -> None:
+        metadata = tomllib.loads((ROOT / "mods/slashloot.pw.toml").read_text())
+        self.assertEqual("server", metadata["side"])
+        self.assertIs(True, metadata["pin"])
+        self.assertEqual({"mod-id": "mRZVkEL7", "version": "fCGypkiQ"}, metadata["update"]["modrinth"])
+        self.assertEqual("320f12444d1c7aac8efb203357e6fd93a78363acfbe44f34b68c9b14d8bb8ea599e661ad4266d42824941276fd35020065823ba6971a5c4128144fc9d0c8e8c0", metadata["download"]["hash"])
+        collection = tomllib.loads((ROOT / "collection.toml").read_text())
+        api = next(item for item in collection["selected"] if item["project-id"] == "P7dR8mSH")
+        self.assertIn("SlashLoot", api["also-required-by"])
+        self.assertFalse((ROOT / "config/slashloot.json").exists())
+        index = tomllib.loads((ROOT / "index.toml").read_text())
+        self.assertNotIn("config/slashloot.json", {item["file"] for item in index["files"]})
 
     def test_moog_structure_policy_is_pinned(self) -> None:
         config = json.loads((ROOT / "config/moogs_structures.json").read_text())
@@ -354,7 +367,7 @@ class MrpackTests(unittest.TestCase):
         extra = copy.deepcopy(self.index["files"][0])
         extra["path"] = "mods/krypton.jar"
         self.assert_archive_rejected({**self.index, "files": self.index["files"] + [extra]}, self.overrides, "unexpected exported file")
-        for name in ("overrides/staged/config/example.json", "server-overrides/config/justenoughbackups.json", "overrides/mods/krypton.jar", "overrides/config/floodgate/key.pem"):
+        for name in ("overrides/config/slashloot.json", "overrides/staged/config/example.json", "server-overrides/config/justenoughbackups.json", "overrides/mods/krypton.jar", "overrides/config/floodgate/key.pem"):
             with self.subTest(name=name):
                 reason = "must not bundle JARs" if name.endswith(".jar") else "unexpected archive entry"
                 self.assert_archive_rejected(self.index, {**self.overrides, name: b"unexpected"}, reason)

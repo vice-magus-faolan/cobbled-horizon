@@ -8,6 +8,8 @@ All Minecraft server startup, world-generation, and gameplay tests must run on t
 
 ## Automated gates
 
+Local checks use the [repository prerequisites](../README.md#prerequisites), including `python3 -m pip install -r scripts/requirements-recovery.txt`.
+
 ```bash
 make test
 make validate
@@ -26,7 +28,8 @@ complete server folder. Download/hash failures are fatal, never a reason to re-e
 substitute mods. In one disposable non-root Java 25 container
 at a time (4 GB heap, no published ports), the first boot permits public dependency
 bootstrap and the second runs offline. It checks Minecraft readiness, MSS/Hopo and
-Moog policy, fresh group creation, native import/repeat/conflict/roundtrip preservation,
+Moog policy, the pinned SlashLoot entrypoint and generated upstream-default config
+without load errors, fresh group creation, native import/repeat/conflict/roundtrip preservation,
 effective synthetic-account permissions, no startup reapplication, and completed
 all-dimension saves with zero exits. Bounded logs and `summary.json` are Actions artifacts.
 
@@ -69,6 +72,22 @@ all-dimension saves with zero exits. Bounded logs and `summary.json` are Actions
 - [ ] During rain, directly exposed crops receive occasional extra growth while covered crops do not; normal growth remains unchanged when weather is clear.
 - [ ] Bamboo receives no extra rain growth, and the tuned crop, sapling, sugar cane, berry, melon, and pumpkin rates feel useful without trivializing farming.
 - [ ] Java and Bedrock players interact normally with every affected crop, and a large loaded farm shows acceptable storm-time tick cost in spark.
+
+## Personal loot
+
+These checks are outstanding, not implied by a clean hosted boot. Use the exact pinned [SlashLoot policy](slashloot.md) on a separately authorized disposable world. Do not use a live world or its backups for this feature trial. The [source-traced mixed-double limitation](slashloot.md#mixed-double-chests-unresolved-preservation-gate) is unresolved: the preservation rows below are required observations, not evidence of a pass or claims of current behavior. Live activation remains blocked until the preservation trial passes; record failure for an operator decision.
+
+- [ ] Two distinct Java/Floodgate UUIDs receive independent persistent copies of one supported pending-table source. Repeat visits by either account reopen the same copy without renewal; reconnect preserves identity.
+- [ ] Leave distinctive component-bearing stacks in each copy, restart cleanly and verify counts/components and the remainder for each player. Exercise unmodded Java and a real Bedrock client, not just Geyser startup.
+- [ ] Compare newly generated pending tables with previously generated unopened sources. For standalone controls, require previously opened empty/partial containers, ordinary player storage and player replacements without tables to retain their physical contents and normal access; no historical recovery occurs. Assess mixed pairs separately below.
+- [ ] Exercise single/trapped chests, double chests with two eligible halves, barrels, shulkers and lootable vehicles, including structures from the active pack. Unknown custom containers stay vanilla; eligible decorated pots give each UUID one roll without breaking in survival, as enabled upstream.
+- [ ] Mixed-double preservation trial: join an eligible unopened half to a tableless player-storage half, then separately to a previously partially looted half. Retain preimages with distinctive item counts/components in the tableless physical inventory. Open from BOTH halves with each test UUID; record which physical or private inventory is exposed, whether the menu stays valid, and whether deposited/remainder items remain accessible. Compare physical item/component/count data against the preimages, preserving unchanged physical inventory bytes where no physical edit was requested; do not require whole-world byte identity. Stop cleanly, restart, repeat both opening directions and verify physical remainders and each private copy. Record menu closure, hidden remainders or other interference as a failure, not a successful no-table exclusion. Do not clear tables or move items to manufacture a pass. This trial is not yet executed and is a live-activation gate.
+- [ ] Check hopper/comparator/trapped-chest behavior, simultaneous opens, break/explosion/piston/removal paths and storage placed near or instead of sources. Never treat an empty inventory or structure coordinate as ownership evidence.
+- [ ] With non-empty private copies, remove a source marker, replace a source and destroy a vehicle. Observe the upstream break/entity/background cleanup lifecycle, including the next-tick break confirmation, separate loaded-position prune, deletion of orphaned private copies and skipped unloaded chunks. Record accepted private-item loss honestly, including a player destroying other players’ deposited valuables; require physical player-storage contents and normal access to remain unaffected, including the mixed-double controls above. This requirement is not a claimed pass.
+- [ ] Rehearse a basic stopped-instance rollback into a separate disposable instance: restore matching world/dimensions, player inventories/identities, SlashLoot data, mods and configs from one consistent backup. Verify source metadata, private remainders/components and player inventories after restart, without duplicate rewards. A pre-claim metadata-only proof does not satisfy this post-claim/player rollback check.
+- [ ] Verify helpers and ordinary accounts cannot access game-master administration. Do not run destructive forget/prune/import operations on real data as a trial. Disable/removal may strand private copies and expose a new shared roll; do not promise lossless uninstall.
+
+Source destruction/cleanup loss of private remainders and deposited valuables, including other players’ copies, is an **accepted limitation**, not a preservation-pass requirement. Observe and disclose it; do not require an all-player exporter to accept ordinary adoption. An expressly item-preserving export/removal operation would need separate evidence. Optional selective protection and the [one-time Broadwater migration](slashloot-migration.md) are not normal-adoption gates.
 
 ## World generation
 

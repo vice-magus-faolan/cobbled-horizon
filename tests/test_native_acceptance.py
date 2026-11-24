@@ -163,6 +163,35 @@ class NativeAcceptanceTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "missing domain"):
             native.domain_snapshot({"groups": {}})
 
+    def test_slashloot_native_config_load_and_drift(self):
+        loaded = "slashloot 0.6.0\nSlashLoot loaded - server-side per-player loot\n"
+        policy = {
+            "enabled": True, "dimensionBlocklist": [], "lootTableBlocklist": [],
+            "handleUnknownContainers": False, "instancePots": True,
+            "delegateContainerAnimation": True, "playOpenCloseSounds": True,
+            "cleanupOnBreak": True, "pruneIntervalTicks": 6000,
+            "pruneBatchSize": 256, "debugLogging": False,
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            server = Path(directory)
+            (server / "config").mkdir()
+            target = server / "config/slashloot.json"
+            target.write_text(json.dumps(policy, sort_keys=True))
+            native.check_slashloot(server, loaded)
+            for output in (READY_LINE, loaded.replace("0.6.0", "0.5.0"),
+                           loaded + "Failed to load slashloot.json, using defaults"):
+                with self.subTest(output=output), self.assertRaises(ValueError):
+                    native.check_slashloot(server, output)
+            for key, value in (("enabled", False), ("cleanupOnBreak", False),
+                               ("pruneIntervalTicks", 0), ("instancePots", False),
+                               ("handleUnknownContainers", True)):
+                target.write_text(json.dumps({**policy, key: value}))
+                with self.subTest(key=key), self.assertRaisesRegex(ValueError, "policy drift"):
+                    native.check_slashloot(server, loaded)
+            target.write_text("invalid JSON")
+            with self.assertRaises(ValueError):
+                native.check_slashloot(server, loaded)
+
     def test_worldgen_migration_accepts_formatting_but_rejects_policy_drift_and_recovery(self):
         with tempfile.TemporaryDirectory() as directory:
             server = Path(directory)

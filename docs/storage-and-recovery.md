@@ -9,6 +9,10 @@ Cobbled Horizon treats the selected host's verified usable filesystem quota as a
 - **Keep an independent daily host/provider backup layer enabled.** Its schedule, scope, retention, quota accounting and restore route remain outstanding account checks. JEB is an application-aware recovery layer, not a replacement for that backup.
 - Keep an off-host copy before every pack, loader, world-generation, or configuration migration.
 
+## Personal loot retention
+
+SlashLoot retains dimension-scoped private inventories separately from vanilla slots. Upstream cleanup removes orphaned source records, not ordinary storage or chunks. That cleanup distinction is not a blanket storage-interaction guarantee: a tableless half joined to an eligible loot chest has an unresolved [mixed-double preservation limitation](slashloot.md#mixed-double-chests-unresolved-preservation-gate), which must be assessed before live activation. Active source/player records can still grow without an age/size retention cap. Monitor those bytes without changing the JEB caps/reserve. Retain matching world/dimensions, player data/identities, SlashLoot state, mods and configs in consistent stopped-instance backups and rehearse basic rollback. Source destruction/cleanup can permanently discard every player’s private remainders and deposited valuables there; this is an accepted limitation, not a deployment blocker. No all-player exporter or lossless uninstall is supplied or required for ordinary adoption. [Lifecycle/removal guidance](slashloot.md#retention-removal-and-administration) and the optional [Broadwater migration](slashloot-migration.md) distinguish these risks from the genuine ordinary-storage/client/restart/rollback checks.
+
 ## JEB configuration
 
 JEB supports full, partial, and differential schedules, dependency-aware retention, a per-world total-size cap, strict integrity checks, and a minimum-free-space preflight.[5][6]

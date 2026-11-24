@@ -1,12 +1,12 @@
 name = "Cobbled Horizon"
 author = "jabez007 and contributors"
-version = "26.3.0.1.5"
+version = "26.3.0.1.6"
 pack-format = "packwiz:1.1.0"
 
 [index]
 file = "index.toml"
 hash-format = "sha256"
-hash = "3c88372964ad11e25cf2a63f80ed32e2548964fd15c6f28b4668e7337b4c46fd"
+hash = "380b0198d48861e910dc622ed12369448676c8b7c2a5080acf3ab07d14d7ab92"
 
 [versions]
 fabric = "0.20.1"

@@ -12,7 +12,7 @@ slug = "fabric-api"
 name = "Fabric API"
 category = "platform"
 role = "selected-library"
-also-required-by = ["Chunky", "Collective", "Creeper No Break", "Cristel Lib", "Crops Love Rain", "Dungeons and Taverns Stronghold Overhaul", "Epic Structures: Villages Standalone Edition", "Explorify", "Floodgate", "Forge Config API Port", "Geyser", "Just Enough Backups (JEB)", "LuckPerms", "Mc2Discord", "Moog's Structure Lib (moogs_structures)", "MOS - Moog's Ocean Structures", "MSS - Moog's Soaring Structures", "Naturally Trimmed", "Polymer", "ServerCore", "spark", "squaremap", "Server-Side Waystones", "Towns and Towers", "Universal Graves", "Villager Names", "Villagers Tasks"]
+also-required-by = ["Chunky", "Collective", "Creeper No Break", "Cristel Lib", "Crops Love Rain", "Dungeons and Taverns Stronghold Overhaul", "Epic Structures: Villages Standalone Edition", "Explorify", "Floodgate", "Forge Config API Port", "Geyser", "Just Enough Backups (JEB)", "LuckPerms", "Mc2Discord", "Moog's Structure Lib (moogs_structures)", "MOS - Moog's Ocean Structures", "MSS - Moog's Soaring Structures", "Naturally Trimmed", "Polymer", "ServerCore", "SlashLoot", "spark", "squaremap", "Server-Side Waystones", "Towns and Towers", "Universal Graves", "Villager Names", "Villagers Tasks"]
 
 [[selected]]
 project-id = "Vebnzrzj"
@@ -194,6 +194,13 @@ project-id = "Cfbcv7uF"
 slug = "mc2discord"
 name = "Mc2Discord"
 category = "community"
+role = "feature"
+
+[[selected]]
+project-id = "mRZVkEL7"
+slug = "slashloot"
+name = "SlashLoot"
+category = "quality-of-life"
 role = "feature"
 
 [[resolved-dependency]]
