@@ -45,7 +45,7 @@ There is no true cross-dimension disable switch: the maximum signed-integer XP c
 
 ## SlashLoot administration
 
-SlashLoot uses game-master authority (permission level 2) for its command root. Keep helpers and ordinary Java/Floodgate players non-operator; do not add wildcard or SlashLoot administration grants. The existing seed is unchanged. Forget/prune commands discard private records, and upstream automatic cleanup also reclaims orphaned source records; follow the [destructive-command and escrow gates](slashloot.md#retention-removal-and-administration), not a routine cleanup schedule.
+SlashLoot uses game-master authority (permission level 2) for its command root. Keep helpers and ordinary Java/Floodgate players non-operator; do not add wildcard or SlashLoot administration grants. The existing seed is unchanged. Forget/prune commands discard private records, and upstream automatic cleanup also reclaims orphaned source records; follow the [destructive-command precautions and consistent-backup requirements](slashloot.md#retention-removal-and-administration), not a routine cleanup schedule.
 
 ## Verification
 

@@ -96,9 +96,9 @@ Packwiz writes the same `.pw.toml` shape for a project whether it was selected d
 
 This repository keeps the two concerns separate:
 
-- [`collection.toml`](collection.toml) defines the active baseline: 27 selected projects and six resolved dependencies.
+- [`collection.toml`](collection.toml) defines the active baseline: 28 selected projects and six resolved dependencies.
 - [`candidates.toml`](candidates.toml) defines staged and future projects, why they are inactive, and the evidence required to promote them.
-- `mods/*.pw.toml` is the machine-maintained baseline lock layer. It contains the 33 projects exported by the standard pack.
+- `mods/*.pw.toml` is the machine-maintained baseline lock layer. It contains the 34 projects exported by the standard pack.
 - `staged/mods/*.pw.toml` retains five pinned candidate records outside packwiz's active index.
 
 Fabric API is the only explicitly selected platform library. Polymer, Cristel Lib, Cloth Config API, Forge Config API Port, Moog's Structure Lib, and Collective close baseline dependencies. ZConfig is staged beside Fast Noise. Cristel Lib demonstrates why dependency chains matter: Towns and Towers requires Cristel Lib, which in turn requires Cloth Config API and Fabric API. Explorify requires Fabric API; its Cristel Lib integration is optional. Crops Love Rain requires Forge Config API Port and Fabric API. Villager Names requires Collective.

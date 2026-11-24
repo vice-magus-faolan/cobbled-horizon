@@ -43,7 +43,7 @@ below retain their dated scope and are not retroactively certified by this evide
 
 ## SlashLoot 26.3
 
-Date: November 23, 2026. Pack `26.3.0.1.6` pins SlashLoot `0.6.0+mc26.3-fabric` with no config override. [PR54 workflow 45259607245](https://github.com/vice-magus-faolan/cobbled-horizon/actions/runs/45259607245) passed `validate` and `native-acceptance` on historical candidate `359c5f03f41035045fb877e339ce306d9a58d906`, including generated defaults on first install and restart. Revised source still requires its own exact-head hosted checks; the old pass does not approve the revision.
+Updated November 24, 2026. Pack `26.3.0.1.6` pins SlashLoot `0.6.0+mc26.3-fabric` with no config override. [PR54 workflow 45284487804](https://github.com/vice-magus-faolan/cobbled-horizon/actions/runs/45284487804) passed `validate` and `native-acceptance` on `88c4b7814ae4f070a28c8d074051f970d2b27f03`, including generated defaults on first install and restart. This records completed checks on that exact candidate, not gameplay certification or CI clearance for later documentation revisions; each successor still needs its own exact-head hosted checks.
 
 A bounded console-only experiment on the designated development host used the validated full-pack mrpack (SHA-256 `c2ae66d2f085bf5d68bde0df443f7c916acb974f5399d7d238623446b0bae752`), Minecraft 26.3, Fabric 0.20.1 and the pinned Java 25 container. It created a new synthetic world, not a copy of Broadwater. The explicit manifest had eight synthetic target rows:
 
